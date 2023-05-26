@@ -1,0 +1,13 @@
+{
+ "orderTime": "2022-05-05",
+ "orderId": 5,
+ "patientName": "Fernando",
+ "idDocumentationPatient": "123456879",
+ "phonePatient": "4125566987",
+ "state": "Miranda",
+ "city": "caracas",
+ "direction": "la calle",
+ "doctorName": "Antonio",
+ "phoneDoctor": "2125789546",
+ "serviceType": "c"
+}

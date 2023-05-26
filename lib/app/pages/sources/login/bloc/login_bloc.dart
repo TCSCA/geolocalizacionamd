@@ -1,0 +1,74 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
+import '/app/core/controllers/menu_controller.dart';
+import '/app/core/controllers/login_controller.dart';
+import '/app/core/models/menu_model.dart';
+import '/app/core/models/user_model.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/errors/error_active_connection.dart';
+import '/app/errors/exceptions.dart';
+
+part 'login_event.dart';
+part 'login_state.dart';
+
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  List<MenuModel> listMenu = [];
+  final LoginController loginController;
+  final MenuAppController menuController;
+  LoginBloc({required this.loginController, required this.menuController})
+      : super(LoginInitial()) {
+    on<ProcessLoginEvent>((event, emit) async {
+      listMenu = [];
+      try {
+        emit(const LoginShowLoadingState());
+        var userLogin =
+            await loginController.doLoginUser(event.user, event.password);
+        listMenu = await menuController.getListMenu(event.languageCode);
+        emit(LoginSuccessState(user: userLogin, listMenu: listMenu));
+      } on ErrorAppException catch (exapp) {
+        emit(LoginErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(LoginErrorState(message: exgen.message));
+      } on ActiveConnectionException catch (exac) {
+        emit(LoginActiveState(message: exac.message));
+      } catch (unknowerror) {
+        emit(const LoginErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<ProcessLogoutEvent>((event, emit) async {
+      try {
+        emit(const LoginShowLoadingState());
+        await loginController.doLogoutUser();
+        emit(const LogoutSuccessState());
+      } on ErrorAppException catch (exapp) {
+        emit(LoginErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(LoginErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const LoginErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<ProcessResetLoginEvent>((event, emit) async {
+      listMenu = [];
+      try {
+        emit(const LoginShowLoadingState());
+        await loginController.doResetLoginUser(event.user);
+        var userLogin =
+            await loginController.doLoginUser(event.user, event.password);
+        listMenu = await menuController.getListMenu(event.languageCode);
+        emit(LoginSuccessState(user: userLogin, listMenu: listMenu));
+      } on ErrorAppException catch (exapp) {
+        emit(LoginErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(LoginErrorState(message: exgen.message));
+      } catch (error) {
+        emit(const LoginErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+  }
+}
