@@ -39,95 +39,91 @@ class _AmdPendingView extends StatelessWidget {
           ),
       // backgroundColor: Colors.red,
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3), // changes position of shadow
-                      )
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey[100],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  )
+                ],
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
+            child: BlocBuilder<AmdPendingBloc, AmdPendingState>(
+              builder: (context, state) {
+                if (state is IsAmdPending) {
+                  return ListView(
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      _AmdPendingInfo(
+                          title: 'Fecha', subtitle: state.orderTime),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Numero de orden',
+                          subtitle: '${state.orderId}'),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Nombre del paciente',
+                          subtitle: state.patientName),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Cedula',
+                          subtitle: state.idDocumentationPatient),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Numero de telefono',
+                          subtitle: state.phonePatient),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(title: 'Estado', subtitle: state.state),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(title: 'Ciudad', subtitle: state.city),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'direccion', subtitle: state.direction),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Nombre del doctor',
+                          subtitle: state.doctorName),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Telefono del doctor',
+                          subtitle: state.phoneDoctor),
+                      const Divider(
+                        height: 1,
+                      ),
+                      _AmdPendingInfo(
+                          title: 'Tipo de servicio',
+                          subtitle: state.serviceType),
                     ],
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
-                child: BlocBuilder<AmdPendingBloc, AmdPendingState>(
-                  builder: (context, state) {
-                    if (state is IsAmdPending) {
-                      return ListView(
-                        physics: const BouncingScrollPhysics(),
-                        children: [
-                          _AmdPendingInfo(
-                              title: 'Fecha', subtitle: state.orderTime),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Numero de orden',
-                              subtitle: '${state.orderId}'),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Nombre del paciente',
-                              subtitle: state.patientName),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Cedula',
-                              subtitle: state.idDocumentationPatient),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Numero de telefono',
-                              subtitle: state.phonePatient),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(title: 'Estado', subtitle: state.state),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(title: 'Ciudad', subtitle: state.city),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'direccion', subtitle: state.direction),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Nombre del doctor',
-                              subtitle: state.doctorName),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Telefono del doctor',
-                              subtitle: state.phoneDoctor),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Tipo de servicio',
-                              subtitle: state.serviceType),
-                        ],
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
             ),
-          ],
+          ),
         ),
       ),
     );
