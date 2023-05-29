@@ -22,5 +22,17 @@
     "messageLogout": "Are you sure you want to logout?",
     "apiMsg001": "Geolocalización is not available. Please try again later.",
     "apiMsg016": "Incorrect username and / or password.",
-    "apiMsg057": "An active connection with your credentials already exists. If it isn't you. You want to close it?"
+    "apiMsg057": "An active connection with your credentials already exists. If it isn't you. You want to close it?",
+    "direction": "Direction",
+    "state": "state",
+    "city": "City",
+    "address": "Address",
+    "date": "Date",
+    "orderNumber": "Order number",
+    "patientNumber": "Patient's name",
+    "idDocumentation": "Identity card",
+    "patientPhone": "Telephone number",
+    "doctorName":  "Name of doctor",
+    "doctorPhone": "Doctor's phone number",
+    "serviceType": "Type of service"
 }
