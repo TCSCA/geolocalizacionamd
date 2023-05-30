@@ -23,7 +23,7 @@ class AmdPendingBloc extends Bloc<AmdPendingEvent, AmdPendingState> {
         emit(IsLoadingAmdPendingState());
 
         amdPendingResult = await amdPendingController.doConsultDataAmdPending();
-        if (amdPendingResult != null) {
+        if (amdPendingResult == null) {
 
           emit(const IsNotAmdPendingState(message: 'No tiene Ningun AMD pendiente'));
 
