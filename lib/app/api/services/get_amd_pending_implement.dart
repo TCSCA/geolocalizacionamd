@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import '../../errors/error_app_exception.dart';
 import '../../errors/error_general_exception.dart';
 import '../mappings/amd_pending_mapping.dart';
-import 'consult_data_service.dart';
+import 'get_amd_pending.dart';
 
-class ConsultDataServiceImp implements ConsultDataService {
+class GetAmdPendingImp implements GetAmdPendingService {
 
   Future<AmdPendingMap?> doGetAmdPending() async {
     const headerLogger = 'ListsService.getMenu';

@@ -12,7 +12,8 @@ class AmdPendingModel {
   String serviceType;
 
   AmdPendingModel(
-      {required this.orderTime,
+      {
+        required this.orderTime,
       required this.orderId,
       required this.patientName,
       required this.idDocumentationPatient,
@@ -23,18 +24,4 @@ class AmdPendingModel {
       required this.doctorName,
       required this.phoneDoctor,
       required this.serviceType});
-
-  factory AmdPendingModel.fromJson(Map<String, dynamic> json) =>
-      AmdPendingModel(
-          orderTime: json['orderTime'] ?? '',
-          orderId: json['orderId'] ?? 0,
-          patientName: json['patientName'] ?? '',
-          idDocumentationPatient: json['idDocumentationPatient'] ?? '',
-          phonePatient: json['phonePatient'] ?? '',
-          state: json['state'] ?? '',
-          city: json['city'] ?? '',
-          direction: json['direction'] ?? '',
-          doctorName: json['doctorName'] ?? '',
-          phoneDoctor: json['phoneDoctor'] ?? '',
-          serviceType: json['serviceType'] ?? '');
 }

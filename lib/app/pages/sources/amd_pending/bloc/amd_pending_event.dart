@@ -4,9 +4,8 @@ abstract class AmdPendingEvent extends Equatable {
   const AmdPendingEvent();
 }
 
-class OnInitialStateEvent extends AmdPendingEvent {
-
-OnInitialStateEvent();
+class ConsultDataAmdPendingEvent extends AmdPendingEvent {
+  const ConsultDataAmdPendingEvent();
   @override
   List<Object?> get props => [];
 }

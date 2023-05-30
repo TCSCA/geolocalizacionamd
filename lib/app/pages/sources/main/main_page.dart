@@ -42,12 +42,12 @@ class _MainPageState extends State<MainPage> {
                 color: const Color(0xFFfbfcff),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 7,
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           backgroundColor: Color(0xff2B5178),
                           radius: 70,
                           child: CircleAvatar(
@@ -60,11 +60,11 @@ class _MainPageState extends State<MainPage> {
                             ), //CircleAvatar
                           ), //CircleAvatar
                         ),
-                        const SizedBox(width: 5.0),
+                        SizedBox(width: 5.0),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text('Bienvenido(a)',
                                 style: TextStyle(
                                     color: Colors.grey,
@@ -130,8 +130,8 @@ class _MainPageState extends State<MainPage> {
                       ),
                       Row(
                         children: [
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Text('Disponible para atender:',
                                   style: TextStyle(
                                       fontSize: 18.0, color: Colors.white)),
