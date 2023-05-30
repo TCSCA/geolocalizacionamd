@@ -42,17 +42,20 @@ class _AmdPendingView extends StatelessWidget {
           ),*/
       // backgroundColor: Colors.red,
       body: SafeArea(
-        child: ListView(
+        child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                    child: Image.asset(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      child: Image.asset(
                   'assets/images/telemedicina24_logo_azul_lineal.png',
                   width: 270,
                   height: 90,
-                )),
+                ),
+                    )),
                 IconButton(
                     onPressed: () {},
                     icon: const Icon(
@@ -61,123 +64,124 @@ class _AmdPendingView extends StatelessWidget {
                     ))
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      )
-                    ],
-                    borderRadius: const BorderRadius.all(Radius.circular(10))),
-                child: BlocConsumer<AmdPendingBloc, AmdPendingState>(
-                  listener: (context, state) {
-                    if(state is IsNotAmdPendingState) {
-                     // LoadingBuilder(context).hideOpenDialog();
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return CustomDialogBox(
-                              title: AppMessages()
-                                  .getMessageTitle(context, AppConstants.statusWarning),
-                              descriptions:
-                              AppMessages().getMessage(context, 'No tiene un AMD pendiente'),
-                              isConfirmation: false,
-                              dialogAction: () {},
-                              type: AppConstants.statusError,
-                            );
-                          });
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is IsAmdPendingState) {
-                      return Column(
-                        //physics: const BouncingScrollPhysics(),
-                        children: [
-                          _AmdPendingInfo(
-                              title: 'Fecha',
-                              subtitle: state.amdPendingModel.orderTime),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Numero de orden',
-                              subtitle: '${state.amdPendingModel.orderId}'),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Nombre del paciente',
-                              subtitle: state.amdPendingModel.patientName),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Cedula',
-                              subtitle:
-                                  state.amdPendingModel.idDocumentationPatient),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Numero de telefono',
-                              subtitle: state.amdPendingModel.phonePatient),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Estado',
-                              subtitle: state.amdPendingModel.state),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Ciudad',
-                              subtitle: state.amdPendingModel.city),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'direccion',
-                              subtitle: state.amdPendingModel.direction),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Nombre del doctor',
-                              subtitle: state.amdPendingModel.doctorName),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Telefono del doctor',
-                              subtitle: state.amdPendingModel.phoneDoctor),
-                          const Divider(
-                            height: 1,
-                          ),
-                          _AmdPendingInfo(
-                              title: 'Tipo de servicio',
-                              subtitle: state.amdPendingModel.serviceType),
-                        ],
-                      );
-                    } else if(state is IsLoadingAmdPendingState){
-                      LoadingBuilder(context).showLoadingIndicator(
-                          context.appLocalization.titleLoginLoading);
-                      return Container();
-                    } else if(state is IsNotAmdPendingState){
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                child: Container(
+                  height: 500,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
+                        )
+                      ],
+                      borderRadius: const BorderRadius.all(Radius.circular(10))),
+                  child: BlocConsumer<AmdPendingBloc, AmdPendingState>(
+                    listener: (context, state) {
+                      if(state is IsNotAmdPendingState) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages()
+                                    .getMessageTitle(context, AppConstants.statusWarning),
+                                descriptions:
+                                AppMessages().getMessage(context, 'No tiene un AMD pendiente'),
+                                isConfirmation: false,
+                                dialogAction: () {},
+                                type: AppConstants.statusError,
+                              );
+                            });
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is IsAmdPendingState) {
+                        return ListView(
+                          children: [
+                            _AmdPendingInfo(
+                                title: 'Fecha',
+                                subtitle: state.amdPendingModel.orderTime),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Numero de orden',
+                                subtitle: '${state.amdPendingModel.orderId}'),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Nombre del paciente',
+                                subtitle: state.amdPendingModel.patientName),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Cedula',
+                                subtitle:
+                                    state.amdPendingModel.idDocumentationPatient),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Numero de telefono',
+                                subtitle: state.amdPendingModel.phonePatient),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Estado',
+                                subtitle: state.amdPendingModel.state),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Ciudad',
+                                subtitle: state.amdPendingModel.city),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'direccion',
+                                subtitle: state.amdPendingModel.direction),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Nombre del doctor',
+                                subtitle: state.amdPendingModel.doctorName),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Telefono del doctor',
+                                subtitle: state.amdPendingModel.phoneDoctor),
+                            const Divider(
+                              height: 1,
+                            ),
+                            _AmdPendingInfo(
+                                title: 'Tipo de servicio',
+                                subtitle: state.amdPendingModel.serviceType),
+                          ],
+                        );
+                      } else if(state is IsLoadingAmdPendingState){
+                        LoadingBuilder(context).showLoadingIndicator(
+                            context.appLocalization.titleLoginLoading);
                         return Container();
-                    }
-                    else {
-                      return Container();
-                    }
-                  },
+                      } else if(state is IsNotAmdPendingState){
+                          return Container();
+                      }
+                      else {
+                        return Container();
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
