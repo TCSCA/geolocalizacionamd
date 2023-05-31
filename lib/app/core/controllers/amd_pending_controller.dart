@@ -8,7 +8,7 @@ import '../../errors/error_app_exception.dart';
 import '../../errors/error_general_exception.dart';
 
 class AmdPendingController {
-  final GetAmdPendingService consultDataService = GetAmdPendingImp();
+  final GetAmdPendingService consultDataService = ConsultDataServiceImp();
 
   Future<AmdPendingModel?> doConsultDataAmdPending() async {
     late AmdPendingModel amdPendingModel;

@@ -7,7 +7,7 @@ import '../../errors/error_general_exception.dart';
 import '../mappings/amd_pending_mapping.dart';
 import 'get_amd_pending.dart';
 
-class GetAmdPendingImp implements GetAmdPendingService {
+class ConsultDataServiceImp implements GetAmdPendingService {
 
   Future<AmdPendingMap?> doGetAmdPending() async {
     const headerLogger = 'ListsService.getMenu';

@@ -23,7 +23,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
     return BlocProvider(
       create: (context) =>
           AmdPendingBloc(amdPendingController: AmdPendingController())
-            ..add(ConsultDataAmdPendingEvent()),
+            ..add(const ConsultDataAmdPendingEvent()),
       child: const _AmdPendingView(),
     );
   }
@@ -37,10 +37,6 @@ class _AmdPendingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(
-           backgroundColor: Colors.white,
-          ),*/
-      // backgroundColor: Colors.red,
       body: SafeArea(
         child: Column(
           children: [
@@ -96,6 +92,21 @@ class _AmdPendingView extends StatelessWidget {
                                     context, AppConstants.statusWarning),
                                 descriptions: AppMessages().getMessage(
                                     context, 'No tiene un AMD pendiente'),
+                                isConfirmation: false,
+                                dialogAction: () {},
+                                type: AppConstants.statusError,
+                              );
+                            });
+                      } else if (state is AmdPendingErrorState) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusError),
+                                descriptions: AppMessages()
+                                    .getMessage(context, state.message),
                                 isConfirmation: false,
                                 dialogAction: () {},
                                 type: AppConstants.statusError,

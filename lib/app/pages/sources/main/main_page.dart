@@ -144,6 +144,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                           Expanded(child: Container()),
                           Container(
+                            width: 110,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60.0),
                                 boxShadow: const [
@@ -153,7 +154,7 @@ class _MainPageState extends State<MainPage> {
                                       offset: Offset(4.0, 5.0))
                                 ]),
                             child: LiteRollingSwitch(
-                                width: 150.0,
+                                width: 110.0,
                                 value: false,
                                 textOn: 'Disponible',
                                 textOff: 'No disponible',
