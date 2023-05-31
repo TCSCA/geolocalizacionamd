@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 
 class RenewPasswordPage extends StatelessWidget {
   const RenewPasswordPage({Key? key}) : super(key: key);
@@ -17,13 +18,27 @@ class RenewPasswordPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    height: 200,
-                    child: Image.asset(
-                      'assets/images/telemedicina24_logo_blanco_lineal.png',
-                      width: 370,
-                      height: 90,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                              height: 100,
+                              child: const Icon(Icons.arrow_back_ios, color: Colors.white,)),
+                        ),
+                      ),
+                      Container(
+                        height: 200,
+                        child: Image.asset(
+                          'assets/images/telemedicina24_logo_blanco_lineal.png',
+                          width: 300,
+                          height: 90,
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
                     height: 200,
@@ -44,6 +59,49 @@ class RenewPasswordPage extends StatelessWidget {
                     ),
                   ),
                   Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            elevation: 5,
+                            side: const BorderSide(
+                                width: 2, color: Color(0xffFFFFFF)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30))),
+                        onPressed: () {
+                          /*if (!loginFormKey.currentState!.validate()) {
+                            return;
+                          } else {
+                            final String languageCode =
+                                context.localization.languageCode;
+                            BlocProvider.of<LoginBloc>(context).add(
+                                ProcessLoginEvent(userController.text,
+                                    passwordController.text, languageCode));
+                          }*/
+                        },
+                        child: Ink(
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [
+                                Color(0xffF96352),
+                                Color(0xffD84835)
+                              ]),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 40),
+                            child: const Text(
+                              'Renovar',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 19.0,
+                                  color: Color(0xffFFFFFF),
+                                  fontFamily: 'TitlesHighlight',
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ))
+                  /*Container(
                     decoration: BoxDecoration(color: Colors.orange),
                     child: MaterialButton(
                       minWidth: double.infinity * 0.1,
@@ -54,7 +112,7 @@ class RenewPasswordPage extends StatelessWidget {
                             color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  )
+                  )*/
                 ],
               ),
             ),
@@ -76,9 +134,9 @@ class _BackgroundStyle extends CustomPainter {
 
     final path = Path();
 
-    path.moveTo(0, size.height * 0.5);
+    path.moveTo(0, size.height * 0.45);
     path.quadraticBezierTo(
-        size.width * 0.5, size.height * 0.5, size.width, size.height * 0.7);
+        size.width * 0.7, size.height * 0.45, size.width, size.height * 0.7);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
 
