@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/sources/renew_password/renew_password_page.dart';
 import 'package:go_router/go_router.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
@@ -26,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       GlobalKey<FormFieldState>();
   final TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,6 +208,23 @@ class _LoginPageState extends State<LoginPage> {
                             }
                             return null;
                           }),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      width: double.infinity,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RenewPasswordPage()));
+                        },
+                        child: Text(
+                          '¿Olvidate tu contraseña?',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 30.0),
                     Container(
