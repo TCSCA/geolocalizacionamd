@@ -9,6 +9,7 @@ import 'get_amd_pending.dart';
 
 class ConsultDataServiceImp implements GetAmdPendingService {
 
+  @override
   Future<AmdPendingMap?> doGetAmdPending() async {
     const headerLogger = 'ListsService.getMenu';
     Map<String, dynamic> decodeResp;

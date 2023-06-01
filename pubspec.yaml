@@ -79,6 +79,7 @@ flutter:
      - assets/images/
      - assets/data/menu_opts.json
      - assets/data/amd_pending.json
+     - assets/data/renew_password.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

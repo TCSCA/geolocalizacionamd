@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:geolocalizacionamd/app/core/controllers/amd_pending_controller.dart';
 import 'package:geolocalizacionamd/app/core/models/amd_pending_model.dart';
 
-import '../../../../api/mappings/amd_pending_mapping.dart';
 import '../../../../errors/error_app_exception.dart';
 import '../../../../errors/error_general_exception.dart';
 import '../../../constants/app_constants.dart';
