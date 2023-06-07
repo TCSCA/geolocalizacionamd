@@ -21,8 +21,14 @@ class RenewPasswordBloc extends Bloc<RenewPasswordEvent, RenewPasswordState> {
       try {
         emit(IsLoadingState());
         renewPasswordModel =
-            await renewPasswordController.doRenewPassword(event.email);
-        emit(SuccessRenewPassword(renewPasswordModel: renewPasswordModel!));
+            await renewPasswordController.doRenewPassword(event.username);
+
+        if( renewPasswordModel?.status == 'SUCCESS' ) {
+          emit(SuccessRenewPassword(renewPasswordModel: renewPasswordModel!));
+        } else if(renewPasswordModel?.status == 'ERROR') {
+          emit(ErrorRenewPasswordState(messageError: renewPasswordModel!.data));
+        }
+
       } on ErrorAppException catch (exapp) {
         emit(ErrorRenewPasswordState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {

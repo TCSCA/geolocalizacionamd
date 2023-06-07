@@ -5,10 +5,10 @@ abstract class RenewPasswordEvent extends Equatable {
 }
 
 class SendEmailToRenewPasswordEvent extends RenewPasswordEvent {
-  final String email;
+  final String username;
 
-  const SendEmailToRenewPasswordEvent({required this.email});
+  const SendEmailToRenewPasswordEvent({required this.username});
 
   @override
-  List<Object?> get props => [email];
+  List<Object?> get props => [username];
 }

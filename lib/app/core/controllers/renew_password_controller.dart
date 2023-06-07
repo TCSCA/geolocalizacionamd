@@ -14,16 +14,15 @@ class RenewPasswordController {
 
   final RenewPasswordService renewPasswordService = RenewPasswordServiceImp();
 
-  Future<RenewPasswordModel?> doRenewPassword(String email) async {
+  Future<RenewPasswordModel?> doRenewPassword(String username) async {
     late RenewPasswordModel renewPasswordModel;
     late RenewPasswordMap? renewPasswordMap;
     try {
-      renewPasswordMap = await renewPasswordService.doRenewPassword(email);
+      renewPasswordMap = await renewPasswordService.doRenewPassword(username);
 
       renewPasswordModel = RenewPasswordModel(
-          status: renewPasswordMap.status,
-          msg: renewPasswordMap.msg,
-          data: renewPasswordMap.data
+        status: renewPasswordMap.status!,
+        data: renewPasswordMap.data!
       );
     } on ErrorAppException {
       rethrow;

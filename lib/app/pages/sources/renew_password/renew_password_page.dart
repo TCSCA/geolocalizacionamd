@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/controllers/renew_password_controller.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/sources/renew_password/bloc/renew_password_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import 'bloc/renew_password_bloc.dart';
+import '../../../core/controllers/renew_password_controller.dart';
+import '../../../shared/dialog/custom_dialog_box.dart';
+import '../../constants/app_constants.dart';
+import '../../messages/app_messages.dart';
+import '../../routes/geoamd_route.dart';
+import '../navigation/bloc/navigation_bloc.dart';
 
 class RenewPasswordPage extends StatelessWidget {
-  const RenewPasswordPage({Key? key}) : super(key: key);
+  RenewPasswordPage({Key? key}) : super(key: key);
+
+  TextEditingController _usernameCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RenewPasswordBloc(renewPasswordController: RenewPasswordController()),
-      child: _RenewPaswordView(),
+      child: _RenewPasswordView(usernameCtrl: _usernameCtrl),
     );
   }
 }
 
-class _RenewPaswordView extends StatelessWidget {
-  TextEditingController _emailCtrl = TextEditingController();
+class _RenewPasswordView extends StatelessWidget {
+  const _RenewPasswordView({
+    super.key,
+    required TextEditingController usernameCtrl,
+  }) : _usernameCtrl = usernameCtrl;
+
+  final TextEditingController _usernameCtrl;
 
   @override
   Widget build(BuildContext context) {
@@ -28,17 +41,48 @@ class _RenewPaswordView extends StatelessWidget {
           width: double.infinity,
           child: CustomPaint(
             painter: _BackgroundStyle(),
-            child: BlocConsumer<RenewPasswordBloc, RenewPasswordState>(
-              listener: (context, state) {
-                if (state is IsLoadingState) {
-                  print('Esta Cargando la data');
-                } else if (state is SuccessRenewPassword) {
-                } else if (state is ErrorRenewPasswordState) {}
-              },
-              builder: (context, state) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                  child: Column(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              child: BlocConsumer<RenewPasswordBloc, RenewPasswordState>(
+                listener: (context, state) {
+                  if (state is IsLoadingState) {} else
+                  if (state is SuccessRenewPassword) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: AppMessages().getMessageTitle(
+                                context, AppConstants.statusWarning),
+                            descriptions: AppMessages().getMessage(
+                                context, state.renewPasswordModel.data),
+                            isConfirmation: false,
+                            dialogAction: () {
+                                //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RenewPasswordPage()));
+                            },
+                            type: AppConstants.statusError,
+                          );
+                        });
+                  } else
+                  if (state is ErrorRenewPasswordState) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: AppMessages().getMessageTitle(
+                                context, AppConstants.statusWarning),
+                            descriptions: AppMessages().getMessage(
+                                context, state.messageError),
+                            isConfirmation: false,
+                            dialogAction: () {},
+                            type: AppConstants.statusError,
+                          );
+                        });
+                  }
+                },
+                builder: (context, state) {
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -69,7 +113,7 @@ class _RenewPaswordView extends StatelessWidget {
                       ),
                       Container(
                         height: 200,
-                        child: Text(
+                        child: const Text(
                           "Recuperar Contraseña",
                           style: TextStyle(
                               color: Colors.white,
@@ -80,55 +124,74 @@ class _RenewPaswordView extends StatelessWidget {
                       Expanded(
                         child: Center(
                           child: TextField(
-                            keyboardType: TextInputType.emailAddress,
-                            controller: _emailCtrl,
+                            controller: _usernameCtrl,
                             decoration: const InputDecoration(
-                                icon: Icon(Icons.email), hintText: "Correo"),
+                                icon:  Icon(Icons.person), hintText: "Usuaro"),
                           ),
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              elevation: 5,
-                              side: const BorderSide(
-                                  width: 2, color: Color(0xffFFFFFF)),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30))),
-                          onPressed: () {
-                            context.read<RenewPasswordBloc>().add(
-                                SendEmailToRenewPasswordEvent(
-                                    email: _emailCtrl.text));
-                          },
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(colors: [
-                                  Color(0xffF96352),
-                                  Color(0xffD84835)
-                                ]),
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 40),
-                              child: const Text(
-                                'Renovar',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 19.0,
-                                    color: Color(0xffFFFFFF),
-                                    fontFamily: 'TitlesHighlight',
-                                    fontWeight: FontWeight.bold),
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                elevation: 5,
+                                side: const BorderSide(
+                                    width: 2, color: Color(0xffFFFFFF)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30))),
+                            onPressed: () {
+                              context.read<RenewPasswordBloc>().add(
+                                  SendEmailToRenewPasswordEvent(
+                                      username: _usernameCtrl.text));
+                              /*if (!loginFormKey.currentState!.validate()) {
+                            return;
+                          } else {
+                            final String languageCode =
+                                context.localization.languageCode;
+                            BlocProvider.of<LoginBloc>(context).add(
+                                ProcessLoginEvent(userController.text,
+                                    passwordController.text, languageCode));
+                          }*/
+                            },
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  gradient: const LinearGradient(colors: [
+                                    Color(0xffF96352),
+                                    Color(0xffD84835)
+                                  ]),
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 40),
+                                child: const Text(
+                                  'Renovar',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 19.0,
+                                      color: Color(0xffFFFFFF),
+                                      fontFamily: 'TitlesHighlight',
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          ))
+                      /*Container(
+                    decoration: BoxDecoration(color: Colors.orange),
+                    child: MaterialButton(
+                      minWidth: double.infinity * 0.1,
+                      onPressed: () {},
+                      child: Text(
+                        'Renovar',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
+                    ),
+                  )*/
                     ],
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           )),
     );

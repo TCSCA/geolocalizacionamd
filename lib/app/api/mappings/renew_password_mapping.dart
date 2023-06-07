@@ -9,36 +9,30 @@ RenewPasswordMap renewPasswordMapFromJson(String str) => RenewPasswordMap.fromJs
 String renewPasswordMapToJson(RenewPasswordMap data) => json.encode(data.toJson());
 
 class RenewPasswordMap {
-  String status;
-  String msg;
-  List<dynamic> data;
+  String? status;
+  String? data;
 
   RenewPasswordMap({
-    required this.status,
-    required this.msg,
-    required this.data,
+    this.status,
+    this.data,
   });
 
   RenewPasswordMap copyWith({
     String? status,
-    String? msg,
-    List<dynamic>? data,
+    String? data,
   }) =>
       RenewPasswordMap(
         status: status ?? this.status,
-        msg: msg ?? this.msg,
         data: data ?? this.data,
       );
 
   factory RenewPasswordMap.fromJson(Map<String, dynamic> json) => RenewPasswordMap(
     status: json["status"],
-    msg: json["msg"],
-    data: List<dynamic>.from(json["data"].map((x) => x)),
+    data: json["data"],
   );
 
   Map<String, dynamic> toJson() => {
     "status": status,
-    "msg": msg,
-    "data": List<dynamic>.from(data.map((x) => x)),
+    "data": data,
   };
 }
