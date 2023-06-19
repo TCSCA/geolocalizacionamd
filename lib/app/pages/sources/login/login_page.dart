@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/renew_password/renew_password_page.dart';
+import 'package:geolocalizacionamd/app/shared/dialog/dialog_personalizate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/app/pages/constants/app_constants.dart';
@@ -12,6 +14,7 @@ import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 import 'bloc/login_bloc.dart';
 
@@ -30,8 +33,13 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  bool _visiblePassword = false;
+  bool _visiblePasswordOff = true;
   bool? _userRemenber = false;
+  bool fingerPrintActivated = false;
+  String? userNameSave = '';
+  bool denyFingerPrint = false;
+  bool deviceSupportFingerPrint = false;
+  final auth= LocalAuthentication();
 
   @override
   void initState() {
@@ -63,12 +71,35 @@ class _LoginPageState extends State<LoginPage> {
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 
-              final bool? userSave = prefs.getBool('userSave');
+              /// final bool? userSave = prefs.getBool('userSave');
+              if (_userRemenber!) {
+                if (fingerPrintActivated && deviceSupportFingerPrint &&
+                    !denyFingerPrint && prefs.getString('user_key') == null ) {
+                  bool option = await dialogBuilder(
+                      context: context,
+                      title: 'Uso de huella',
+                      description: '¿Deseas usar huella para iniciar sesion mas rapido?',
+                      type: AppConstants.statusSuccess,
+                      buttonAccept: 'si',
+                      buttonCancel: 'no volver a preguntar');
 
-              if (userSave != null && userSave == true) {
-                await prefs.setString('user_key', userController.text.trim());
-                await prefs.setString(
-                    'password_key', passwordController.text.trim());
+                  if (option == false) {
+                    await prefs.setBool('deny_fingerPrint', true);
+                  }
+                }
+
+                if(userNameSave == '') {
+                  await prefs.setString(
+                    'user_key',
+                    userController.text.trim(),
+                  );
+                  await prefs.setString(
+                    'password_key',
+                    passwordController.text.trim(),
+                  );
+
+                  await prefs.setBool('userSave', _userRemenber!);
+                }
               }
 
               LoadingBuilder(context).hideOpenDialog();
@@ -138,8 +169,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     // ),
                     const SizedBox(height: 30.0),
+
+                    /// Valida que el swicht este en true para mostrar el Container()
                     if (_userRemenber! &&
-                        userNameSave != null &&
                         userNameSave != '')
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -153,7 +185,9 @@ class _LoginPageState extends State<LoginPage> {
                               fontFamily: 'TitlesHighlight'),
                         ),
                       ),
-                    if (userNameSave == null || userNameSave == '')
+
+                    ///Container que muestra el inputText que esta validado para recordar usuario ///
+                    if (userNameSave == '')
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
@@ -204,22 +238,22 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             }),
                       ),
-                   // const SizedBox(height: 20.0),
+                    // const SizedBox(height: 20.0),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextFormField(
                           key: passwordFieldKey,
                           controller: passwordController,
                           keyboardType: TextInputType.text,
-                          obscureText: _visiblePassword,
+                          obscureText: _visiblePasswordOff,
                           decoration: InputDecoration(
                               suffixIcon: IconButton(
                                 onPressed: () {
-                                  _visiblePassword = !_visiblePassword;
+                                  _visiblePasswordOff = !_visiblePasswordOff;
                                   setState(() {});
                                 },
                                 icon: Icon(
-                                  !_visiblePassword
+                                  _visiblePasswordOff
                                       ? Icons.visibility_off
                                       : Icons.visibility,
                                   color: Colors.white,
@@ -285,11 +319,13 @@ class _LoginPageState extends State<LoginPage> {
                                     await SharedPreferences.getInstance();
 
                                 if (value!) {
-                                  await prefs.setBool('userSave', value);
+                                  // await prefs.setBool('userSave', value);
                                 } else {
                                   await prefs.remove('userSave');
                                   await prefs.remove('user_key');
                                   await prefs.remove('password_key');
+                                  await prefs.remove('deny_fingerPrint');
+                                  denyFingerPrint = false;
                                   userController.clear();
 
                                   userNameSave = '';
@@ -302,8 +338,10 @@ class _LoginPageState extends State<LoginPage> {
                                 const EdgeInsets.symmetric(horizontal: 20.0),
                             child: Text(
                               _userRemenber!
-                                  ? userNameSave != '' ? 'No soy $userNameSave' : 'Recordar Contraseña'
-                                  : 'Recordar Contraseña',
+                                  ? userNameSave != ''
+                                      ? 'No soy $userNameSave'
+                                      : 'Recordar usuario'
+                                  : 'Recordar usuario',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -386,7 +424,9 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          if (fingerPrintTrue)
+                          if (fingerPrintActivated &&
+                              !denyFingerPrint &&
+                              (userNameSave != null && userNameSave != '') && deviceSupportFingerPrint)
                             Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -405,16 +445,19 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.all(0),
                                 alignment: Alignment.center,
                                 onPressed: () async {
-                                  final valuee = await LocalAuthentication()
-                                      .getAvailableBiometrics();
+                                /*  final valuee = await LocalAuthentication()
+                                      .getAvailableBiometrics();*/
 
-                                  final valueeee = BiometricType.fingerprint;
+                                //  final valueeee = BiometricType.fingerprint;
                                   final SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
 
                                   try {
                                     final bool authenticate =
-                                        await LocalAuthentication().authenticate(
+                                        await auth.authenticate(
+                                          options: const AuthenticationOptions(
+                                            biometricOnly: true
+                                          ),
                                             localizedReason:
                                                 "por favor coloque la huella en el sensor");
 
@@ -427,9 +470,44 @@ class _LoginPageState extends State<LoginPage> {
                                             prefs.getString('password_key')!,
                                             languageCode),
                                       );
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return CustomDialogBox(
+                                              title: AppMessages()
+                                                  .getMessageTitle(context, AppConstants.statusError),
+                                              descriptions:
+                                              AppMessages().getMessage(context, 'Huella erronea'),
+                                              isConfirmation: false,
+                                              dialogAction: () {},
+                                              type: AppConstants.statusError,
+                                            );
+                                          });
                                     }
-                                  } catch (err) {
-                                    rethrow;
+                                  } on PlatformException catch (e) {
+                                    if (e.code == auth_error.notAvailable) {
+                                      // Add handling of no hardware here.
+                                    } else if (e.code == auth_error.notEnrolled) {
+                                      // ...
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return CustomDialogBox(
+                                              title: AppMessages()
+                                                  .getMessageTitle(context, AppConstants.statusError),
+                                              descriptions:
+                                              AppMessages().getMessage(context, 'se han realizados muchos intentos, por favor espere 30 segundos y vuelva a intentar'),
+                                              isConfirmation: false,
+                                              dialogAction: () {},
+                                              type: AppConstants.statusError,
+                                            );
+                                          });
+                                      // ...
+                                    }
                                   }
                                 },
                                 icon: const Icon(
@@ -470,25 +548,36 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  /// metodo para iniciar las variable en la vista ///
   initSessionUserSave() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    fingerPrintTrue = await LocalAuthentication().canCheckBiometrics;
+    deviceSupportFingerPrint = await auth.isDeviceSupported();
 
+    /// se valida el fingerPrint esta en true
+    fingerPrintActivated = await auth.canCheckBiometrics;
+
+    final authType = await auth.getAvailableBiometrics();
+
+    final authenticateType = await auth.getAvailableBiometrics();
+    
+    final fingerPrint = authenticateType.contains(BiometricType.fingerprint);
+
+    /// verifica el check de recoder usuario esta en true o false ///
     final bool? userSave = prefs.getBool('userSave');
     if (userSave != null && userSave == true) {
       _userRemenber = prefs.getBool('userSave');
       userController = TextEditingController(
         text: prefs.getString('user_key'),
       );
-
-      userNameSave = prefs.getString('user_key');
-      setState(() {});
     }
-  }
 
-  bool fingerPrintTrue = false;
-  String? userNameSave = '';
+    /// se guarda el nombre de usuario en la variable que muestra el Container de Bienvenido
+    userNameSave = prefs.getString('user_key') ?? '';
+
+    denyFingerPrint = prefs.getBool('deny_fingerPrint') ?? false;
+    setState(() {});
+  }
 
   @override
   void dispose() {
