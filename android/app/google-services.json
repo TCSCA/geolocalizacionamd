@@ -1,0 +1,190 @@
+{
+  "project_info": {
+    "project_number": "803005100742",
+    "project_id": "fir-pushnotification-dd17d",
+    "storage_bucket": "fir-pushnotification-dd17d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803005100742:android:a41790e6ae291aa4ad9dc7",
+        "android_client_info": {
+          "package_name": "com.example.background_plane"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgwSQGnUmPd-OwZOruaLOK43zhEW1wfQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803005100742-03ed9gtcp5da343s4shded69bko8ogch.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ve.com.tcs.platform.telemedicina24"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803005100742:android:07b345d9c4b45483ad9dc7",
+        "android_client_info": {
+          "package_name": "com.example.geolocalizacionamd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgwSQGnUmPd-OwZOruaLOK43zhEW1wfQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803005100742-03ed9gtcp5da343s4shded69bko8ogch.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ve.com.tcs.platform.telemedicina24"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803005100742:android:f7aafc7f8fe27092ad9dc7",
+        "android_client_info": {
+          "package_name": "com.example.notification_example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgwSQGnUmPd-OwZOruaLOK43zhEW1wfQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803005100742-03ed9gtcp5da343s4shded69bko8ogch.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ve.com.tcs.platform.telemedicina24"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803005100742:android:4fef2cb4e01bd3f8ad9dc7",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgwSQGnUmPd-OwZOruaLOK43zhEW1wfQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803005100742-03ed9gtcp5da343s4shded69bko8ogch.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ve.com.tcs.platform.telemedicina24"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803005100742:android:9a7ab58f45a42712ad9dc7",
+        "android_client_info": {
+          "package_name": "ve.com.tcs.platform.telemedicina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgwSQGnUmPd-OwZOruaLOK43zhEW1wfQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803005100742-431voemqb94fnhh5l5fo3qhmu99q3ngb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803005100742-03ed9gtcp5da343s4shded69bko8ogch.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ve.com.tcs.platform.telemedicina24"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,37 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "idHomeService": 1,
+    "idMedicalOrder": 1354,
+    "orderNumber": "CS000496",
+    "registerDate": {
+      "dateTime": {
+        "date": {
+          "year": 2023,
+          "month": 5,
+          "day": 12
+        },
+        "time": {
+          "hour": 11,
+          "minute": 14,
+          "second": 8,
+          "nano": 277660000
+        }
+      },
+      "offset": {
+        "totalSeconds": -14400
+      }
+    },
+    "fullNamePatient": "Nandy Da Costa Benitez",
+    "documentType": "V",
+    "identificationDocument": "11049000",
+    "phoneNumberPatient": "4141188381",
+    "address": "Venezuela, Zulia, Maracaibo, Calle 61 Casa #2 Al lado de la Fabrica de Avisos",
+    "latitude": "10.696",
+    "longitude": "-71.662",
+    "applicantDoctor": "Nandy Da Costa Doc",
+    "phoneNumberDoctor": "4141188381",
+    "typeService": "AMD",
+	"linkAmd":"https://www.google.com/"
+  }
+}

@@ -5,11 +5,13 @@ import '/app/pages/constants/app_constants.dart';
 import '/app/extensions/localization_ext.dart';
 
 typedef DialogAction = Function();
+typedef DialogCancel = Function();
 
 class CustomDialogBox extends StatefulWidget {
   final String title, descriptions, type;
-  final bool isConfirmation;
+  final bool isConfirmation, isdialogCancel;
   final DialogAction dialogAction;
+  final DialogCancel dialogCancel;
 
   const CustomDialogBox(
       {Key? key,
@@ -17,7 +19,9 @@ class CustomDialogBox extends StatefulWidget {
       required this.descriptions,
       required this.isConfirmation,
       required this.dialogAction,
-      required this.type})
+      required this.type,
+      required this.dialogCancel,
+      required this.isdialogCancel})
       : super(key: key);
 
   @override
@@ -100,7 +104,12 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                                           .withOpacity(0.4))),
                             )),
                         onPressed: () {
-                          context.pop(); //Navigator.of(context).pop();
+                          if (widget.isdialogCancel) {
+                            context.pop();
+                            widget.dialogCancel.call();
+                          } else {
+                            context.pop();
+                          }
                         },
                         child: Text(
                           context.appLocalization.nameButtonCancel,

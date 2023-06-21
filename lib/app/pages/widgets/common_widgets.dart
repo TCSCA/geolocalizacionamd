@@ -1,90 +1,129 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/core/models/menu_model.dart';
-import 'package:geolocalizacionamd/app/core/models/user_model.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
+import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
+import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
 import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/styles/app_styles.dart';
 import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
+import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
 import 'package:go_router/go_router.dart';
 
 class AppCommonWidgets {
-  static Drawer generateMenu({required BuildContext context}) {
-    final List<MenuModel> opcionesMenu =
-        BlocProvider.of<LoginBloc>(context).listMenu;
-    return Drawer(
-      child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-        final user = (state as LoginSuccessState).user;
-        return ListView(
-          padding: EdgeInsets.zero,
-          children: _getInfoMenu(context, opcionesMenu, user),
-        );
-      }),
+  static PreferredSizeWidget generateAppBar(
+      {required BuildContext context, required double appBarHeight}) {
+    final int currentIndex =
+        BlocProvider.of<NavigationBloc>(context).currentIndex;
+    final List<MenuModel> lista = BlocProvider.of<LoginBloc>(context).listMenu;
+    final String menuOpTitle = lista[currentIndex].descripcion;
+    return AppBar(
+      elevation: 0.0,
+      backgroundColor: const Color(0xff2B5178),
+      toolbarHeight: appBarHeight > 0 ? appBarHeight : 56.0,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //const SizedBox(height: 50.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                  child: Image.asset(
+                AppConstants.logoImageWhite,
+                width: 270,
+                height: 90,
+              )),
+              IconButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      //isDismissible: false,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20))),
+                      builder: (context) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: AppCommonWidgets.generateMenuInfo(
+                                context: context),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.menu,
+                    size: 35.0,
+                    color: Colors.white,
+                  ))
+            ],
+          ),
+          const SizedBox(
+            height: 5.0,
+          ),
+          Row(
+            children: [
+              //const Icon(FontAwesomeIcons.houseMedical, color: Colors.white),
+              const SizedBox(
+                width: 10.0,
+              ),
+              Text(
+                menuOpTitle,
+                style: const TextStyle(fontSize: 20.0, color: Colors.white),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
-  static List<Widget> _getInfoMenu(
-      BuildContext context, List<MenuModel> opcionesMenu, UserModel datosUser) {
-    List<Widget> listaMenu = [], listaSubMenu = [];
-    UserAccountsDrawerHeader infoUser;
+  static List<Widget> generateMenuInfo({required BuildContext context}) {
+    List<Widget> listaMenu = [];
     late Widget opcionMenu;
+    final List<MenuModel> opcionesMenu =
+        BlocProvider.of<LoginBloc>(context).listMenu;
 
-    infoUser = UserAccountsDrawerHeader(
-      accountName: Text(datosUser.name, style: AppStyles.textStyleMenuUser),
-      accountEmail: const Text("", style: AppStyles.textStyleMenuUser),
-      currentAccountPicture: const CircleAvatar(
-        backgroundImage: AssetImage(AppConstants.profileDefaultImage),
-      ),
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(AppConstants.backgroundHeaderMenuImage),
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
-    listaMenu.add(infoUser);
+    listaMenu.add(Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Text(
+          "MENÚ DE OPCIONES",
+          style: TextStyle(
+              fontStyle: FontStyle.italic,
+              letterSpacing: 0.4,
+              fontWeight: FontWeight.w600),
+        )
+      ],
+    ));
 
     for (var index = 0; index < opcionesMenu.length; index++) {
       var opcion = opcionesMenu[index];
-      listaSubMenu = [];
-
-      listaSubMenu = _getSubMenu(context, opcion, opcionesMenu);
-
-      if (opcion.parent == 0) {
-        if (listaSubMenu.isEmpty) {
-          opcionMenu = ListTile(
-            onTap: () {
-              context.pop();
-              BlocProvider.of<NavigationBloc>(context).add(
-                  NavigationPageEvent(page: index, pagesMenu: opcionesMenu));
-            },
-            leading: getIcon(opcion.icon),
-            horizontalTitleGap: 0.0,
-            title: Text(
-              opcion.descripcion,
-              style: AppStyles.textStyleMenuDynamic,
-            ),
-            hoverColor: AppStyles.colorRedPrimary,
-          );
-        } else {
-          opcionMenu = ListTileTheme(
-              horizontalTitleGap: 0.0,
-              dense: true,
-              child: ExpansionTile(
-                leading: getIcon(opcion.icon),
-                title: Text(opcion.descripcion,
-                    style: AppStyles.textStyleMenuDynamic),
-                childrenPadding: const EdgeInsets.only(left: 20.0),
-                children: listaSubMenu,
-              ));
-        }
-
-        listaMenu.add(opcionMenu);
-      }
+      opcionMenu = ListTile(
+        onTap: () {
+          context.pop();
+          BlocProvider.of<NavigationBloc>(context)
+              .add(NavigationPageEvent(page: index, pagesMenu: opcionesMenu));
+        },
+        leading: getIcon(opcion.icon),
+        horizontalTitleGap: 0.0,
+        title: Text(
+          opcion.descripcion,
+          style: AppStyles.textStyleMenuDynamic,
+        ),
+        hoverColor: AppStyles.colorRedPrimary,
+      );
+      listaMenu.add(opcionMenu);
     }
-//Opcion Menu cerrar sesion
+
+    //Opcion Menu cerrar sesion
     opcionMenu = ListTile(
       onTap: () {
         context.pop();
@@ -93,13 +132,14 @@ class AppCommonWidgets {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return CustomDialogBox(
-                title: context.appLocalization.titleWarning,
-                descriptions: context.appLocalization.messageLogout,
-                isConfirmation: true,
-                dialogAction: () => BlocProvider.of<LoginBloc>(context)
-                    .add(const ProcessLogoutEvent()),
-                type: AppConstants.statusWarning,
-              );
+                  title: context.appLocalization.titleWarning,
+                  descriptions: context.appLocalization.messageLogout,
+                  isConfirmation: true,
+                  dialogAction: () => BlocProvider.of<LoginBloc>(context)
+                      .add(const ProcessLogoutEvent()),
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {});
             });
       },
       leading: getIcon('logout'),
@@ -109,11 +149,12 @@ class AppCommonWidgets {
       hoverColor: AppStyles.colorRedPrimary,
     );
     listaMenu.add(opcionMenu);
-//Opcion Menu Acerca de app
+
     listaMenu.add(Column(
       children: [
         const Divider(),
-        ListTile(
+//Opcion Menu Acerca de app
+        /* ListTile(
           onTap: () {
             context.pop();
           },
@@ -123,7 +164,7 @@ class AppCommonWidgets {
               style: AppStyles.textStyleMenuStatic),
           hoverColor: AppStyles.colorRedPrimary,
           focusColor: AppStyles.colorRedPrimary,
-        ),
+        ), */
 //Opcion Cerrar menu
         ListTile(
           onTap: () {
@@ -144,36 +185,79 @@ class AppCommonWidgets {
     return listaMenu;
   }
 
-  static List<Widget> _getSubMenu(
-      BuildContext context, MenuModel opcion, List<MenuModel> subOpcionesMenu) {
-    List<Widget> listaSubMenu = [];
-    Widget opcionSubMenu;
-
-    for (var subIndex = 0; subIndex < subOpcionesMenu.length; subIndex++) {
-      var subOpcion = subOpcionesMenu[subIndex];
-
-      if (opcion.id == subOpcion.parent) {
-        opcionSubMenu = ListTile(
-          onTap: () {
-            context.pop();
-            BlocProvider.of<NavigationBloc>(context).add(NavigationPageEvent(
-                page: subIndex, pagesMenu: subOpcionesMenu));
-          },
-          title: Text(
-            subOpcion.descripcion,
-            style: AppStyles.textStyleMenuDynamic,
-          ),
-          leading: getIcon(subOpcion.icon),
-        );
-        listaSubMenu.add(opcionSubMenu);
-      }
-    }
-    return listaSubMenu;
-  }
-
   static Icon getIcon(String nombreIcono) {
     return Icon(
       AppConstants.iconsMenu[nombreIcono],
     );
+  }
+
+  static BlocListener listenerNavigationBloc() {
+    return BlocListener<NavigationBloc, NavigationState>(
+        listener: (context, state) {
+      if (state is NavigationCurrentChangedState) {
+        context.go(state.currentPage.routeName);
+      }
+    });
+  }
+
+  static BlocListener listenerLogoutBloc() {
+    return BlocListener<LoginBloc, LoginState>(listener: (context, state) {
+      if (state is LoginShowLoadingState) {
+        LoadingBuilder(context)
+            .showLoadingIndicator(context.appLocalization.titleLogoutLoading);
+      }
+      if (state is LogoutSuccessState) {
+        LoadingBuilder(context).hideOpenDialog();
+        context.go(GeoAmdRoutes.login);
+      }
+      if (state is LoginErrorState) {
+        LoadingBuilder(context).hideOpenDialog();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                title: AppMessages()
+                    .getMessageTitle(context, AppConstants.statusError),
+                descriptions: AppMessages().getMessage(context, state.message),
+                isConfirmation: false,
+                dialogAction: () {},
+                type: AppConstants.statusError,
+                isdialogCancel: false,
+                dialogCancel: () {},
+              );
+            });
+        context.go(GeoAmdRoutes.login);
+      }
+    });
+  }
+
+  static int getIndexMenu(
+      {required BuildContext context, required String routeParam}) {
+    int valor = 0;
+    final List<MenuModel> opcionesMenu =
+        BlocProvider.of<LoginBloc>(context).listMenu;
+    for (var index = 0; index < opcionesMenu.length; index++) {
+      var opcion = opcionesMenu[index];
+      if (opcion.route == routeParam) {
+        valor = index;
+        break;
+      }
+    }
+    return valor;
+  }
+
+  static void pageCurrentChanged(
+      {required BuildContext context, required String routeParam}) {
+    final List<MenuModel> opcionesMenu =
+        BlocProvider.of<LoginBloc>(context).listMenu;
+    for (var index = 0; index < opcionesMenu.length; index++) {
+      var opcion = opcionesMenu[index];
+      if (opcion.route == routeParam) {
+        BlocProvider.of<NavigationBloc>(context)
+            .add(NavigationPageEvent(page: index, pagesMenu: opcionesMenu));
+        break;
+      }
+    }
   }
 }

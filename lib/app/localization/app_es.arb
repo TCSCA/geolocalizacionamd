@@ -22,17 +22,5 @@
     "messageLogout": "¿Estás seguro de que quieres cerrar sesión?",
     "apiMsg001": "Geolocalización no se encuentra disponible. Por favor, intente más tarde.",
     "apiMsg016": "Usuario y/o contraseña incorrecta.",
-    "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?",
-    "direction": "Dirección",
-    "state": "Estado",
-    "city": "Ciudad",
-    "address": "Dirección",
-    "date": "Fecha",
-    "orderNumber": "Numero de orden",
-    "patientNumber": "Nombre del paciente",
-    "idDocumentation": "Cédula de identidad",
-    "patientPhone": "Número de teléfono",
-    "doctorName":  "Nombre del doctor",
-    "doctorPhone": "Telefono del doctor",
-    "serviceType": "Tipo de servicio"
+    "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?"
 }
