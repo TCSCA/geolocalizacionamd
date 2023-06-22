@@ -15,6 +15,10 @@ import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_ios/local_auth_ios.dart';
+import 'package:local_auth/error_codes.dart' as authError;
+
 import 'bloc/login_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -83,25 +87,26 @@ class _LoginPageState extends State<LoginPage> {
                 await prefs.setBool('checkUserSave', checkUserSave);
 
                 if (!isNotPermanentlyDenied) {
-                  await showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return CustomDialogBox(
-                          title: AppMessages().getMessageTitle(
-                              context, AppConstants.statusSuccess),
-                          descriptions: AppMessages().getMessage(context,
-                              '¿Deseas usar la huella para inicia mas rapido?'),
-                          isConfirmation: true,
-                          dialogAction: () =>
-                              {prefs.setBool('isNotPermanentlyDenied', true)},
-                          type: AppConstants.statusSuccess,
-                          isdialogCancel: false,
-                          dialogCancel: () {
-                            prefs.setBool('isNotPermanentlyDenied', false);
-                          },
-                        );
-                      });
+                  if (_canCheckBiometric)
+                    await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: AppMessages().getMessageTitle(
+                                context, AppConstants.statusSuccess),
+                            descriptions: AppMessages().getMessage(context,
+                                '¿Deseas usar la huella para inicia mas rapido?'),
+                            isConfirmation: true,
+                            dialogAction: () =>
+                                {prefs.setBool('isNotPermanentlyDenied', true)},
+                            type: AppConstants.statusSuccess,
+                            isdialogCancel: false,
+                            dialogCancel: () {
+                              prefs.setBool('isNotPermanentlyDenied', false);
+                            },
+                          );
+                        });
                 }
               }
 
@@ -327,6 +332,11 @@ class _LoginPageState extends State<LoginPage> {
                                 checkUserSave = value!;
 
                                 if (checkUserSave == false) {
+                                  if (userSave != '') {
+                                    userController.clear();
+                                    passwordController.clear();
+                                  }
+
                                   await prefs.remove('userSave');
                                   await prefs.remove('checkUserSave');
                                   await prefs.remove('isNotPermanentlyDenied');
@@ -334,10 +344,6 @@ class _LoginPageState extends State<LoginPage> {
                                   userSave = '';
                                 }
 
-                                if (userSave != '') {
-                                  userController.clear();
-                                  passwordController.clear();
-                                }
                                 setState(() {});
                               }),
                           const Text(
@@ -525,22 +531,98 @@ class _LoginPageState extends State<LoginPage> {
     bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
-          localizedReason: "Coloque el dedo sobre el detector");
+          authMessages: const <AuthMessages>[
+            AndroidAuthMessages(
+              cancelButton: 'Cancelar',
+              goToSettingsButton: '',
+              goToSettingsDescription: '',
+              biometricNotRecognized:
+                  'La huella dactilar es incorrecta, por favor intente nuevamente',
+              biometricSuccess: '',
+              biometricHint: '',
+              biometricRequiredTitle: '',
+              signInTitle: 'Autenticación Biométrica',
+            ),
+            IOSAuthMessages(
+              cancelButton: 'Cerrar',
+              goToSettingsButton: '',
+              goToSettingsDescription: '',
+              lockOut:
+                  'Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.',
+              localizedFallbackTitle: '',
+            ),
+          ],
+          localizedReason: "Coloque el dedo sobre el detector",
+          options: const AuthenticationOptions(
+            useErrorDialogs: false,
+            biometricOnly: true,
+            stickyAuth: true,
+          ));
 
-      if(authenticated) {
-        final String languageCode =
-            context.localization.languageCode;
+      if (authenticated) {
+        final String languageCode = context.localization.languageCode;
 
-        BlocProvider.of<LoginBloc>(context).add(
-            ProcessLoginEvent(
-                userSave,
-                prefs.getString('password')!,
-                languageCode));
+        BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
+            userSave, prefs.getString('password')!, languageCode));
       } else {
         print('ERROR');
       }
     } on PlatformException catch (e) {
-      print(e);
+      /// _authorized = "Error - ${e.code}";
+      e.code == 'LockedOut'
+          ? showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions: AppMessages().getMessage(context,
+                      'Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.'),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              })
+          : e.code == authError.notAvailable
+              ? showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions: AppMessages().getMessage(context,
+                          'Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad'),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  })
+              : e.code == 'NoHardware' || e.code == 'NotEnrolled'
+                  ? showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomDialogBox(
+                          title: AppMessages().getMessageTitle(
+                              context, AppConstants.statusError),
+                          descriptions: AppMessages().getMessage(context,
+                              'Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad'),
+                          isConfirmation: false,
+                          dialogAction: () {},
+                          type: AppConstants.statusError,
+                          isdialogCancel: false,
+                          dialogCancel: () {},
+                        );
+                      })
+                  : print('');
+
+      // logger.e("😢 Error loger show ${e.code}");
     }
     setState(() {});
   }
@@ -553,6 +635,10 @@ class _LoginPageState extends State<LoginPage> {
 
     userController = TextEditingController(text: userSave);
     setState(() {});
+  }
+
+  _callShowDialog() {
+
   }
 }
 

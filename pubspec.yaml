@@ -53,6 +53,7 @@ dependencies:
   geocoding: ^2.1.0
   local_auth: ^2.1.6
   shared_preferences: ^2.1.2
+  local_auth_android: ^1.0.32
 
 dev_dependencies:
   flutter_test:
