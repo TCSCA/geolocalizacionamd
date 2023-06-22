@@ -334,8 +334,9 @@ class _LoginPageState extends State<LoginPage> {
                                   userSave = '';
                                 }
 
-                                if (userSave == '') {
+                                if (userSave != '') {
                                   userController.clear();
+                                  passwordController.clear();
                                 }
                                 setState(() {});
                               }),

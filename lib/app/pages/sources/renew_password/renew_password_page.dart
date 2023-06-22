@@ -52,6 +52,7 @@ class _RenewPasswordView extends StatelessWidget {
                         barrierDismissible: false,
                         builder: (BuildContext context) {
                           return CustomDialogBox(
+                            isdialogCancel: false,
                             title: AppMessages().getMessageTitle(
                                 context, AppConstants.statusWarning),
                             descriptions: AppMessages().getMessage(
@@ -61,6 +62,7 @@ class _RenewPasswordView extends StatelessWidget {
                                 //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RenewPasswordPage()));
                             },
                             type: AppConstants.statusError,
+                            dialogCancel: () {},
                           );
                         });
                   } else
@@ -70,6 +72,7 @@ class _RenewPasswordView extends StatelessWidget {
                         barrierDismissible: false,
                         builder: (BuildContext context) {
                           return CustomDialogBox(
+                            isdialogCancel: false,
                             title: AppMessages().getMessageTitle(
                                 context, AppConstants.statusWarning),
                             descriptions: AppMessages().getMessage(
@@ -77,6 +80,7 @@ class _RenewPasswordView extends StatelessWidget {
                             isConfirmation: false,
                             dialogAction: () {},
                             type: AppConstants.statusError,
+                            dialogCancel: () {},
                           );
                         });
                   }
