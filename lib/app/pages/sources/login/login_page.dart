@@ -49,7 +49,9 @@ class _LoginPageState extends State<LoginPage> {
   String userSave = '';
   bool checkUserSave = false;
 
-  bool isNotPermanentlyDenied = false;
+  //bool isNotPermanentlyDenied = false;
+  String denyFingerprint = '';
+  bool isUsedFingerprint = false;
 
   @override
   void initState() {
@@ -83,10 +85,13 @@ class _LoginPageState extends State<LoginPage> {
               ///final SharedPreferences prefs = await SharedPreferences.getInstance();
               if (checkUserSave) {
                 await prefs.setString('userSave', userController.text);
-                await prefs.setString('password', passwordController.text);
+
                 await prefs.setBool('checkUserSave', checkUserSave);
 
-                if (!isNotPermanentlyDenied) {
+                if (!isUsedFingerprint)
+                  await prefs.setString('password', passwordController.text);
+
+                if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
                   if (_canCheckBiometric)
                     await showDialog(
                         context: context,
@@ -99,12 +104,11 @@ class _LoginPageState extends State<LoginPage> {
                                 '¿Deseas usar la huella para inicia mas rapido?'),
                             isConfirmation: true,
                             dialogAction: () =>
-                                {prefs.setBool('isNotPermanentlyDenied', true)},
+                                prefs.setString('denyFingerprint', 'Y'),
                             type: AppConstants.statusSuccess,
-                            isdialogCancel: false,
-                            dialogCancel: () {
-                              prefs.setBool('isNotPermanentlyDenied', false);
-                            },
+                            isdialogCancel: true,
+                            dialogCancel: () =>
+                                prefs.setString('denyFingerprint', 'N'),
                           );
                         });
                 }
@@ -339,9 +343,10 @@ class _LoginPageState extends State<LoginPage> {
 
                                   await prefs.remove('userSave');
                                   await prefs.remove('checkUserSave');
-                                  await prefs.remove('isNotPermanentlyDenied');
+                                  await prefs.remove('denyFingerprint');
                                   await prefs.remove('password');
                                   userSave = '';
+                                  denyFingerprint = '';
                                 }
 
                                 setState(() {});
@@ -446,7 +451,7 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 30.0),
                     if (_canCheckBiometric &&
                         (prefs.getBool('checkUserSave') ?? false) &&
-                        isNotPermanentlyDenied)
+                        denyFingerprint != 'N')
                       _BiometricWidget(onTap: () => _authenticate()),
                     const SizedBox(height: 50.0),
                     InkWell(
@@ -561,7 +566,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (authenticated) {
         final String languageCode = context.localization.languageCode;
-
+        isUsedFingerprint = true;
         BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
             userSave, prefs.getString('password')!, languageCode));
       } else {
@@ -629,7 +634,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _validateUserSave() async {
     prefs = await SharedPreferences.getInstance();
-    isNotPermanentlyDenied = prefs.getBool('isNotPermanentlyDenied') ?? false;
+    denyFingerprint = prefs.getString('denyFingerprint') ?? '';
     userSave = prefs.getString('userSave') ?? '';
     checkUserSave = prefs.getBool('checkUserSave') ?? false;
 
@@ -637,9 +642,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {});
   }
 
-  _callShowDialog() {
-
-  }
+  _callShowDialog() {}
 }
 
 class _BiometricWidget extends StatelessWidget {
