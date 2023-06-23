@@ -22,5 +22,11 @@
     "messageLogout": "¿Estás seguro de que quieres cerrar sesión?",
     "apiMsg001": "Geolocalización no se encuentra disponible. Por favor, intente más tarde.",
     "apiMsg016": "Usuario y/o contraseña incorrecta.",
-    "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?"
+    "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?",
+    "changePasswordAction": "Cambiando contraseña",
+    "forgotPassword": "¿olvidaste tu contraseña?",
+    "biometricAuthentication": "Autenticación Biométrica",
+    "biometricNotSupported" : "Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad",
+    "limitBiometricAttempts": "Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.",
+    "invalidFingerprint": "La huella dactilar es incorrecta, por favor intente nuevamente."
 }

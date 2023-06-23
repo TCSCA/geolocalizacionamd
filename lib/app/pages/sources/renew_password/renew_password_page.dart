@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/sources/login/login_page.dart';
 import 'package:geolocalizacionamd/app/pages/sources/renew_password/bloc/renew_password_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,7 +20,8 @@ class RenewPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RenewPasswordBloc(renewPasswordController: RenewPasswordController()),
+      create: (context) =>
+          RenewPasswordBloc(renewPasswordController: RenewPasswordController()),
       child: _RenewPasswordView(usernameCtrl: _usernameCtrl),
     );
   }
@@ -44,45 +46,51 @@ class _RenewPasswordView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
               child: BlocConsumer<RenewPasswordBloc, RenewPasswordState>(
-                listener: (context, state) {
-                  if (state is IsLoadingState) {} else
-                  if (state is SuccessRenewPassword) {
-                    showDialog(
+                listener: (context, state) async {
+                  if (state is IsLoadingState) {
+                  } else if (state is SuccessRenewPassword) {
+                    await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (BuildContext context) {
                           return CustomDialogBox(
-                            isdialogCancel: false,
                             title: AppMessages().getMessageTitle(
                                 context, AppConstants.statusWarning),
                             descriptions: AppMessages().getMessage(
                                 context, state.renewPasswordModel.data),
                             isConfirmation: false,
-                            dialogAction: () {
-                                //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RenewPasswordPage()));
-                            },
+                            dialogAction: () {},
                             type: AppConstants.statusError,
                             dialogCancel: () {},
+                            isdialogCancel: false,
                           );
                         });
-                  } else
-                  if (state is ErrorRenewPasswordState) {
-                    showDialog(
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()));
+                  } else if (state is ErrorRenewPasswordState) {
+                    await showDialog(
                         context: context,
                         barrierDismissible: false,
                         builder: (BuildContext context) {
                           return CustomDialogBox(
-                            isdialogCancel: false,
                             title: AppMessages().getMessageTitle(
                                 context, AppConstants.statusWarning),
-                            descriptions: AppMessages().getMessage(
-                                context, state.messageError),
+                            descriptions: AppMessages()
+                                .getMessage(context, state.messageError),
                             isConfirmation: false,
                             dialogAction: () {},
                             type: AppConstants.statusError,
                             dialogCancel: () {},
+                            isdialogCancel: false,
                           );
                         });
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ),
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -130,7 +138,7 @@ class _RenewPasswordView extends StatelessWidget {
                           child: TextField(
                             controller: _usernameCtrl,
                             decoration: const InputDecoration(
-                                icon:  Icon(Icons.person), hintText: "Usuaro"),
+                                icon: Icon(Icons.person), hintText: "Usuaro"),
                           ),
                         ),
                       ),
@@ -148,15 +156,6 @@ class _RenewPasswordView extends StatelessWidget {
                               context.read<RenewPasswordBloc>().add(
                                   SendEmailToRenewPasswordEvent(
                                       username: _usernameCtrl.text));
-                              /*if (!loginFormKey.currentState!.validate()) {
-                            return;
-                          } else {
-                            final String languageCode =
-                                context.localization.languageCode;
-                            BlocProvider.of<LoginBloc>(context).add(
-                                ProcessLoginEvent(userController.text,
-                                    passwordController.text, languageCode));
-                          }*/
                             },
                             child: Ink(
                               decoration: BoxDecoration(
@@ -180,18 +179,6 @@ class _RenewPasswordView extends StatelessWidget {
                               ),
                             ),
                           ))
-                      /*Container(
-                    decoration: BoxDecoration(color: Colors.orange),
-                    child: MaterialButton(
-                      minWidth: double.infinity * 0.1,
-                      onPressed: () {},
-                      child: Text(
-                        'Renovar',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  )*/
                     ],
                   );
                 },

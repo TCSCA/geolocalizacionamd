@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../renew_password/renew_password_page.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
@@ -59,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
 
     _checkBiometric();
     _getAvailableBiometric();
-
     super.initState();
   }
 
@@ -75,119 +75,118 @@ class _LoginPageState extends State<LoginPage> {
           end: Alignment(0.25, 0.75),
         )),
         child: SafeArea(
-            child: BlocListener<LoginBloc, LoginState>(
-          listener: (context, state) async {
-            if (state is LoginShowLoadingState) {
-              LoadingBuilder(context).showLoadingIndicator(
-                  context.appLocalization.titleLoginLoading);
-            }
-            if (state is LoginSuccessState) {
-              ///final SharedPreferences prefs = await SharedPreferences.getInstance();
-              if (checkUserSave) {
-                await prefs.setString('userSave', userController.text);
-
-                await prefs.setBool('checkUserSave', checkUserSave);
-
-                if (!isUsedFingerprint)
-                  await prefs.setString('password', passwordController.text);
-
-                if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
-                  if (_canCheckBiometric)
-                    await showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return CustomDialogBox(
-                            title: AppMessages().getMessageTitle(
-                                context, AppConstants.statusSuccess),
-                            descriptions: AppMessages().getMessage(context,
-                                '¿Deseas usar la huella para inicia mas rapido?'),
-                            isConfirmation: true,
-                            dialogAction: () =>
-                                prefs.setString('denyFingerprint', 'Y'),
-                            type: AppConstants.statusSuccess,
-                            isdialogCancel: true,
-                            dialogCancel: () =>
-                                prefs.setString('denyFingerprint', 'N'),
-                          );
-                        });
-                }
+          child: BlocListener<LoginBloc, LoginState>(
+            listener: (context, state) async {
+              if (state is LoginShowLoadingState) {
+                LoadingBuilder(context).showLoadingIndicator(
+                    context.appLocalization.titleLoginLoading);
               }
+              if (state is LoginSuccessState) {
+                ///final SharedPreferences prefs = await SharedPreferences.getInstance();
+                if (checkUserSave) {
+                  await prefs.setString('userSave', userController.text);
 
-              LoadingBuilder(context).hideOpenDialog();
-              context.go(GeoAmdRoutes.home, extra: NavigationBloc());
-            }
-            if (state is LoginErrorState) {
-              LoadingBuilder(context).hideOpenDialog();
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return CustomDialogBox(
-                      title: AppMessages()
-                          .getMessageTitle(context, AppConstants.statusError),
-                      descriptions:
-                          AppMessages().getMessage(context, state.message),
-                      isConfirmation: false,
-                      dialogAction: () {},
-                      type: AppConstants.statusError,
-                      isdialogCancel: false,
-                      dialogCancel: () {},
-                    );
-                  });
-            }
-            if (state is LoginActiveState) {
-              LoadingBuilder(context).hideOpenDialog();
+                  await prefs.setBool('checkUserSave', checkUserSave);
 
-              await showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return CustomDialogBox(
-                      title: AppMessages()
-                          .getMessageTitle(context, AppConstants.statusWarning),
-                      descriptions:
-                          AppMessages().getMessage(context, state.message),
-                      isConfirmation: true,
-                      dialogAction: () => BlocProvider.of<LoginBloc>(context)
-                          .add(ProcessResetLoginEvent(
-                              userController.text,
-                              passwordController.text,
-                              context.localization.languageCode)),
-                      type: AppConstants.statusWarning,
-                      isdialogCancel: false,
-                      dialogCancel: () {},
-                    );
-                  });
-            }
-            if (state is ShowFirebaseKeyState) {
-              LoadingBuilder(context).hideOpenDialog();
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return CustomDialogBox(
-                      title: 'Firebase Device Key',
-                      descriptions: state.firebaseKey,
-                      isConfirmation: true,
-                      dialogAction: () {
-                        Clipboard.setData(
-                                ClipboardData(text: state.firebaseKey))
-                            .then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Key Copiado a tu portapapeles!')));
-                        });
-                      },
-                      type: AppConstants.statusSuccess,
-                      isdialogCancel: false,
-                      dialogCancel: () {},
-                    );
-                  });
-            }
-          },
-          child: Form(
+                  if (!isUsedFingerprint)
+                    await prefs.setString('password', passwordController.text);
+
+                  if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
+                    if (_canCheckBiometric)
+                      await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                              title: AppMessages().getMessageTitle(
+                                  context, AppConstants.statusSuccess),
+                              descriptions: AppMessages().getMessage(context,
+                                  '¿Deseas usar la huella para inicia mas rapido?'),
+                              isConfirmation: true,
+                              dialogAction: () =>
+                                  prefs.setString('denyFingerprint', 'Y'),
+                              type: AppConstants.statusSuccess,
+                              isdialogCancel: true,
+                              dialogCancel: () =>
+                                  prefs.setString('denyFingerprint', 'N'),
+                            );
+                          });
+                  }
+                }
+
+                LoadingBuilder(context).hideOpenDialog();
+                context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+              }
+              if (state is LoginErrorState) {
+                LoadingBuilder(context).hideOpenDialog();
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return CustomDialogBox(
+                        title: AppMessages()
+                            .getMessageTitle(context, AppConstants.statusError),
+                        descriptions:
+                            AppMessages().getMessage(context, state.message),
+                        isConfirmation: false,
+                        dialogAction: () {},
+                        type: AppConstants.statusError,
+                        isdialogCancel: false,
+                        dialogCancel: () {},
+                      );
+                    });
+              }
+              if (state is LoginActiveState) {
+                LoadingBuilder(context).hideOpenDialog();
+                await showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return CustomDialogBox(
+                        title: AppMessages().getMessageTitle(
+                            context, AppConstants.statusWarning),
+                        descriptions:
+                            AppMessages().getMessage(context, state.message),
+                        isConfirmation: true,
+                        dialogAction: () => BlocProvider.of<LoginBloc>(context)
+                            .add(ProcessResetLoginEvent(
+                                userController.text,
+                                passwordController.text,
+                                context.localization.languageCode)),
+                        type: AppConstants.statusWarning,
+                        isdialogCancel: false,
+                        dialogCancel: () {},
+                      );
+                    });
+              }
+              if (state is ShowFirebaseKeyState) {
+                LoadingBuilder(context).hideOpenDialog();
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return CustomDialogBox(
+                        title: 'Firebase Device Key',
+                        descriptions: state.firebaseKey,
+                        isConfirmation: true,
+                        dialogAction: () {
+                          Clipboard.setData(
+                                  ClipboardData(text: state.firebaseKey))
+                              .then((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Key Copiado a tu portapapeles!')));
+                          });
+                        },
+                        type: AppConstants.statusSuccess,
+                        isdialogCancel: false,
+                        dialogCancel: () {},
+                      );
+                    });
+              }
+            },
+            child: Form(
               key: loginFormKey,
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
@@ -445,15 +444,35 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                            )) */
+                            ),) */
                       ],
                     ),
                     const SizedBox(height: 30.0),
                     if (_canCheckBiometric &&
                         (prefs.getBool('checkUserSave') ?? false) &&
                         denyFingerprint != 'N')
-                      _BiometricWidget(onTap: () => _authenticate()),
+                      _BiometricWidget(onTap: () => _authenticate(context)),
                     const SizedBox(height: 50.0),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      //width: double.infinity,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RenewPasswordPage()));
+                        },
+                        child: Text(
+                          context.appLocalization.forgotPassword,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     InkWell(
                       onTap: () => launchUrl(
                         Uri.parse(
@@ -487,8 +506,10 @@ class _LoginPageState extends State<LoginPage> {
                     )
                   ],
                 ),
-              )),
-        )),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -532,28 +553,28 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   ///Metodo para iniciar la autenticacion biometrica
-  Future<void> _authenticate() async {
+  Future<void> _authenticate(BuildContext context) async {
     bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
-          authMessages: const <AuthMessages>[
+          authMessages:  <AuthMessages>[
             AndroidAuthMessages(
               cancelButton: 'Cancelar',
               goToSettingsButton: '',
               goToSettingsDescription: '',
               biometricNotRecognized:
-                  'La huella dactilar es incorrecta, por favor intente nuevamente',
+                  context.appLocalization.invalidFingerprint,
               biometricSuccess: '',
               biometricHint: '',
               biometricRequiredTitle: '',
-              signInTitle: 'Autenticación Biométrica',
+              signInTitle: context.appLocalization.biometricAuthentication,
             ),
             IOSAuthMessages(
               cancelButton: 'Cerrar',
               goToSettingsButton: '',
               goToSettingsDescription: '',
               lockOut:
-                  'Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.',
+                 context.appLocalization.limitBiometricAttempts,
               localizedFallbackTitle: '',
             ),
           ],
@@ -583,7 +604,7 @@ class _LoginPageState extends State<LoginPage> {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusError),
                   descriptions: AppMessages().getMessage(context,
-                      'Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.'),
+                      context.appLocalization.limitBiometricAttempts),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusError,
@@ -600,7 +621,7 @@ class _LoginPageState extends State<LoginPage> {
                       title: AppMessages()
                           .getMessageTitle(context, AppConstants.statusError),
                       descriptions: AppMessages().getMessage(context,
-                          'Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad'),
+                          context.appLocalization.biometricNotSupported),
                       isConfirmation: false,
                       dialogAction: () {},
                       type: AppConstants.statusError,
@@ -617,7 +638,7 @@ class _LoginPageState extends State<LoginPage> {
                           title: AppMessages().getMessageTitle(
                               context, AppConstants.statusError),
                           descriptions: AppMessages().getMessage(context,
-                              'Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad'),
+                              context.appLocalization.biometricNotSupported),
                           isConfirmation: false,
                           dialogAction: () {},
                           type: AppConstants.statusError,
@@ -657,11 +678,11 @@ class _BiometricWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Autenticación Biométrica',
+            context.appLocalization.biometricAuthentication,
             style: TextStyle(
               color: Colors.white,
               fontSize: 16.0,

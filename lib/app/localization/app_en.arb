@@ -22,5 +22,11 @@
     "messageLogout": "Are you sure you want to logout?",
     "apiMsg001": "Geolocalización is not available. Please try again later.",
     "apiMsg016": "Incorrect username and / or password.",
-    "apiMsg057": "An active connection with your credentials already exists. If it isn't you. You want to close it?"
+    "apiMsg057": "An active connection with your credentials already exists. If it isn't you. You want to close it?",
+    "changePasswordAction": "Changing password",
+    "forgotPassword": "Forgot your password?",
+    "biometricAuthentication": "Biometric Authentication",
+    "biometricNotSupported": "This device does not support biometric authentication or the functionality is not enabled.",
+    "limitBiometricAttempts": "You have reached the maximum number of failed attempts allowed. Enter the password or wait a few seconds to use the biometric authentication process.",
+    "invalidFingerprint": "The fingerprint is incorrect, please try again."
 }
