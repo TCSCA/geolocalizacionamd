@@ -50,14 +50,10 @@ class AmdPendingCardEmpty extends StatelessWidget {
                         children: [
                           OutlinedButton(
                               onPressed: () {
-                                /* BlocProvider.of<MainBloc>(context).add(
-                                          const ShowHomeServiceInAttentionEvent()); */
                                 AppCommonWidgets.pageCurrentChanged(
                                     context: context,
                                     routeParam:
                                         GeoAmdRoutes.medicalCareAccepted);
-
-                                //context.go(GeoAmdRoutes.medicalCareAccepted);
                               },
                               style: OutlinedButton.styleFrom(
                                   padding: EdgeInsets.zero,

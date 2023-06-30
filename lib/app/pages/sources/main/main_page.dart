@@ -53,7 +53,10 @@ class _MainPageState extends State<MainPage> with MainWidgets {
                   SizedBox(height: dataSpaceHeight),
                   serviceAvailabilityDashboard(context: context),
                   SizedBox(height: dataSpaceHeight),
-                  const TitleBar(title: 'Atenciones Pendientes hoy'),
+                  const TitleBar(title: 'Atenciones Pendientes:'),
+                  const SizedBox(
+                    height: 20.0,
+                  ),
                   amdInformationAssigned(context: context)
                 ],
               ),

@@ -30,6 +30,7 @@ class DoctorCareController {
         opState = SelectModel(opcion.stateId.toString(), opcion.stateName);
         listStates.add(opState);
       }
+      listStates.sort((a, b) => a.name.compareTo(b.name));
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -50,6 +51,7 @@ class DoctorCareController {
         opCity = SelectModel(opcion.cityId.toString(), opcion.cityName);
         listCities.add(opCity);
       }
+      listCities.sort((a, b) => a.name.compareTo(b.name));
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {

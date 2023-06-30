@@ -121,306 +121,177 @@ class MainWidgets {
   }
 
   Widget serviceAvailabilityDashboard({required BuildContext context}) {
-    bool isServiceAvailible = false;
     /* MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc.add(const ShowLocationDoctorStatesEvent('25'));
     List<SelectModel> stateList = [];
     String? selectedState;
     List<SelectModel> cityList = []; */
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 220,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            const Color(0xff273456).withOpacity(0.9),
-            const Color(0xff2B5178).withOpacity(0.8)
-          ], begin: Alignment.bottomLeft, end: Alignment.centerRight),
-          borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              bottomLeft: Radius.circular(10.0),
-              bottomRight: Radius.circular(10.0),
-              topRight: Radius.circular(80.0)),
-          boxShadow: [
-            BoxShadow(
-                offset: const Offset(10.0, 10.0),
-                blurRadius: 20.0,
-                color: const Color(0xff2B5178).withOpacity(0.7))
-          ]),
-      child: Container(
-        padding: const EdgeInsets.only(left: 20.0, top: 25.0, right: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Ten presente:',
-              style: TextStyle(fontSize: 16.0, color: Colors.white),
-            ),
-            const SizedBox(
-              height: 5.0,
-            ),
-            const Text(
-              'Nuestros pacientes deben recibir un trato digno y respetuoso en cualquier momento y bajo cualquier circunstancia.',
-              style: TextStyle(fontSize: 20.0, color: Colors.white),
-            ),
-            const SizedBox(
-              height: 8.0,
-            ),
-            Row(
+    bool doctorAvailableSwitch =
+        BlocProvider.of<MainBloc>(context).doctorAvailableSwitch;
+    return BlocConsumer<MainBloc, MainState>(
+      listener: (context, state) {
+        if (state is DoctorServiceState) {
+          //LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = state.doctorAvailable;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusSuccess),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusSuccess,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
+        if (state is DoctorServiceErrorState) {
+          //LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = state.doctorAvailable;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
+        if (state is ConfirmHomeServiceSuccessState) {
+          doctorAvailableSwitch = false;
+        }
+      },
+      builder: (context, state) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: 255,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                const Color(0xff273456).withOpacity(0.9),
+                const Color(0xff2B5178).withOpacity(0.8)
+              ], begin: Alignment.bottomLeft, end: Alignment.centerRight),
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                  topRight: Radius.circular(80.0)),
+              boxShadow: [
+                BoxShadow(
+                    offset: const Offset(10.0, 10.0),
+                    blurRadius: 20.0,
+                    color: const Color(0xff2B5178).withOpacity(0.7))
+              ]),
+          child: Container(
+            padding: const EdgeInsets.only(left: 20.0, top: 25.0, right: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text(
+                  'Ten presente:',
+                  style: TextStyle(fontSize: 16.0, color: Colors.white),
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                const Text(
+                  'Nuestros pacientes deben recibir un trato digno y respetuoso en cualquier momento y bajo cualquier circunstancia.',
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                ),
+                const SizedBox(
+                  height: 8.0,
+                ),
                 Row(
-                  children: const [
-                    Text('Disponible para atender:',
-                        style: TextStyle(fontSize: 18.0, color: Colors.white)),
+                  children: [
+                    Row(
+                      children: const [
+                        Text('Disponible para atender:',
+                            style:
+                                TextStyle(fontSize: 18.0, color: Colors.white)),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 8.0,
+                    ),
                   ],
                 ),
                 const SizedBox(
-                  width: 8.0,
+                  height: 8.0,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(60.0),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Color(0xff273456),
-                            blurRadius: 10.0,
-                            offset: Offset(4.0, 5.0))
-                      ]),
-                  child: BlocConsumer<MainBloc, MainState>(
-                      listener: (context, state) {
-                    if (state is DoctorServiceState) {
-                      isServiceAvailible = state.doctorAvailable;
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return CustomDialogBox(
-                              title: AppMessages().getMessageTitle(
-                                  context, AppConstants.statusSuccess),
-                              descriptions: AppMessages()
-                                  .getMessage(context, state.message),
-                              isConfirmation: false,
-                              dialogAction: () {},
-                              type: AppConstants.statusSuccess,
-                              isdialogCancel: false,
-                              dialogCancel: () {},
-                            );
-                          });
-                    }
-                    if (state is DoctorServiceErrorState) {
-                      isServiceAvailible = state.doctorAvailable;
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return CustomDialogBox(
-                              title: AppMessages().getMessageTitle(
-                                  context, AppConstants.statusError),
-                              descriptions: AppMessages()
-                                  .getMessage(context, state.message),
-                              isConfirmation: false,
-                              dialogAction: () {},
-                              type: AppConstants.statusError,
-                              isdialogCancel: false,
-                              dialogCancel: () {},
-                            );
-                          });
-                    }
-                    if (state is CancelButtonAmdState) {
-                      isServiceAvailible = state.doctorAvailable;
-                    }
-                    /* if (state is LocationStatesSuccessState) {
-                      stateList = state.listStates;
-                    }
-                    if (state is LocationCitiesSuccessState) {
-                      cityList = state.listCities;
-                      selectedState = state.selectedState;
-                    } */
-                  }, builder: (context, state) {
-                    return LiteRollingSwitch(
-                        width: 90.0,
-                        value: BlocProvider.of<MainBloc>(context)
-                            .doctorAvailableSwitch,
-                        textOn: 'SI',
-                        textOff: 'NO',
-                        colorOn: Colors.green,
-                        colorOff: Colors.grey,
-                        textOffColor: Colors.white,
-                        textOnColor: Colors.white,
-                        iconOn: Icons.person_pin_circle,
-                        iconOff: Icons.power_settings_new,
-                        onChanged: (isServiceAvailible) {
-                          print('onChanged ${(isServiceAvailible)}');
-                          print(
-                              'onChanged turned ${(isServiceAvailible) ? 'encendido' : 'apagado'}');
-                          if (!isServiceAvailible) {
-                            showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return CustomDialogBox(
-                                      title:
-                                          context.appLocalization.titleWarning,
-                                      descriptions:
-                                          '¿Estas seguro de desactivar su servicios?',
-                                      isConfirmation: true,
-                                      dialogAction: () =>
-                                          BlocProvider.of<MainBloc>(context)
-                                              .add(DisconectDoctorAmdEvent()),
-                                      type: AppConstants.statusWarning,
-                                      isdialogCancel: true,
-                                      dialogCancel: () =>
-                                          BlocProvider.of<MainBloc>(context)
-                                              .add(CancelButtonAmdEvent(
-                                                  currentToggleSwitch:
-                                                      isServiceAvailible)));
-                                });
-                          } else {
-                            /* showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return CustomDialogBox(
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (doctorAvailableSwitch) ...[
+                      FloatingActionButton.extended(
+                        label: const Text(
+                          'No disponible',
+                          style: TextStyle(
+                              fontFamily: 'TitlesHighlight',
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: Colors.grey,
+                        icon: const Icon(Icons.power_settings_new,
+                            size: 24.0, color: Colors.white),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CustomDialogBox(
                                     title: context.appLocalization.titleWarning,
                                     descriptions:
-                                        '¿Estas seguro de activar su servicios?',
+                                        '¿Estás seguro de desactivar su servicio?',
                                     isConfirmation: true,
                                     dialogAction: () =>
                                         BlocProvider.of<MainBloc>(context)
-                                            .add(ConnectDoctorAmdEvent()),
+                                            .add(DisconectDoctorAmdEvent()),
                                     type: AppConstants.statusWarning,
-                                    isdialogCancel: true,
-                                    dialogCancel: () =>
-                                        BlocProvider.of<MainBloc>(context).add(
-                                            CancelButtonAmdEvent(
-                                                currentToggleSwitch:
-                                                    isServiceAvailible)),
-                                  );
-                                }); */
-                            /* showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  final GlobalKey<FormState> ubicacionFormKey =
-                                      GlobalKey<FormState>();
-                                  final GlobalKey<FormFieldState>
-                                      estadoFieldKey =
-                                      GlobalKey<FormFieldState>();
-                                  final GlobalKey<FormFieldState>
-                                      ciudadFieldKey =
-                                      GlobalKey<FormFieldState>();
-                                  return AlertDialog(
-                                    title:
-                                        const Text('Seleccione su Ubicación:'),
-                                    content: Form(
-                                      key: ubicacionFormKey,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: DropdownButtonFormField(
-                                                  key: estadoFieldKey,
-                                                  value: selectedState,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    hintText: 'Seleccione',
-                                                    labelText: 'Estado:',
-                                                  ),
-                                                  items: stateList.map(
-                                                      (SelectModel
-                                                          selectiveCountry) {
-                                                    return DropdownMenuItem(
-                                                      value:
-                                                          selectiveCountry.id,
-                                                      child: Text(
-                                                          selectiveCountry
-                                                              .name),
-                                                    );
-                                                  }).toList(),
-                                                  validator: (fieldValue) {
-                                                    if (fieldValue == null) {
-                                                      return 'Es requerido';
-                                                    }
-                                                    return null;
-                                                  },
-                                                  onChanged: (stateCode) {
-                                                    if (stateCode != null) {
-                                                      userMainBloc.add(
-                                                          ShowLocationDoctorCitiesEvent(
-                                                              stateCode));
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: DropdownButtonFormField(
-                                                  key: ciudadFieldKey,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    labelText: 'Ciudad:',
-                                                    hintText: 'Seleccione',
-                                                  ),
-                                                  items: cityList.map(
-                                                      (SelectModel
-                                                          selectiveCountry) {
-                                                    return DropdownMenuItem(
-                                                      value:
-                                                          selectiveCountry.id,
-                                                      child: Text(
-                                                          selectiveCountry
-                                                              .name),
-                                                    );
-                                                  }).toList(),
-                                                  validator: (fieldValue) {
-                                                    if (fieldValue == null) {
-                                                      return 'Es requerido';
-                                                    }
-                                                    return null;
-                                                  },
-                                                  onChanged: (value) {},
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          if (!ubicacionFormKey.currentState!
-                                              .validate()) {
-                                            return;
-                                          } else {}
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Send'),
-                                      ),
-                                    ],
-                                  );
-                                }); */
-                            context.go(GeoAmdRoutes.amdLocation);
-                          }
+                                    isdialogCancel: false,
+                                    dialogCancel: () {});
+                              });
                         },
-                        onTap: () {},
-                        onDoubleTap: () {},
-                        onSwipe: () {});
-                  }),
+                      )
+                    ] else ...[
+                      FloatingActionButton.extended(
+                        label: const Text(
+                          'Disponible',
+                          style: TextStyle(
+                              fontFamily: 'TitlesHighlight',
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: Colors.green,
+                        icon: const Icon(
+                          Icons.person_pin_circle,
+                          size: 24.0,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          context.go(GeoAmdRoutes.amdLocation);
+                        },
+                      )
+                    ]
+                  ],
                 )
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

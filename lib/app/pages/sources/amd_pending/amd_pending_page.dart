@@ -96,7 +96,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 Text(
                                   "Datos de Orden Médica:",
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline),
                                 ),
@@ -108,12 +108,12 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Fecha y Hora:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Text(
                                   DateFormat("dd-MM-yyyy hh:mm a").format(
                                       state.homeServiceConfirmed.registerDate),
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),
@@ -123,11 +123,11 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Nro. de Orden:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Text(
                                   state.homeServiceConfirmed.orderNumber,
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),
@@ -138,7 +138,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 Text(
                                   "Datos del Paciente:",
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline),
                                 ),
@@ -150,11 +150,13 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Nombre del Paciente:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
-                                Text(
-                                  state.homeServiceConfirmed.fullNamePatient,
-                                  style: const TextStyle(fontSize: 18),
+                                Flexible(
+                                  child: Text(
+                                    state.homeServiceConfirmed.fullNamePatient,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                                 )
                               ],
                             ),
@@ -164,12 +166,12 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Documento de identidad:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Text(
                                   state.homeServiceConfirmed
                                       .identificationDocument,
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),
@@ -179,11 +181,11 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Teléfono:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Text(
                                   state.homeServiceConfirmed.phoneNumberPatient,
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),
@@ -194,12 +196,12 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Dirección :',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Flexible(
                                   child: Text(
                                       state.homeServiceConfirmed.address,
-                                      style: const TextStyle(fontSize: 18)),
+                                      style: const TextStyle(fontSize: 16)),
                                 )
                               ],
                             ),
@@ -210,7 +212,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 Text(
                                   "Datos del Doctor:",
                                   style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.underline),
                                 ),
@@ -222,11 +224,13 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Doctor Solicitante:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
-                                Text(
-                                  state.homeServiceConfirmed.applicantDoctor,
-                                  style: const TextStyle(fontSize: 18),
+                                Flexible(
+                                  child: Text(
+                                    state.homeServiceConfirmed.applicantDoctor,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                                 )
                               ],
                             ),
@@ -236,11 +240,11 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Teléfono del Doctor:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Text(
                                   state.homeServiceConfirmed.phoneNumberDoctor,
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),
@@ -250,11 +254,11 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 const SizedBox(width: 20.0),
                                 const Text('Tipo de Servicio:',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                                 Text(
                                   state.homeServiceConfirmed.typeService,
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             ),

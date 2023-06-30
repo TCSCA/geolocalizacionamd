@@ -48,3 +48,10 @@ class ShowFirebaseKeyState extends LoginState {
   @override
   List<Object> get props => [firebaseKey];
 }
+
+class LogoutDoctorInAttentionState extends LoginState {
+  final String message;
+  const LogoutDoctorInAttentionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

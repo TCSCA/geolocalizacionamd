@@ -23,7 +23,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, sound: true, badge: true);
   String? tokenFirebaseRegister = await FirebaseMessaging.instance.getToken(
@@ -63,7 +65,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: Environment().config.appName,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,

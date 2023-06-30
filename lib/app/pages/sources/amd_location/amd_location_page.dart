@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/core/models/select_model.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
 import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
 import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
@@ -199,6 +200,12 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                               child: Text(selectiveState.name),
                             );
                           }).toList(),
+                          validator: (fieldValue) {
+                            if (fieldValue == null) {
+                              return 'Estado es requerido';
+                            }
+                            return null;
+                          },
                           onChanged: (stateCode) {
                             if (stateCode != null) {
                               stateTextController.text = stateCode;
@@ -237,7 +244,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                           }).toList(),
                           validator: (fieldValue) {
                             if (fieldValue == null) {
-                              return 'Es requerido';
+                              return 'Ciudad es requerido';
                             }
                             return null;
                           },
@@ -272,10 +279,29 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                               if (!ubicacionFormKey.currentState!.validate()) {
                                 return;
                               } else {
-                                BlocProvider.of<MainBloc>(context).add(
-                                    ConnectDoctorAmdEvent(
-                                        locationState: stateTextController.text,
-                                        locationCity: cityTextController.text));
+                                showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return CustomDialogBox(
+                                          title: context
+                                              .appLocalization.titleWarning,
+                                          descriptions:
+                                              '¿Estás seguro de activar su servicio?',
+                                          isConfirmation: true,
+                                          dialogAction: () =>
+                                              BlocProvider.of<MainBloc>(context)
+                                                  .add(ConnectDoctorAmdEvent(
+                                                      locationState:
+                                                          stateTextController
+                                                              .text,
+                                                      locationCity:
+                                                          cityTextController
+                                                              .text)),
+                                          type: AppConstants.statusWarning,
+                                          isdialogCancel: true,
+                                          dialogCancel: () {});
+                                    });
                               }
                             },
                             child: Ink(

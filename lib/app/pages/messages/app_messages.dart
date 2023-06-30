@@ -53,6 +53,9 @@ class AppMessages {
     if (code.trim() == 'MSGAPP-008') {
       return 'No tienes órdenes pendientes para atender en este momento.';
     }
+    if (code.trim() == 'MSGAPP-009') {
+      return 'Debes finalizar la atención antes de salir de la aplicación.';
+    }
     return code;
   }
 }

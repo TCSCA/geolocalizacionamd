@@ -16,7 +16,21 @@ class TitleBar extends StatelessWidget {
           title,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        IconButton(
+        TextButton.icon(
+            onPressed: () {
+              BlocProvider.of<MainBloc>(context)
+                  .add(const ShowHomeServiceAssignedEvent());
+            },
+            icon: const Icon(
+              Icons.update,
+              size: 25,
+              color: Colors.black,
+            ),
+            label: const Text(
+              'Actualizar',
+              style: TextStyle(fontSize: 15, color: Colors.black),
+            ))
+        /* IconButton(
             onPressed: () {
               BlocProvider.of<MainBloc>(context)
                   .add(const ShowHomeServiceAssignedEvent());
@@ -24,7 +38,7 @@ class TitleBar extends StatelessWidget {
             icon: const Icon(
               Icons.update,
               size: 33,
-            ))
+            )) */
       ],
     );
   }

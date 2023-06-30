@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/controllers/menu_controller.dart';
 import '/app/core/controllers/login_controller.dart';
 import '/app/core/models/menu_model.dart';
@@ -42,10 +43,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<ProcessLogoutEvent>((event, emit) async {
+      final DoctorCareController doctorCareController = DoctorCareController();
+
       try {
         emit(const LoginShowLoadingState());
+        /* var doctorInAttention =
+            await doctorCareController.validateDoctorInAttention();
+        if (doctorInAttention) {
+          emit(const LogoutDoctorInAttentionState(message: 'MSGAPP-009'));
+        } else { */
+        try {
+          await doctorCareController.doDisconectDoctorAmd();
+        } catch (error) {/*No importa si falla*/}
         await loginController.doLogoutUser();
         emit(const LogoutSuccessState());
+        //}
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {

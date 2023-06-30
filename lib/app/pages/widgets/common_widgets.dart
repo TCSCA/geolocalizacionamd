@@ -6,6 +6,7 @@ import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
 import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
 import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
 import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/styles/app_styles.dart';
 import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
@@ -205,12 +206,11 @@ class AppCommonWidgets {
       if (state is LoginShowLoadingState) {
         LoadingBuilder(context)
             .showLoadingIndicator(context.appLocalization.titleLogoutLoading);
-      }
-      if (state is LogoutSuccessState) {
+      } else if (state is LogoutSuccessState) {
+        BlocProvider.of<MainBloc>(context).doctorAvailableSwitch = false;
         LoadingBuilder(context).hideOpenDialog();
         context.go(GeoAmdRoutes.login);
-      }
-      if (state is LoginErrorState) {
+      } else if (state is LoginErrorState) {
         LoadingBuilder(context).hideOpenDialog();
         showDialog(
             context: context,
@@ -228,6 +228,23 @@ class AppCommonWidgets {
               );
             });
         context.go(GeoAmdRoutes.login);
+      } else if (state is LogoutDoctorInAttentionState) {
+        LoadingBuilder(context).hideOpenDialog();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                title: AppMessages()
+                    .getMessageTitle(context, AppConstants.statusWarning),
+                descriptions: AppMessages().getMessage(context, state.message),
+                isConfirmation: false,
+                dialogAction: () {},
+                type: AppConstants.statusWarning,
+                isdialogCancel: false,
+                dialogCancel: () {},
+              );
+            });
       }
     });
   }

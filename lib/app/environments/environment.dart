@@ -1,5 +1,7 @@
 import 'base_config.dart';
 import 'dev_config.dart';
+import 'prod_config.dart';
+import 'test_config.dart';
 
 class Environment {
   factory Environment() {
@@ -23,9 +25,9 @@ class Environment {
   BaseConfig _getConfig(String environment) {
     switch (environment) {
       case Environment.prod:
-        return DeveloperConfig();
+        return ProductionConfig();
       case Environment.qa:
-        return DeveloperConfig();
+        return TestingConfig();
       default:
         return DeveloperConfig();
     }

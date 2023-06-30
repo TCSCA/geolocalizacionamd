@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AppConstants {
   AppConstants._();
+  //static const String appName = 'Geolocalización AMD';
   static const String environmentVariableName = 'ENVIRONMENT';
   static const String languageCodeEn = 'en';
   static const String languageCodeEs = 'es';

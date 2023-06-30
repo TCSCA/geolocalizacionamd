@@ -1,12 +1,12 @@
 import 'base_config.dart';
 
-class DeveloperConfig implements BaseConfig {
+class TestingConfig implements BaseConfig {
   @override
-  String get appName => "DEV Geolocalización AMD";
+  String get appName => "QA Geolocalización AMD";
   @override
-  String get apiHost => "https://desa.your24sevendoc.com/homeService/api";
+  String get apiHost => "https://mid.your24sevendoc.com/homeService/api";
   @override
-  String get webSocketHost => "https://apides.your24sevendoc.com/ws";
+  String get webSocketHost => "https://mid.your24sevendoc.com/ws";
   @override
   String get platform => "APP";
   @override

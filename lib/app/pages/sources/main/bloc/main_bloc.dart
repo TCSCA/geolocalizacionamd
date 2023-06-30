@@ -61,7 +61,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<ConnectDoctorAmdEvent>((event, emit) async {
-      doctorAvailableSwitch = false;
+      //doctorAvailableSwitch = false;
       try {
         bool isService = await handleLocationPermissions.checkLocationService();
         if (isService) {
@@ -110,7 +110,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
     });
     on<DisconectDoctorAmdEvent>((event, emit) async {
-      doctorAvailableSwitch = true;
+      //doctorAvailableSwitch = true;
       try {
         bool isDisconect = await doctorCareController.doDisconectDoctorAmd();
         if (isDisconect) {
@@ -120,18 +120,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               message: 'Ya no estarás disponible para atender'));
         } else {
           emit(const DoctorServiceErrorState(
-              doctorAvailable: false,
+              doctorAvailable: true,
               message: 'No se pudo desconectar su disponibilidad.'));
         }
       } on ErrorAppException catch (exapp) {
         emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exapp.message));
+            doctorAvailable: true, message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exgen.message));
+            doctorAvailable: true, message: exgen.message));
       } catch (unknowerror) {
         emit(const DoctorServiceErrorState(
-            doctorAvailable: false,
+            doctorAvailable: true,
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
@@ -205,6 +205,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         var userHomeService = await doctorCareController
             .doConfirmHomeService(event.idHomeService);
         await doctorCareController.changeDoctorInAttention('true');
+        try {
+          //Desconectar para que no reciba otra atencion.
+          await doctorCareController.doDisconectDoctorAmd();
+          doctorAvailableSwitch = false;
+        } catch (e) {/*Nada que hacer si falla*/}
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
       } on ErrorAppException catch (exapp) {
@@ -248,6 +253,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         var userHomeService = await doctorCareController
             .doCompleteHomeService(event.idHomeService);
         if (userHomeService) {
+          //doctorAvailableSwitch = false;
           await doctorCareController.changeDoctorInAttention('false');
           emit(const CompleteHomeServiceSuccessState(message: 'MSGAPP-007'));
         } else {
