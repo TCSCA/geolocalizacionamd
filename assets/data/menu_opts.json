@@ -17,49 +17,39 @@
 			"descripcionEn": "Profile",
 			"icon": "profile",
 			"route": "/profile",
-			"enable": true,
+			"enable": false,
 			"order": 2,
 			"parent": 0
 		},
 		{
 			"id": 3,
-			"descripcionEs": "Atención Médica",
-			"descripcionEn": "Medical Care",
-			"icon": "medicalCareHome",
-			"route": "",
+			"descripcionEs": "En Atención",
+			"descripcionEn": "MC Accepted",
+			"icon": "medicalCareAccepted",
+			"route": "/medicalCareAccepted",
 			"enable": true,
 			"order": 3,
 			"parent": 0
 		},
 		{
 			"id": 4,
-			"descripcionEs": "AM Aceptadas",
-			"descripcionEn": "MC Accepted",
-			"icon": "medicalCareAccepted",
-			"route": "/medicalCareAccepted",
-			"enable": true,
+			"descripcionEs": "Historial Atención Médica",
+			"descripcionEn": "Medical Care History",
+			"icon": "medicalCareHome",
+			"route": "/medicalCareHistory",
+			"enable": false,
 			"order": 4,
-			"parent": 3
+			"parent": 0
 		},
 		{
 			"id": 5,
-			"descripcionEs": "AM Procesadas",
-			"descripcionEn": "MC Processed",
-			"icon": "medicalCareProcessed",
-			"route": "/medicalCareProcessed",
-			"enable": true,
-			"order": 5,
-			"parent": 3
-		},
-		{
-			"id": 6,
-			"descripcionEs": "AM Rechazadas",
-			"descripcionEn": "MC Refused",
-			"icon": "medicalCareRefused",
-			"route": "/medicalCareRefused",
-			"enable": true,
-			"order": 6,
-			"parent": 3
+			"descripcionEs": "Cambiar Contraseña",
+			"descripcionEn": "Change Password",
+			"icon": "changePassword",
+			"route": "/changePassword",
+			"enable": false,
+			"order": 4,
+			"parent": 0
 		}
 	]
 }
