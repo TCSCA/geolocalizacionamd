@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
+import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
+import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AmdPendingCard extends StatelessWidget {
-  final String name;
-  final Color color;
-  const AmdPendingCard({super.key, required this.name, required this.color});
+  final HomeServiceModel homeService;
+  const AmdPendingCard({super.key, required this.homeService});
 
   @override
   Widget build(BuildContext context) {
@@ -23,55 +31,81 @@ class AmdPendingCard extends StatelessWidget {
         //shadowColor: const Color(0xff2B5178).withOpacity(0.7),
 
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(2.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              const SizedBox(height: 10.0),
               ListTile(
                 leading: Image.asset('assets/images/gps_doctor_image.png'),
-                title: const Text('Orden Nro. 258746'),
+                title: Text('Orden Nro. ${homeService.orderNumber}'),
                 subtitle: Column(
                   children: [
                     const SizedBox(height: 3.0),
                     Row(
                       children: const [
                         Text('Paciente:',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('Ruperto Lugo')
+                            style: TextStyle(fontWeight: FontWeight.bold))
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(homeService.fullNamePatient),
+                        )
                       ],
                     ),
                     const SizedBox(height: 3.0),
                     Row(
-                      children: const [
-                        Text('Teléfono:',
+                      children: [
+                        const Text('Teléfono:',
                             style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('04241234567')
+                        Flexible(child: Text(homeService.phoneNumberPatient))
                       ],
                     ),
                     const SizedBox(height: 3.0),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Doctor Solicitante:',
+                        Text('Dirección del paciente:',
                             style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('Jhoander Armas')
                       ],
                     ),
-                    const SizedBox(height: 3.0),
                     Row(
-                      children: const [
-                        Text('Fecha y Hora:',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('17-05-2023 3:40PM')
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(homeService.address),
+                        )
                       ],
                     )
                   ],
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                  title: context.appLocalization.titleWarning,
+                                  descriptions:
+                                      '¿Estas seguro de rechazar la orden?',
+                                  isConfirmation: true,
+                                  dialogAction: () =>
+                                      BlocProvider.of<MainBloc>(context).add(
+                                          DisallowAmdEvent(
+                                              homeService.idHomeService)),
+                                  type: AppConstants.statusWarning,
+                                  isdialogCancel: false,
+                                  dialogCancel: () {});
+                            });
+                      },
                       style: OutlinedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           elevation: 5,
@@ -98,9 +132,27 @@ class AmdPendingCard extends StatelessWidget {
                           ),
                         ),
                       )),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 25.0),
                   ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                  title: context.appLocalization.titleWarning,
+                                  descriptions:
+                                      '¿Estas seguro de confirmar la orden?',
+                                  isConfirmation: true,
+                                  dialogAction: () =>
+                                      BlocProvider.of<MainBloc>(context).add(
+                                          ConfirmAmdEvent(
+                                              homeService.idHomeService)),
+                                  type: AppConstants.statusWarning,
+                                  isdialogCancel: false,
+                                  dialogCancel: () {});
+                            });
+                      },
                       style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           elevation: 5,

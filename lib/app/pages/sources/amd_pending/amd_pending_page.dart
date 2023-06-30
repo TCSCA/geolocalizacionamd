@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:geolocalizacionamd/app/core/controllers/amd_pending_controller.dart';
-import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/sources/amd_pending/bloc/amd_pending_bloc.dart';
-
-import '../../../shared/dialog/custom_dialog_box.dart';
-import '../../../shared/loading/loading_builder.dart';
-import '../../constants/app_constants.dart';
-import '../../messages/app_messages.dart';
+import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
+import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
+import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
+import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AmdPendingPage extends StatefulWidget {
   const AmdPendingPage({super.key});
@@ -20,84 +18,55 @@ class AmdPendingPage extends StatefulWidget {
 class _AmdPendingPageState extends State<AmdPendingPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          AmdPendingBloc(amdPendingController: AmdPendingController())
-            ..add(const ConsultDataAmdPendingEvent()),
-      child: const _AmdPendingView(),
-    );
-  }
-}
-
-class _AmdPendingView extends StatelessWidget {
-  const _AmdPendingView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
+    userMainBloc.add(const ShowHomeServiceInAttentionEvent());
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: const Color(0xff2B5178),
+        appBar: AppCommonWidgets.generateAppBar(
+            context: context, appBarHeight: 140.0),
+        body: MultiBlocListener(
+          listeners: [
+            //NavigationBloc y LogoutBloc comunes en todas las paginas.
+            AppCommonWidgets.listenerNavigationBloc(),
+            AppCommonWidgets.listenerLogoutBloc()
+          ],
+          child: Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Color(0xff2B5178), Color(0xff2B5178)],
+                    begin: FractionalOffset(0.0, 0.4),
+                    end: Alignment.topRight)),
+            child: Column(
               children: [
                 Flexible(
-                    child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Image.asset(
-                    'assets/images/telemedicina24_logo_azul_lineal.png',
-                    width: 270,
-                    height: 90,
-                  ),
-                )),
-                IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.menu,
-                      size: 35.0,
-                    ))
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Container(
-                  height: 500,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset:
-                              const Offset(0, 3), // changes position of shadow
-                        )
-                      ],
+                    child: Container(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  child: BlocConsumer<AmdPendingBloc, AmdPendingState>(
+                          BorderRadius.only(topRight: Radius.circular(70))),
+                  child: BlocConsumer<MainBloc, MainState>(
                     listener: (context, state) {
-                      if (state is IsNotAmdPendingState) {
+                      if (state is CompleteHomeServiceSuccessState) {
                         showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (BuildContext context) {
                               return CustomDialogBox(
                                 title: AppMessages().getMessageTitle(
-                                    context, AppConstants.statusWarning),
-                                descriptions: AppMessages().getMessage(
-                                    context, 'No tiene un AMD pendiente'),
+                                    context, AppConstants.statusSuccess),
+                                descriptions: AppMessages()
+                                    .getMessage(context, state.message),
                                 isConfirmation: false,
                                 dialogAction: () {},
-                                type: AppConstants.statusError,
+                                type: AppConstants.statusSuccess,
+                                isdialogCancel: false,
+                                dialogCancel: () {},
                               );
                             });
-                      } else if (state is AmdPendingErrorState) {
+                      }
+                      if (state is HomeServiceErrorState) {
                         showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -110,94 +79,327 @@ class _AmdPendingView extends StatelessWidget {
                                 isConfirmation: false,
                                 dialogAction: () {},
                                 type: AppConstants.statusError,
+                                isdialogCancel: false,
+                                dialogCancel: () {},
                               );
                             });
                       }
                     },
                     builder: (context, state) {
-                      if (state is IsAmdPendingState) {
-                        return ListView(
-                          physics: const BouncingScrollPhysics(),
+                      if (state is ConfirmHomeServiceSuccessState) {
+                        return Column(
                           children: [
-                            _AmdPendingInfo(
-                                title: 'Fecha',
-                                subtitle: state.amdPendingModel.orderTime),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Numero de orden',
-                                subtitle: '${state.amdPendingModel.orderId}'),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Nombre del paciente',
-                                subtitle: state.amdPendingModel.patientName),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Cedula',
-                                subtitle: state
-                                    .amdPendingModel.idDocumentationPatient),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Numero de telefono',
-                                subtitle: state.amdPendingModel.phonePatient),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Estado',
-                                subtitle: state.amdPendingModel.state),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Ciudad',
-                                subtitle: state.amdPendingModel.city),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'direccion',
-                                subtitle: state.amdPendingModel.direction),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Nombre del doctor',
-                                subtitle: state.amdPendingModel.doctorName),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Telefono del doctor',
-                                subtitle: state.amdPendingModel.phoneDoctor),
-                            const Divider(height: 1),
-                            _AmdPendingInfo(
-                                title: 'Tipo de servicio',
-                                subtitle: state.amdPendingModel.serviceType),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              children: const [
+                                SizedBox(width: 20.0),
+                                Text(
+                                  "Datos de Orden Médica:",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Fecha y Hora:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                  DateFormat("dd-MM-yyyy hh:mm a").format(
+                                      state.homeServiceConfirmed.registerDate),
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Nro. de Orden:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                  state.homeServiceConfirmed.orderNumber,
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              children: const [
+                                SizedBox(width: 20.0),
+                                Text(
+                                  "Datos del Paciente:",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Nombre del Paciente:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Flexible(
+                                  child: Text(
+                                    state.homeServiceConfirmed.fullNamePatient,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Documento de identidad:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                  state.homeServiceConfirmed
+                                      .identificationDocument,
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Teléfono:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                  state.homeServiceConfirmed.phoneNumberPatient,
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Dirección :',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Flexible(
+                                  child: Text(
+                                      state.homeServiceConfirmed.address,
+                                      style: const TextStyle(fontSize: 16)),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              children: const [
+                                SizedBox(width: 20.0),
+                                Text(
+                                  "Datos del Doctor:",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Doctor Solicitante:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Flexible(
+                                  child: Text(
+                                    state.homeServiceConfirmed.applicantDoctor,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Teléfono del Doctor:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                  state.homeServiceConfirmed.phoneNumberDoctor,
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20.0),
+                                const Text('Tipo de Servicio:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                  state.homeServiceConfirmed.typeService,
+                                  style: const TextStyle(fontSize: 16),
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 20.0),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(width: 20.0),
+                                Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 7.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          elevation: 5,
+                                          side: const BorderSide(
+                                              width: 2,
+                                              color: Color(0xffFFFFFF)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30))),
+                                      onPressed: () {
+                                        BlocProvider.of<MainBloc>(context).add(
+                                            CompleteAmdEvent(state
+                                                .homeServiceConfirmed
+                                                .idHomeService));
+                                      },
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xffF96352),
+                                                  Color(0xffD84835)
+                                                ]),
+                                            borderRadius:
+                                                BorderRadius.circular(30)),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 20),
+                                          child: const Text(
+                                            'Finalizar AMD',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                color: Color(0xffFFFFFF),
+                                                fontFamily: 'TitlesHighlight',
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    )),
+                                Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 7.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          elevation: 5,
+                                          side: const BorderSide(
+                                              width: 2,
+                                              color: Color(0xffFFFFFF)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30))),
+                                      onPressed: () {
+                                        _launchURL(
+                                            url: state
+                                                .homeServiceConfirmed.linkAmd);
+                                      },
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xff2B5178),
+                                                  Color(0xff273456)
+                                                ]),
+                                            borderRadius:
+                                                BorderRadius.circular(30)),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 20),
+                                          child: const Text(
+                                            'Formulario AMD',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                color: Color(0xffFFFFFF),
+                                                fontFamily: 'TitlesHighlight',
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    )),
+                              ],
+                            ),
                           ],
                         );
-                      } else if (state is IsLoadingAmdPendingState) {
-                        LoadingBuilder(context).showLoadingIndicator(
-                            context.appLocalization.titleLoginLoading);
-                        return Container();
-                      } else if (state is IsNotAmdPendingState) {
-                        return Container();
                       } else {
-                        return Container();
+                        return Container(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(70))),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              //mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                    child: Image.asset(
+                                  'assets/images/gps_doctor_image.png',
+                                  width: 240,
+                                  height: 240,
+                                )),
+                                const Text(
+                                  'No tienes atención médica confirmada en estos momentos',
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontFamily: 'TitlesHighlight',
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       }
                     },
                   ),
-                ),
-              ),
+                ))
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
-}
 
-class _AmdPendingInfo extends StatelessWidget {
-  final String title;
-  final String subtitle;
-
-  const _AmdPendingInfo(
-      {super.key, required this.title, required this.subtitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      subtitle: Text(subtitle),
-    );
+  Future<void> _launchURL({required String url}) async {
+    launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 }

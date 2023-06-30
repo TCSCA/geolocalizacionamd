@@ -2,9 +2,9 @@ import 'base_config.dart';
 
 class DeveloperConfig implements BaseConfig {
   @override
-  String get appName => "DEV Telemedicina24";
+  String get appName => "DEV Geolocalización AMD";
   @override
-  String get apiHost => "https://apides.your24sevendoc.com/api";
+  String get apiHost => "https://desa.your24sevendoc.com/homeService/api";
   @override
   String get webSocketHost => "https://apides.your24sevendoc.com/ws";
   @override
@@ -18,7 +18,7 @@ class DeveloperConfig implements BaseConfig {
   @override
   String get headerContentTypeValue => "application/json";
   @override
-  String get headerBiscom => "BISCOMM_KEY";
+  String get headerApiKey => "ApiKeyGpsSHA";
   @override
-  String get headerBiscomValue => "abcd123456";
+  String get headerApiKeyValue => "ShA.GpS.123.";
 }

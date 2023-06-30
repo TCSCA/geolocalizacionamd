@@ -1,3 +1,10 @@
+import 'package:flutter/foundation.dart';
+import 'package:geolocalizacionamd/app/api/mappings/home_service_mapping.dart';
+import 'package:geolocalizacionamd/app/api/mappings/register_date_mapping.dart';
+import 'package:geolocalizacionamd/app/api/services/consult_data_service.dart';
+import 'package:geolocalizacionamd/app/api/services/consult_data_service_implement.dart';
+import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
+
 import '../../api/constants/api_constants.dart';
 import '../../api/services/login_service.dart';
 import '../../api/services/login_service_implement.dart';
@@ -13,6 +20,7 @@ class LoginController {
   final WebSocketService webSocketService = WebSocketServiceImp();
   final SecureStorageController secureStorageController =
       SecureStorageController();
+  final ConsultDataService consultDataService = ConsultDataServiceImp();
 
   Future<UserModel> doLoginUser(
       final String user, final String password) async {
@@ -20,17 +28,14 @@ class LoginController {
 
     try {
       var responseLogin = await loginService.doLogin(user, password);
-      var responseSocket =
-          await webSocketService.onConnect(responseLogin.token);
 
-      if (responseSocket) {
-        await secureStorageController.writeSecureData(
-            ApiConstants.tokenLabel, responseLogin.token);
-        userResponse =
-            UserModel(user, responseLogin.perfil, responseLogin.idAffiliate);
-      } else {
-        throw ErrorGeneralException();
-      }
+      await secureStorageController.writeSecureData(
+          ApiConstants.tokenLabel, responseLogin.data);
+      await secureStorageController.writeSecureData(
+          ApiConstants.doctorInAttentionLabel, 'false');
+
+      userResponse = UserModel(
+          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
@@ -47,7 +52,12 @@ class LoginController {
     bool respWebSocket;
 
     try {
-      respWebSocket = await webSocketService.onDisconnect();
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      if (kDebugMode) {
+        print('doLogoutUser tokenUser: $tokenUser');
+      }
+      respWebSocket = await loginService.doLogout(tokenUser);
       if (!respWebSocket) {
         throw ErrorGeneralException();
       }
@@ -59,18 +69,26 @@ class LoginController {
       throw ErrorGeneralException();
     } finally {
       await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
+      await secureStorageController
+          .deleteSecureData(ApiConstants.doctorInAttentionLabel);
+      await secureStorageController
+          .deleteSecureData(ApiConstants.idHomeServiceConfirmedLabel);
     }
 
     return respWebSocket;
   }
 
-  Future doResetLoginUser(final String user) async {
-    bool respResetLogin;
+  Future<UserModel> doResetLoginUser(String user, final String password) async {
+    late UserModel userResponse;
     try {
-      respResetLogin = await loginService.resetLogin(user);
-      if (!respResetLogin) {
-        throw ErrorGeneralException();
-      }
+      var responseLogin = await loginService.resetLogin(user, password);
+
+      await secureStorageController.writeSecureData(
+          ApiConstants.tokenLabel, responseLogin.data);
+      await secureStorageController.writeSecureData(
+          ApiConstants.doctorInAttentionLabel, 'false');
+      userResponse = UserModel(
+          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -79,6 +97,23 @@ class LoginController {
       throw ErrorGeneralException();
     }
 
-    return respResetLogin;
+    return userResponse;
+  }
+
+  /*Solo para pruebas y mostrar el key desde en login, se debe quitar luego*/
+  Future<String> getFirebaseKey() async {
+    late String response;
+    try {
+      response = await secureStorageController
+          .readSecureData(ApiConstants.tokenFirebaseLabel);
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return response;
   }
 }

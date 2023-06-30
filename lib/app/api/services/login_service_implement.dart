@@ -17,7 +17,7 @@ class LoginServiceImp implements LoginService {
         jsonEncode({'username': user, 'password': password});
     final Map<String, String> headerLogin = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
-      ApiConstants.headerBiscom: ApiConstants.headerValorBiscom,
+      ApiConstants.headerApiKey: ApiConstants.headerValorApiKey,
       ApiConstants.headerPlataforma: ApiConstants.plataformaApp
     };
 
@@ -30,13 +30,12 @@ class LoginServiceImp implements LoginService {
           ApiConstants.statusSuccessApi) {
         responseUser = UserMap.fromJson(decodeRespApi);
       } else {
-        if (decodeRespApi[ApiConstants.dataLabelApi] ==
-            ApiConstants.activeConnectionCodeApi) {
-          throw ActiveConnectionException(
-              message: decodeRespApi[ApiConstants.dataLabelApi]);
+        final String error =
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        if (error == ApiConstants.activeConnectionCodeApi) {
+          throw ActiveConnectionException(message: error);
         } else {
-          throw ErrorAppException(
-              message: decodeRespApi[ApiConstants.dataLabelApi]);
+          throw ErrorAppException(message: error);
         }
       }
     } on ErrorAppException {
@@ -51,15 +50,16 @@ class LoginServiceImp implements LoginService {
   }
 
   @override
-  Future<bool> resetLogin(String user) async {
-    late bool responseResetLogin = false;
+  Future<UserMap> resetLogin(String user, String password) async {
+    late UserMap responseUser;
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlApiResetLogin = Uri.parse(ApiConstants.urlApiResetLogin);
-    final String bodyLogin = jsonEncode({'username': user});
+    final String bodyLogin =
+        jsonEncode({'username': user, 'password': password});
     final Map<String, String> headerLogin = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
-      ApiConstants.headerBiscom: ApiConstants.headerValorBiscom,
+      ApiConstants.headerApiKey: ApiConstants.headerValorApiKey,
       ApiConstants.headerPlataforma: ApiConstants.plataformaApp
     };
 
@@ -70,10 +70,11 @@ class LoginServiceImp implements LoginService {
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-        responseResetLogin = true;
+        responseUser = UserMap.fromJson(decodeRespApi);
       } else {
-        throw ErrorAppException(
-            message: decodeRespApi[ApiConstants.dataLabelApi]);
+        final String error =
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        throw ErrorAppException(message: error);
       }
     } on ErrorAppException {
       rethrow;
@@ -81,6 +82,38 @@ class LoginServiceImp implements LoginService {
       throw ErrorGeneralException();
     }
 
-    return responseResetLogin;
+    return responseUser;
+  }
+
+  @override
+  Future<bool> doLogout(String tokenUser) async {
+    bool isDisconnect = false;
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    final Uri urlApiLogout = Uri.parse(ApiConstants.urlApiLogout);
+    final Map<String, String> headerLogout = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.post(urlApiLogout, headers: headerLogout);
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        isDisconnect = true;
+      } else {
+        final String error =
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        throw ErrorAppException(message: error);
+      }
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return isDisconnect;
   }
 }

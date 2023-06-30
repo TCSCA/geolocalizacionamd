@@ -14,3 +14,5 @@ class NavigationPageEvent extends NavigationEvent {
   @override
   List<Object> get props => [page, pagesMenu];
 }
+
+class NavigationBackEvent extends NavigationEvent {}
