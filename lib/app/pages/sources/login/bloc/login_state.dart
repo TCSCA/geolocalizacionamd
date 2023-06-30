@@ -41,3 +41,17 @@ class LogoutSuccessState extends LoginState {
   @override
   List<Object> get props => [];
 }
+
+class ShowFirebaseKeyState extends LoginState {
+  final String firebaseKey;
+  const ShowFirebaseKeyState({required this.firebaseKey});
+  @override
+  List<Object> get props => [firebaseKey];
+}
+
+class LogoutDoctorInAttentionState extends LoginState {
+  final String message;
+  const LogoutDoctorInAttentionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

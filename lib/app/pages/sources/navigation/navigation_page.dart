@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
+import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
+import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/amd_history_page.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_pending/amd_pending_page.dart';
+import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/main/main_page.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/profile_page.dart';
 import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
+import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
+import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
+import 'package:go_router/go_router.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -25,9 +34,42 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: currentPage,
-        children: screens,
+      body: BlocConsumer<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state is LoginShowLoadingState) {
+            LoadingBuilder(context).showLoadingIndicator(
+                context.appLocalization.titleLogoutLoading);
+          }
+          if (state is LogoutSuccessState) {
+            LoadingBuilder(context).hideOpenDialog();
+            context.go(GeoAmdRoutes.login);
+          }
+          if (state is LoginErrorState) {
+            LoadingBuilder(context).hideOpenDialog();
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions:
+                          AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {});
+                });
+            context.go(GeoAmdRoutes.login);
+          }
+        },
+        builder: (context, state) {
+          return IndexedStack(
+            index: currentPage,
+            children: screens,
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 10,

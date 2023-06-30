@@ -25,7 +25,11 @@ class ProcessResetLoginEvent extends LoginEvent {
   final String user;
   final String password;
   final String languageCode;
-  const   ProcessResetLoginEvent(this.user, this.password, this.languageCode);
+  const ProcessResetLoginEvent(this.user, this.password, this.languageCode);
   @override
   List<Object> get props => [user, password, languageCode];
+}
+
+class ShowFirebaseKeyEvent extends LoginEvent {
+  const ShowFirebaseKeyEvent();
 }

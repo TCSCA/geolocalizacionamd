@@ -7,6 +7,6 @@ abstract class BaseConfig {
   String get headerToken;
   String get headerContentType;
   String get headerContentTypeValue;
-  String get headerBiscom;
-  String get headerBiscomValue;
+  String get headerApiKey;
+  String get headerApiKeyValue;
 }
