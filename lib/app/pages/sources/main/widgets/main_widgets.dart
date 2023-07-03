@@ -171,7 +171,24 @@ class MainWidgets {
               });
         }
         if (state is ConfirmHomeServiceSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = false;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusSuccess),
+                  descriptions: AppMessages().getMessage(
+                      context, 'La atención fue confirmada con éxito'),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusSuccess,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
         }
       },
       builder: (context, state) {
@@ -296,22 +313,21 @@ class MainWidgets {
   }
 
   Widget amdInformationAssigned({required BuildContext context}) {
-    MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc.add(const ShowHomeServiceAssignedEvent());
+    //MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
+    //userMainBloc.add(const ShowHomeServiceAssignedEvent());
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is MainShowLoadingState) {
-            LoadingBuilder(context)
-                .showLoadingIndicator('Procesando su solicitud');
+            LoadingBuilder(context).showLoadingIndicator(state.message);
           }
           /* if (state is ConfirmHomeServiceSuccessState) {
             //LoadingBuilder(context).hideOpenDialog();
             context.go(GeoAmdRoutes.medicalCareAccepted);
           } */
           if (state is DisallowHomeServiceSuccessState) {
-            //LoadingBuilder(context).hideOpenDialog();
+            LoadingBuilder(context).hideOpenDialog();
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -330,7 +346,7 @@ class MainWidgets {
                 });
           }
           if (state is HomeServiceErrorState) {
-            //LoadingBuilder(context).hideOpenDialog();
+            LoadingBuilder(context).hideOpenDialog();
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -352,11 +368,12 @@ class MainWidgets {
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */
         builder: (context, state) {
-          //LoadingBuilder(context).hideOpenDialog();
           if (state is HomeServiceSuccessState) {
+            //LoadingBuilder(context).hideOpenDialog();
             final homeServiceAssigned = (state).homeServiceAssigned;
             return AmdPendingCard(homeService: homeServiceAssigned);
           } else {
+            //LoadingBuilder(context).hideOpenDialog();
             return AmdPendingCardEmpty(
                 title: 'Sin Orden para atender',
                 message: AppMessages()

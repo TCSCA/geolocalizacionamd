@@ -7,9 +7,10 @@ abstract class MainState extends Equatable {
 }
 
 class MainShowLoadingState extends MainState {
-  const MainShowLoadingState();
+  final String message;
+  const MainShowLoadingState({required this.message});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
 }
 
 class MainInitial extends MainState {

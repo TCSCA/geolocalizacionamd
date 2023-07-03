@@ -149,7 +149,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceAssignedEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        //emit(const MainShowLoadingState());
+        /* emit(const MainShowLoadingState(
+            message: 'Consultando Atenciones Pendientes')); */
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
@@ -176,7 +177,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceInAttentionEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        //emit(const MainShowLoadingState());
+        //emit(const MainShowLoadingState(message: 'Procesando su solicitud'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
@@ -201,15 +202,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<ConfirmAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState());
+        emit(const MainShowLoadingState(message: 'Confirmando la orden'));
         var userHomeService = await doctorCareController
             .doConfirmHomeService(event.idHomeService);
         await doctorCareController.changeDoctorInAttention('true');
         try {
           //Desconectar para que no reciba otra atencion.
           await doctorCareController.doDisconectDoctorAmd();
-          doctorAvailableSwitch = false;
         } catch (e) {/*Nada que hacer si falla*/}
+        doctorAvailableSwitch = false;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
       } on ErrorAppException catch (exapp) {
@@ -227,12 +228,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<DisallowAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState());
+        emit(const MainShowLoadingState(message: 'Rechazando la orden'));
         var userHomeService =
             await doctorCareController.doRejectHomeService(event.idHomeService);
-        await doctorCareController.changeDoctorInAttention('false');
 
         if (userHomeService) {
+          await doctorCareController.changeDoctorInAttention('false');
+          doctorAvailableSwitch = false;
           emit(const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'));
         } else {
           emit(const HomeServiceErrorState(message: 'MSGAPP-005'));
@@ -249,12 +251,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<CompleteAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState());
+        //emit(const MainShowLoadingState(message: 'Finalizando la orden'));
         var userHomeService = await doctorCareController
             .doCompleteHomeService(event.idHomeService);
         if (userHomeService) {
           //doctorAvailableSwitch = false;
           await doctorCareController.changeDoctorInAttention('false');
+          doctorAvailableSwitch = false;
           emit(const CompleteHomeServiceSuccessState(message: 'MSGAPP-007'));
         } else {
           emit(const HomeServiceErrorState(message: 'MSGAPP-005'));
