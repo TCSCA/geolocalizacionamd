@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:geolocalizacionamd/app/api/mappings/home_service_mapping.dart';
-import 'package:geolocalizacionamd/app/errors/error_empty_data.dart';
 import 'package:http/http.dart' as http;
+import '/app/api/mappings/home_service_mapping.dart';
+import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/photo_mapping.dart';
 import '/app/errors/exceptions.dart';

@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:geolocalizacionamd/app/api/mappings/home_service_mapping.dart';
-import 'package:geolocalizacionamd/app/core/models/connect_doctor_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/services/save_data_service.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
+import '/app/api/mappings/home_service_mapping.dart';
+import '/app/core/models/connect_doctor_model.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/services/save_data_service.dart';
+import '/app/errors/exceptions.dart';
 
 class SaveDataServiceImp implements SaveDataService {
   @override

@@ -1,17 +1,14 @@
-import 'package:geolocalizacionamd/app/pages/sources/amd_history/amd_history_page.dart';
-import 'package:geolocalizacionamd/app/pages/sources/amd_location/amd_location_page.dart';
-import 'package:geolocalizacionamd/app/pages/sources/amd_pending/amd_pending_page.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/main_page.dart';
-import 'package:geolocalizacionamd/app/pages/sources/navigation/navigation_page.dart';
-import 'package:geolocalizacionamd/app/pages/sources/profile/profile_page.dart';
 import 'package:go_router/go_router.dart';
-
-import '../sources/login/login_page.dart';
+import '/app/pages/sources/amd_history/amd_history_page.dart';
+import '/app/pages/sources/amd_location/amd_location_page.dart';
+import '/app/pages/sources/amd_pending/amd_pending_page.dart';
+import '/app/pages/sources/main/main_page.dart';
+import '/app/pages/sources/profile/profile_page.dart';
+import '/app/pages/sources/login/login_page.dart';
 
 class GeoAmdRoutes {
   static const login = '/';
   static const home = '/home';
-  //static const amdPending = '/amdPending';
   static const amdLocation = '/amdLocation';
   static const profile = '/profile';
   static const medicalCareAccepted = '/medicalCareAccepted';

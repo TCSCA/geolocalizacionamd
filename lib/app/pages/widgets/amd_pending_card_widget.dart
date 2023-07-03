@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
-import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
-import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/extensions/localization_ext.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/shared/dialog/custom_dialog_box.dart';
 
 class AmdPendingCard extends StatelessWidget {
   final HomeServiceModel homeService;

@@ -1,15 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
-import 'package:geolocalizacionamd/app/core/models/connect_doctor_model.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/core/models/select_model.dart';
-import 'package:geolocalizacionamd/app/errors/error_empty_data.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
 import 'package:location/location.dart' as liblocation;
+import '/app/core/controllers/doctor_care_controller.dart';
+import '/app/core/models/connect_doctor_model.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/core/models/select_model.dart';
+import '/app/errors/error_empty_data.dart';
+import '/app/errors/exceptions.dart';
+import '/app/pages/constants/app_constants.dart';
 import '/app/shared/permissions/handle_location_permissions.dart';
-
 part 'main_event.dart';
 part 'main_state.dart';
 
@@ -136,12 +136,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
     });
     on<CancelButtonAmdEvent>((event, emit) async {
-      print('CancelButtonAmdEvent in ${(event.currentToggleSwitch)}');
+      if (kDebugMode) {
+        print('CancelButtonAmdEvent in ${(event.currentToggleSwitch)}');
+      }
       if (event.currentToggleSwitch == false) {
-        print('CancelButtonAmdEvent out ${true}');
+        if (kDebugMode) {
+          print('CancelButtonAmdEvent out ${true}');
+        }
         emit(const CancelButtonAmdState(doctorAvailable: true));
       } else {
-        print('CancelButtonAmdEvent out ${false}');
+        if (kDebugMode) {
+          print('CancelButtonAmdEvent out ${false}');
+        }
         emit(const CancelButtonAmdState(doctorAvailable: false));
       }
     });
@@ -162,7 +168,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               await doctorCareController.getHomeServiceAssigned();
           emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
         }
-      } on EmptyDataException catch (exapp) {
+      } on EmptyDataException {
         emit(const HomeServiceEmptyState());
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));

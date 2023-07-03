@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:geolocalizacionamd/app/api/mappings/city_mapping.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/mappings/menu_mapping.dart';
-import 'package:geolocalizacionamd/app/api/mappings/state_mapping.dart';
-import '../../errors/exceptions.dart';
+import '/app/api/mappings/city_mapping.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/menu_mapping.dart';
+import '/app/api/mappings/state_mapping.dart';
+import '/app/errors/exceptions.dart';
 import 'lists_service.dart';
 
 class ListsServiceImp implements ListsService {

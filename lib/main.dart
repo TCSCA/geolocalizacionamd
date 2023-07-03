@@ -1,21 +1,21 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
-import 'package:geolocalizacionamd/app/core/controllers/login_controller.dart';
-import 'package:geolocalizacionamd/app/core/controllers/menu_controller.dart';
-import 'package:geolocalizacionamd/app/environments/environment.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/navigation/bloc/navigation_bloc.dart';
-import 'app/core/controllers/save_data_storage.dart';
-import 'app/pages/routes/geoamd_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/core/controllers/doctor_care_controller.dart';
+import '/app/core/controllers/login_controller.dart';
+import '/app/core/controllers/menu_controller.dart';
+import '/app/environments/environment.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/pages/sources/login/bloc/login_bloc.dart';
+import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
+import '/app/core/controllers/save_data_storage.dart';
+import '/app/pages/routes/geoamd_route.dart';
+import '/app/pages/sources/main/bloc/main_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -93,7 +93,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   showFlutterNotification(message);
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  print('Handling a background message ${message.messageId}');
+  if (kDebugMode) {
+    print('Handling a background message ${message.messageId}');
+  }
 }
 
 Future<void> setupFlutterNotifications() async {
@@ -141,8 +143,6 @@ void showFlutterNotification(RemoteMessage message) {
           playSound: true,
           enableVibration: true,
           channelDescription: channel.description,
-          // TODO add a proper drawable resource to android, for now using
-          //      one that already exists in example app.
           icon: 'launch_background',
         ),
       ),

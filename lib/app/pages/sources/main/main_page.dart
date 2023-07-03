@@ -1,15 +1,7 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/amd_pending_card_widget.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/title_bar_widget.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
-
+import '/app/pages/widgets/common_widgets.dart';
+import '/app/pages/widgets/title_bar_widget.dart';
 import 'widgets/main_widgets.dart';
 
 class MainPage extends StatefulWidget {

@@ -1,15 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:geolocalizacionamd/app/core/controllers/amd_pending_controller.dart';
-import 'package:geolocalizacionamd/app/core/models/amd_pending_model.dart';
-
-import '../../../../api/mappings/amd_pending_mapping.dart';
-import '../../../../errors/error_app_exception.dart';
-import '../../../../errors/error_general_exception.dart';
-import '../../../constants/app_constants.dart';
-
+import '/app/core/controllers/amd_pending_controller.dart';
+import '/app/core/models/amd_pending_model.dart';
+import '/app/errors/error_app_exception.dart';
+import '/app/errors/error_general_exception.dart';
+import '/app/pages/constants/app_constants.dart';
 part 'amd_pending_event.dart';
-
 part 'amd_pending_state.dart';
 
 class AmdPendingBloc extends Bloc<AmdPendingEvent, AmdPendingState> {
