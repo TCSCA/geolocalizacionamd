@@ -146,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                             key: userFieldKey,
                             controller: userController,
                             keyboardType: TextInputType.text,
@@ -201,6 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                             key: passwordFieldKey,
                             controller: passwordController,
                             keyboardType: TextInputType.text,
