@@ -8,6 +8,7 @@ import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/widgets/amd_pending_card_widget.dart';
 import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
 import 'package:geolocalizacionamd/app/pages/widgets/title_bar_widget.dart';
+import 'package:geolocalizacionamd/app/shared/method/back_buttom.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import 'widgets/main_widgets.dart';
@@ -33,32 +34,35 @@ class _MainPageState extends State<MainPage> with MainWidgets {
   Widget build(BuildContext context) {
     //MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     //userMainBloc.add(const ShowHomeServiceAssignedEvent());
-    return SafeArea(
-      child: Scaffold(
-        appBar: generateAppBar(context: context),
-        body: MultiBlocListener(
-          listeners: [
-            //NavigationBloc y LogoutBloc comunes en todas las paginas.
-            AppCommonWidgets.listenerNavigationBloc(),
-            AppCommonWidgets.listenerLogoutBloc()
-          ],
-          child: Container(
-            decoration: const BoxDecoration(color: Colors.white),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  SizedBox(height: dataSpaceHeight),
-                  createDoctorInfo(context: context),
-                  SizedBox(height: dataSpaceHeight),
-                  serviceAvailabilityDashboard(context: context),
-                  SizedBox(height: dataSpaceHeight),
-                  const TitleBar(title: 'Atenciones Pendientes:'),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  amdInformationAssigned(context: context)
-                ],
+    return WillPopScope(
+      onWillPop: () async => backButtonCondition(),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: generateAppBar(context: context),
+          body: MultiBlocListener(
+            listeners: [
+              //NavigationBloc y LogoutBloc comunes en todas las paginas.
+              AppCommonWidgets.listenerNavigationBloc(),
+              AppCommonWidgets.listenerLogoutBloc()
+            ],
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: dataSpaceHeight),
+                    createDoctorInfo(context: context),
+                    SizedBox(height: dataSpaceHeight),
+                    serviceAvailabilityDashboard(context: context),
+                    SizedBox(height: dataSpaceHeight),
+                    const TitleBar(title: 'Atenciones Pendientes:'),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    amdInformationAssigned(context: context)
+                  ],
+                ),
               ),
             ),
           ),
