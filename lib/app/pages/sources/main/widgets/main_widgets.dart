@@ -188,6 +188,9 @@ class MainWidgets {
                 );
               });
         }
+        if (state is DisallowHomeServiceSuccessState) {
+          doctorAvailableSwitch = false;
+        }
       },
       builder: (context, state) {
         return Container(
