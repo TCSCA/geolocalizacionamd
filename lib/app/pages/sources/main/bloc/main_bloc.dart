@@ -240,7 +240,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
         if (userHomeService) {
           await doctorCareController.changeDoctorInAttention('false');
-          doctorAvailableSwitch = false;
+          //doctorAvailableSwitch = false;
           emit(const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'));
         } else {
           emit(const HomeServiceErrorState(message: 'MSGAPP-005'));

@@ -188,9 +188,9 @@ class MainWidgets {
                 );
               });
         }
-        if (state is DisallowHomeServiceSuccessState) {
+        /* if (state is DisallowHomeServiceSuccessState) {
           doctorAvailableSwitch = false;
-        }
+        } */
       },
       builder: (context, state) {
         return Container(
@@ -314,8 +314,8 @@ class MainWidgets {
   }
 
   Widget amdInformationAssigned({required BuildContext context}) {
-    //MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-    //userMainBloc.add(const ShowHomeServiceAssignedEvent());
+    MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
+    userMainBloc.add(const ShowHomeServiceAssignedEvent());
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
       child: BlocConsumer<MainBloc, MainState>(

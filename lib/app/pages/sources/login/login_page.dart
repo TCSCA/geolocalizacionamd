@@ -403,7 +403,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: const Text.rich(
                           TextSpan(
-                            text: 'Al pulsar ingresar, acepta los ',
+                            text: 'Al pulsar Ingresar, acepta los ',
                             style: TextStyle(
                               color: Colors.white,
                             ),

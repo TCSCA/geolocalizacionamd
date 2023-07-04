@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../shared/method/back_button_action.dart';
+import '/app/shared/method/back_button_action.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
@@ -52,6 +52,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                     child: BlocConsumer<MainBloc, MainState>(
                       listener: (context, state) {
                         if (state is CompleteHomeServiceSuccessState) {
+                          /* BlocProvider.of<MainBloc>(context)
+                              .doctorAvailableSwitch = false; */
                           showDialog(
                               context: context,
                               barrierDismissible: false,
