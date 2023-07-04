@@ -8,6 +8,7 @@ import '/app/pages/messages/app_messages.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
+import '/app/extensions/localization_ext.dart';
 
 class AmdPendingPage extends StatefulWidget {
   const AmdPendingPage({super.key});
@@ -287,10 +288,28 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                 borderRadius:
                                                     BorderRadius.circular(30))),
                                         onPressed: () {
-                                          BlocProvider.of<MainBloc>(context).add(
-                                              CompleteAmdEvent(state
-                                                  .homeServiceConfirmed
-                                                  .idHomeService));
+                                          showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return CustomDialogBox(
+                                                    title: context
+                                                        .appLocalization
+                                                        .titleWarning,
+                                                    descriptions:
+                                                        '¿Estas seguro de finalizar la orden?',
+                                                    isConfirmation: true,
+                                                    dialogAction: () => BlocProvider
+                                                            .of<MainBloc>(
+                                                                context)
+                                                        .add(CompleteAmdEvent(state
+                                                            .homeServiceConfirmed
+                                                            .idHomeService)),
+                                                    type: AppConstants
+                                                        .statusWarning,
+                                                    isdialogCancel: false,
+                                                    dialogCancel: () {});
+                                              });
                                         },
                                         child: Ink(
                                           decoration: BoxDecoration(
