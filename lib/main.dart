@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/controllers/login_controller.dart';
 import '/app/core/controllers/menu_controller.dart';
@@ -17,9 +18,14 @@ import '/app/core/controllers/save_data_storage.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
 import 'firebase_options.dart';
-import 'package:flutter/services.dart';
 
 void main() async {
+
+  const String environment = String.fromEnvironment(
+      AppConstants.environmentVariableName,
+      defaultValue: AppConstants.environmentDevelopment);
+  Environment().initConfig(environment);
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -30,17 +36,11 @@ void main() async {
   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, sound: true, badge: true);
   String? tokenFirebaseRegister = await FirebaseMessaging.instance.getToken(
-      vapidKey:
-          'BM07FHl26hrq8ezg-zRsT0uqdSAGqtO-jeA6Pvsg1rEBtzQCEwUPnmWOlPOt3s7XzbDrbB1RTm-_OQWPWAIoUVc');
+      vapidKey: Environment().config.idAppMessagingFirebase);
   if (kDebugMode) {
     print('tokenFirebaseRegister: $tokenFirebaseRegister');
   }
   await SaveDataStorage().writeDataStorage(tokenFirebaseRegister!);
-
-  const String environment = String.fromEnvironment(
-      AppConstants.environmentVariableName,
-      defaultValue: Environment.dev);
-  Environment().initConfig(environment);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

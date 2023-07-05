@@ -21,4 +21,6 @@ class ProductionConfig implements BaseConfig {
   String get headerApiKey => "ApiKeyGpsSHA";
   @override
   String get headerApiKeyValue => "ShA.GpS.123.";
+  @override
+  String get idAppMessagingFirebase => "";
 }

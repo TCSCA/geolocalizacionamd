@@ -21,4 +21,7 @@ class TestingConfig implements BaseConfig {
   String get headerApiKey => "ApiKeyGpsSHA";
   @override
   String get headerApiKeyValue => "ShA.GpS.123.";
+  @override
+  String get idAppMessagingFirebase =>
+      "BM07FHl26hrq8ezg-zRsT0uqdSAGqtO-jeA6Pvsg1rEBtzQCEwUPnmWOlPOt3s7XzbDrbB1RTm-_OQWPWAIoUVc";
 }

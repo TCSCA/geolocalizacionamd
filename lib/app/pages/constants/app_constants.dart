@@ -4,6 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class AppConstants {
   AppConstants._();
   static const String environmentVariableName = 'ENVIRONMENT';
+  static const String environmentDevelopment = 'DEV';
+  static const String environmentTesting = 'QA';
+  static const String environmentProduction = 'PROD';
   static const String languageCodeEn = 'en';
   static const String languageCodeEs = 'es';
   static const String profileDefaultImage = 'assets/images/profile_default.png';
