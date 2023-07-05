@@ -2,7 +2,7 @@ import 'base_config.dart';
 
 class ProductionConfig implements BaseConfig {
   @override
-  String get appName => "Geolocalización AMD";
+  String get appName => "Telemedicina24 AMD";
   @override
   String get apiHost => "";
   @override

@@ -2,7 +2,7 @@ import 'base_config.dart';
 
 class TestingConfig implements BaseConfig {
   @override
-  String get appName => "QA Geolocalización AMD";
+  String get appName => "QA Telemedicina24 AMD";
   @override
   String get apiHost => "https://mid.your24sevendoc.com/homeService/api";
   @override
