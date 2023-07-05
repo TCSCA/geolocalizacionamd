@@ -255,14 +255,14 @@ class MainWidgets {
                     if (doctorAvailableSwitch) ...[
                       FloatingActionButton.extended(
                         label: const Text(
-                          'No disponible',
+                          'Disponible',
                           style: TextStyle(
                               fontFamily: 'TitlesHighlight',
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
-                        backgroundColor: Colors.grey,
-                        icon: const Icon(Icons.power_settings_new,
+                        backgroundColor: Colors.green,
+                        icon: const Icon(Icons.person_pin_circle,
                             size: 24.0, color: Colors.white),
                         onPressed: () {
                           showDialog(
@@ -286,15 +286,15 @@ class MainWidgets {
                     ] else ...[
                       FloatingActionButton.extended(
                         label: const Text(
-                          'Disponible',
+                          'No disponible',
                           style: TextStyle(
                               fontFamily: 'TitlesHighlight',
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.grey,
                         icon: const Icon(
-                          Icons.person_pin_circle,
+                          Icons.power_settings_new,
                           size: 24.0,
                           color: Colors.white,
                         ),
