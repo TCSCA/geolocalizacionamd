@@ -18,6 +18,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'app/pages/sources/main/bloc/main_bloc.dart';
 import 'firebase_options.dart';
 
+GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -65,6 +67,7 @@ class MyApp extends StatelessWidget {
         })
       ],
       child: MaterialApp.router(
+        key: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: Environment().config.appName,
         localizationsDelegates: const [

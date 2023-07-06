@@ -5,11 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocalizacionamd/app/core/controllers/secure_storage_controller.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../renew_password/renew_password_page.dart';
@@ -70,14 +68,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen(_firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message)  async{
-      print('AAAAAAALEEEERRRRRRTAAAAAA:  ${message.notification?.title}');
-
-      Navigator.push(context, MaterialPageRoute(builder: (context) => RenewPasswordPage()));
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {});
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -552,7 +545,6 @@ class _LoginPageState extends State<LoginPage> {
       await getAutoStartPermission();
     }*/
 
-
     try {
       availableBiometric = await auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
@@ -706,7 +698,6 @@ class _BiometricWidget extends StatelessWidget {
   }
 }
 
-
 bool isFlutterLocalNotificationsInitialized = false;
 late AndroidNotificationChannel channel;
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -728,7 +719,7 @@ Future<void> setupFlutterNotifications() async {
     'high_importance_channel', // id
     'High Importance Notifications', // title
     description:
-    'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.', // description
     importance: Importance.high,
   );
 
@@ -736,7 +727,7 @@ Future<void> setupFlutterNotifications() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   /// Update the iOS foreground notification presentation options to allow
