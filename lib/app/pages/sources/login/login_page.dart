@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormFieldState> userFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> passwordFieldKey =
       GlobalKey<FormFieldState>();
-  final TextEditingController userController = TextEditingController();
+   TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _visiblePasswordOff = true;
 
@@ -42,17 +42,16 @@ class _LoginPageState extends State<LoginPage> {
   late SharedPreferences prefs;
 
   ///Variables de huella
-  bool _canCheckBiometric = false;
-  List<BiometricType> _availableBiometric = [];
+  /*bool _canCheckBiometric = false;
+  List<BiometricType> _availableBiometric = [];*/
   final auth = LocalAuthentication();
 
   ///Vareiables  para veirificar usuario guardado
   String userSave = '';
   bool checkUserSave = false;
 
-  //bool isNotPermanentlyDenied = false;
-  String denyFingerprint = '';
-  bool isUsedFingerprint = false;
+/*  String denyFingerprint = '';
+  bool isUsedFingerprint = false;*/
 
   @override
   void initState() {
@@ -88,13 +87,12 @@ class _LoginPageState extends State<LoginPage> {
                       context.appLocalization.titleLoginLoading);
                 }
                 if (state is LoginSuccessState) {
-                  ///final SharedPreferences prefs = await SharedPreferences.getInstance();
                   if (checkUserSave) {
                     await prefs.setString('userSave', userController.text);
 
                     await prefs.setBool('checkUserSave', checkUserSave);
 
-                    if (!isUsedFingerprint)
+                    /*if (!isUsedFingerprint)
                       await prefs.setString('password', passwordController.text);
 
                     if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
@@ -117,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                                     prefs.setString('denyFingerprint', 'N'),
                               );
                             });
-                    }
+                    }*/
                   }
 
                   LoadingBuilder(context).hideOpenDialog();
@@ -358,10 +356,10 @@ class _LoginPageState extends State<LoginPage> {
 
                                     await prefs.remove('userSave');
                                     await prefs.remove('checkUserSave');
-                                    await prefs.remove('denyFingerprint');
+                                   // await prefs.remove('denyFingerprint');
                                     await prefs.remove('password');
                                     userSave = '';
-                                    denyFingerprint = '';
+                                   // denyFingerprint = '';
                                   }
 
                                   setState(() {});
@@ -423,13 +421,13 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 30.0),
+                     /* const SizedBox(height: 30.0),
                       if (_canCheckBiometric &&
                           (prefs.getBool('checkUserSave') ?? false) &&
                           denyFingerprint != 'N')
-                        _BiometricWidget(onTap: () => _authenticate(context)),
+                        _BiometricWidget(onTap: () => _authenticate(context)),*/
                       const SizedBox(height: 50.0),
-                      Container(
+                      /*Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(horizontal: 40),
                         //width: double.infinity,
@@ -448,7 +446,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(
                         height: 20,
-                      ),
+                      ),*/
                       InkWell(
                         onTap: () => launchUrl(
                           Uri.parse(
@@ -510,7 +508,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (!mounted) return;
     setState(() {
-      _canCheckBiometric = canCheckBiometric;
+      //_canCheckBiometric = canCheckBiometric;
     });
   }
 
@@ -549,7 +547,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     setState(() {
-      _availableBiometric = availableBiometric;
+     // _availableBiometric = availableBiometric;
     });
   }
 
@@ -587,7 +585,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (authenticated) {
         final String languageCode = context.localization.languageCode;
-        isUsedFingerprint = true;
+        //isUsedFingerprint = true;
         BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
             userSave, prefs.getString('password')!, languageCode));
       } else {
@@ -655,7 +653,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _validateUserSave() async {
     prefs = await SharedPreferences.getInstance();
-    denyFingerprint = prefs.getString('denyFingerprint') ?? '';
+    //denyFingerprint = prefs.getString('denyFingerprint') ?? '';
     userSave = prefs.getString('userSave') ?? '';
     checkUserSave = prefs.getBool('checkUserSave') ?? false;
 
