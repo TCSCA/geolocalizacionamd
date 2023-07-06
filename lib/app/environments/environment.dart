@@ -1,3 +1,4 @@
+import '/app/pages/constants/app_constants.dart';
 import 'base_config.dart';
 import 'dev_config.dart';
 import 'prod_config.dart';
@@ -12,10 +13,6 @@ class Environment {
 
   static final Environment _singleton = Environment._internal();
 
-  static const String dev = 'DEV';
-  static const String qa = 'QA';
-  static const String prod = 'PROD';
-
   late BaseConfig config;
 
   initConfig(String environment) {
@@ -24,9 +21,9 @@ class Environment {
 
   BaseConfig _getConfig(String environment) {
     switch (environment) {
-      case Environment.prod:
+      case AppConstants.environmentProduction:
         return ProductionConfig();
-      case Environment.qa:
+      case AppConstants.environmentTesting:
         return TestingConfig();
       default:
         return DeveloperConfig();

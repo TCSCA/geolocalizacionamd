@@ -8,7 +8,7 @@
         android:protectionLevel="signature" />
 
    <application
-        android:label="Geolocalización AMD"
+        android:label="Telemedicina24 AMD"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

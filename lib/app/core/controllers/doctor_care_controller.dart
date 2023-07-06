@@ -1,16 +1,16 @@
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/mappings/register_date_mapping.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service_implement.dart';
-import 'package:geolocalizacionamd/app/api/services/lists_service.dart';
-import 'package:geolocalizacionamd/app/api/services/lists_service_implement.dart';
-import 'package:geolocalizacionamd/app/api/services/save_data_service.dart';
-import 'package:geolocalizacionamd/app/api/services/save_data_service_implement.dart';
-import 'package:geolocalizacionamd/app/core/models/connect_doctor_model.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/core/models/select_model.dart';
-import 'package:geolocalizacionamd/app/errors/error_empty_data.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/register_date_mapping.dart';
+import '/app/api/services/consult_data_service.dart';
+import '/app/api/services/consult_data_service_implement.dart';
+import '/app/api/services/lists_service.dart';
+import '/app/api/services/lists_service_implement.dart';
+import '/app/api/services/save_data_service.dart';
+import '/app/api/services/save_data_service_implement.dart';
+import '/app/core/models/connect_doctor_model.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/core/models/select_model.dart';
+import '/app/errors/error_empty_data.dart';
+import '/app/errors/exceptions.dart';
 
 import 'secure_storage_controller.dart';
 

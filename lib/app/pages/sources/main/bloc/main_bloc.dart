@@ -1,15 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
-import 'package:geolocalizacionamd/app/core/models/connect_doctor_model.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/core/models/select_model.dart';
-import 'package:geolocalizacionamd/app/errors/error_empty_data.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
 import 'package:location/location.dart' as liblocation;
+import '/app/core/controllers/doctor_care_controller.dart';
+import '/app/core/models/connect_doctor_model.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/core/models/select_model.dart';
+import '/app/errors/error_empty_data.dart';
+import '/app/errors/exceptions.dart';
+import '/app/pages/constants/app_constants.dart';
 import '/app/shared/permissions/handle_location_permissions.dart';
-
 part 'main_event.dart';
 part 'main_state.dart';
 
@@ -24,18 +24,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowLocationDoctorStatesEvent>((event, emit) async {
       List<SelectModel> listAllStates = [];
       try {
+        emit(
+            const LocationShowLoadingState(message: 'Procesando su solicitud'));
         listAllStates =
             await doctorCareController.getListStates(event.countryCode);
         emit(LocationStatesSuccessState(listStates: listAllStates));
       } on ErrorAppException catch (exapp) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exapp.message));
+        emit(LocationErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exgen.message));
+        emit(LocationErrorState(message: exgen.message));
       } catch (unknowerror) {
-        emit(const DoctorServiceErrorState(
-            doctorAvailable: false,
+        emit(const LocationErrorState(
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
@@ -43,19 +42,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowLocationDoctorCitiesEvent>((event, emit) async {
       List<SelectModel> listAllCities = [];
       try {
+        emit(
+            const LocationShowLoadingState(message: 'Procesando su solicitud'));
         listAllCities =
             await doctorCareController.getListCities(event.stateCode);
         emit(LocationCitiesSuccessState(
             listCities: listAllCities, selectedState: event.stateCode));
       } on ErrorAppException catch (exapp) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exapp.message));
+        emit(LocationErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exgen.message));
+        emit(LocationErrorState(message: exgen.message));
       } catch (unknowerror) {
-        emit(const DoctorServiceErrorState(
-            doctorAvailable: false,
+        emit(const LocationErrorState(
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
@@ -77,6 +75,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 latitude: latitudeUser!,
                 longitude: longitudeUser!,
                 cityId: int.parse(event.locationCity));
+                
+            emit(const LocationShowLoadingState(
+                message: 'Activando su servicio'));
             bool isConnect =
                 await doctorCareController.doConnectDoctorAmd(requestConnect);
 
@@ -112,6 +113,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<DisconectDoctorAmdEvent>((event, emit) async {
       //doctorAvailableSwitch = true;
       try {
+        emit(const MainShowLoadingState(message: 'Desactivando su servicio'));
         bool isDisconect = await doctorCareController.doDisconectDoctorAmd();
         if (isDisconect) {
           doctorAvailableSwitch = false;
@@ -136,12 +138,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
     });
     on<CancelButtonAmdEvent>((event, emit) async {
-      print('CancelButtonAmdEvent in ${(event.currentToggleSwitch)}');
+      if (kDebugMode) {
+        print('CancelButtonAmdEvent in ${(event.currentToggleSwitch)}');
+      }
       if (event.currentToggleSwitch == false) {
-        print('CancelButtonAmdEvent out ${true}');
+        if (kDebugMode) {
+          print('CancelButtonAmdEvent out ${true}');
+        }
         emit(const CancelButtonAmdState(doctorAvailable: true));
       } else {
-        print('CancelButtonAmdEvent out ${false}');
+        if (kDebugMode) {
+          print('CancelButtonAmdEvent out ${false}');
+        }
         emit(const CancelButtonAmdState(doctorAvailable: false));
       }
     });
@@ -149,7 +157,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceAssignedEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        //emit(const MainShowLoadingState());
+        /* emit(const MainShowLoadingState(
+            message: 'Consultando Atenciones Pendientes')); */
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
@@ -161,7 +170,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
               await doctorCareController.getHomeServiceAssigned();
           emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
         }
-      } on EmptyDataException catch (exapp) {
+      } on EmptyDataException {
         emit(const HomeServiceEmptyState());
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
@@ -176,7 +185,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceInAttentionEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        //emit(const MainShowLoadingState());
+        //emit(const MainShowLoadingState(message: 'Procesando su solicitud'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
@@ -201,15 +210,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<ConfirmAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState());
+        emit(const MainShowLoadingState(message: 'Confirmando la orden'));
         var userHomeService = await doctorCareController
             .doConfirmHomeService(event.idHomeService);
         await doctorCareController.changeDoctorInAttention('true');
         try {
           //Desconectar para que no reciba otra atencion.
           await doctorCareController.doDisconectDoctorAmd();
-          doctorAvailableSwitch = false;
         } catch (e) {/*Nada que hacer si falla*/}
+        doctorAvailableSwitch = false;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
       } on ErrorAppException catch (exapp) {
@@ -227,12 +236,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<DisallowAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState());
+        emit(const MainShowLoadingState(message: 'Rechazando la orden'));
         var userHomeService =
             await doctorCareController.doRejectHomeService(event.idHomeService);
-        await doctorCareController.changeDoctorInAttention('false');
 
         if (userHomeService) {
+          await doctorCareController.changeDoctorInAttention('false');
+          //doctorAvailableSwitch = false;
           emit(const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'));
         } else {
           emit(const HomeServiceErrorState(message: 'MSGAPP-005'));
@@ -249,12 +259,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<CompleteAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState());
+        //emit(const MainShowLoadingState(message: 'Finalizando la orden'));
         var userHomeService = await doctorCareController
             .doCompleteHomeService(event.idHomeService);
         if (userHomeService) {
           //doctorAvailableSwitch = false;
           await doctorCareController.changeDoctorInAttention('false');
+          doctorAvailableSwitch = false;
           emit(const CompleteHomeServiceSuccessState(message: 'MSGAPP-007'));
         } else {
           emit(const HomeServiceErrorState(message: 'MSGAPP-005'));

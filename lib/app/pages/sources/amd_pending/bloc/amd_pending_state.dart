@@ -10,9 +10,9 @@ class AmdPendingInitial extends AmdPendingState {
 }
 
 class IsAmdPendingState extends AmdPendingState {
-  AmdPendingModel amdPendingModel;
+  final AmdPendingModel amdPendingModel;
 
-  IsAmdPendingState({required this.amdPendingModel});
+  const IsAmdPendingState({required this.amdPendingModel});
 
   @override
   List<Object?> get props => [amdPendingModel];
@@ -24,7 +24,6 @@ class IsNotAmdPendingState extends AmdPendingState {
   const IsNotAmdPendingState({required this.message});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [message];}
 
 class IsLoadingAmdPendingState extends AmdPendingState {

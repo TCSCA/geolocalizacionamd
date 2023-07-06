@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocalizacionamd/app/core/models/menu_model.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/navigation/bloc/navigation_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
+import '/app/core/models/menu_model.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/pages/sources/login/bloc/login_bloc.dart';
+import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
+import '/app/pages/widgets/common_widgets.dart';
 
 class AmdHistoryWidgets {
   PreferredSizeWidget generateAppBarWithTabBar(

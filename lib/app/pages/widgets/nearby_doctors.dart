@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geolocalizacionamd/app/core/models/doctor_model.dart';
+import '/app/core/models/doctor_model.dart';
 
 class NearbyDoctors extends StatelessWidget {
   const NearbyDoctors({Key? key}) : super(key: key);

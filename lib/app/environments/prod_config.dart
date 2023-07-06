@@ -2,7 +2,7 @@ import 'base_config.dart';
 
 class ProductionConfig implements BaseConfig {
   @override
-  String get appName => "Geolocalización AMD";
+  String get appName => "Telemedicina24 AMD";
   @override
   String get apiHost => "";
   @override
@@ -21,4 +21,6 @@ class ProductionConfig implements BaseConfig {
   String get headerApiKey => "ApiKeyGpsSHA";
   @override
   String get headerApiKeyValue => "ShA.GpS.123.";
+  @override
+  String get idAppMessagingFirebase => "";
 }

@@ -7,9 +7,10 @@ abstract class MainState extends Equatable {
 }
 
 class MainShowLoadingState extends MainState {
-  const MainShowLoadingState();
+  final String message;
+  const MainShowLoadingState({required this.message});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
 }
 
 class MainInitial extends MainState {
@@ -111,4 +112,18 @@ class ChangeLocationDoctorCityState extends MainState {
 
 class HomeServiceEmptyState extends MainState {
   const HomeServiceEmptyState();
+}
+
+class LocationShowLoadingState extends MainState {
+  final String message;
+  const LocationShowLoadingState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class LocationErrorState extends MainState {
+  final String message;
+  const LocationErrorState({required this.message});
+  @override
+  List<Object> get props => [message];
 }

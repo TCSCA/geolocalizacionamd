@@ -2,7 +2,7 @@ import 'base_config.dart';
 
 class DeveloperConfig implements BaseConfig {
   @override
-  String get appName => "DEV Geolocalización AMD";
+  String get appName => "DEV Telemedicina24 AMD";
   @override
   String get apiHost => "https://desa.your24sevendoc.com/homeService/api";
   @override
@@ -21,4 +21,7 @@ class DeveloperConfig implements BaseConfig {
   String get headerApiKey => "ApiKeyGpsSHA";
   @override
   String get headerApiKeyValue => "ShA.GpS.123.";
+  @override
+  String get idAppMessagingFirebase =>
+      "BM07FHl26hrq8ezg-zRsT0uqdSAGqtO-jeA6Pvsg1rEBtzQCEwUPnmWOlPOt3s7XzbDrbB1RTm-_OQWPWAIoUVc";
 }

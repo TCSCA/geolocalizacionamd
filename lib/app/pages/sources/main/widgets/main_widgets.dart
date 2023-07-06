@@ -1,17 +1,15 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/models/select_model.dart';
-import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
-import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/amd_pending_card_empty_widget.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/amd_pending_card_widget.dart';
-import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
-import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+import '/app/extensions/localization_ext.dart';
+import '/app/pages/messages/app_messages.dart';
+import '/app/pages/routes/geoamd_route.dart';
+import '/app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/pages/widgets/amd_pending_card_empty_widget.dart';
+import '/app/pages/widgets/amd_pending_card_widget.dart';
+import '/app/shared/dialog/custom_dialog_box.dart';
+import '/app/shared/loading/loading_builder.dart';
 import '/app/pages/sources/login/bloc/login_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
@@ -131,7 +129,8 @@ class MainWidgets {
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
         if (state is DoctorServiceState) {
-          //LoadingBuilder(context).hideOpenDialog();
+          //desactivarservicio
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = state.doctorAvailable;
           showDialog(
               context: context,
@@ -151,7 +150,8 @@ class MainWidgets {
               });
         }
         if (state is DoctorServiceErrorState) {
-          //LoadingBuilder(context).hideOpenDialog();
+          //desactivarservicio
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = state.doctorAvailable;
           showDialog(
               context: context,
@@ -171,8 +171,28 @@ class MainWidgets {
               });
         }
         if (state is ConfirmHomeServiceSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = false;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusSuccess),
+                  descriptions: AppMessages().getMessage(
+                      context, 'La atención fue confirmada con éxito'),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusSuccess,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
         }
+        /* if (state is DisallowHomeServiceSuccessState) {
+          doctorAvailableSwitch = false;
+        } */
       },
       builder: (context, state) {
         return Container(
@@ -237,14 +257,14 @@ class MainWidgets {
                     if (doctorAvailableSwitch) ...[
                       FloatingActionButton.extended(
                         label: const Text(
-                          'No disponible',
+                          'Disponible',
                           style: TextStyle(
                               fontFamily: 'TitlesHighlight',
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
-                        backgroundColor: Colors.grey,
-                        icon: const Icon(Icons.power_settings_new,
+                        backgroundColor: Colors.green,
+                        icon: const Icon(Icons.person_pin_circle,
                             size: 24.0, color: Colors.white),
                         onPressed: () {
                           showDialog(
@@ -268,15 +288,15 @@ class MainWidgets {
                     ] else ...[
                       FloatingActionButton.extended(
                         label: const Text(
-                          'Disponible',
+                          'No disponible',
                           style: TextStyle(
                               fontFamily: 'TitlesHighlight',
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
                         ),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.grey,
                         icon: const Icon(
-                          Icons.person_pin_circle,
+                          Icons.power_settings_new,
                           size: 24.0,
                           color: Colors.white,
                         ),
@@ -303,15 +323,14 @@ class MainWidgets {
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is MainShowLoadingState) {
-            LoadingBuilder(context)
-                .showLoadingIndicator('Procesando su solicitud');
+            LoadingBuilder(context).showLoadingIndicator(state.message);
           }
           /* if (state is ConfirmHomeServiceSuccessState) {
             //LoadingBuilder(context).hideOpenDialog();
             context.go(GeoAmdRoutes.medicalCareAccepted);
           } */
           if (state is DisallowHomeServiceSuccessState) {
-            //LoadingBuilder(context).hideOpenDialog();
+            LoadingBuilder(context).hideOpenDialog();
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -330,7 +349,7 @@ class MainWidgets {
                 });
           }
           if (state is HomeServiceErrorState) {
-            //LoadingBuilder(context).hideOpenDialog();
+            LoadingBuilder(context).hideOpenDialog();
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -352,11 +371,12 @@ class MainWidgets {
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */
         builder: (context, state) {
-          //LoadingBuilder(context).hideOpenDialog();
           if (state is HomeServiceSuccessState) {
+            //LoadingBuilder(context).hideOpenDialog();
             final homeServiceAssigned = (state).homeServiceAssigned;
             return AmdPendingCard(homeService: homeServiceAssigned);
           } else {
+            //LoadingBuilder(context).hideOpenDialog();
             return AmdPendingCardEmpty(
                 title: 'Sin Orden para atender',
                 message: AppMessages()

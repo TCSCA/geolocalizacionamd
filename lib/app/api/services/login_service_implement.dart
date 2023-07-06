@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../errors/error_active_connection.dart';
-import '../../errors/exceptions.dart';
-import '../constants/api_constants.dart';
-import '../mappings/user_mapping.dart';
+import '/app/errors/error_active_connection.dart';
+import '/app/errors/exceptions.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/user_mapping.dart';
 import 'login_service.dart';
 
 class LoginServiceImp implements LoginService {

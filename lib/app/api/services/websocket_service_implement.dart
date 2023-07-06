@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-import '../constants/api_constants.dart';
+import '/app/api/constants/api_constants.dart';
 import 'websocket_service.dart';
 
 class WebSocketServiceImp extends WebSocketService {
@@ -21,13 +22,26 @@ class WebSocketServiceImp extends WebSocketService {
         stompConnectHeaders: headerWebSocket,
         //connectionTimeout: const Duration(seconds: 5),
         reconnectDelay: const Duration(milliseconds: 0),
-        onConnect: (StompFrame connectFrame) => print('Conexion exitosa'),
-        onDisconnect: (StompFrame disconnectFrame) =>
-            print('Desconexion exitosa'),
-        onStompError: (StompFrame onStompError) =>
-            print('Error en Stomp: $onStompError'),
-        onWebSocketError: (dynamic onWebSocketError) =>
-            print('Error en WebSocket: $onWebSocketError'),
+        onConnect: (StompFrame connectFrame) {
+          if (kDebugMode) {
+            print('Conexion exitosa');
+          }
+        },
+        onDisconnect: (StompFrame disconnectFrame) {
+          if (kDebugMode) {
+            print('Desconexion exitosa');
+          }
+        },
+        onStompError: (StompFrame onStompError) {
+          if (kDebugMode) {
+            print('Error en Stomp: $onStompError');
+          }
+        },
+        onWebSocketError: (dynamic onWebSocketError) {
+          if (kDebugMode) {
+            print('Error en WebSocket: $onWebSocketError');
+          }
+        },
       ));
 
       if (clientSocket != null) {
