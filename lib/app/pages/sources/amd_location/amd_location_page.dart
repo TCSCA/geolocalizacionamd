@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/method/back_button_action.dart';
 import '/app/core/models/select_model.dart';
@@ -30,7 +31,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
   @override
   Widget build(BuildContext context) {
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc.add(const ShowLocationDoctorStatesEvent('25'));
+    userMainBloc
+        .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
     return WillPopScope(
       onWillPop: () => backButtonActions(),
       child: Scaffold(
@@ -104,11 +106,16 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
             )),
         body: BlocConsumer<MainBloc, MainState>(
           listener: (context, state) {
+            if (state is LocationShowLoadingState) {
+              LoadingBuilder(context).showLoadingIndicator(state.message);
+            }
             if (state is LocationStatesSuccessState) {
+              LoadingBuilder(context).hideOpenDialog();
               stateList = state.listStates;
               //selectedState = null;
             }
             if (state is LocationCitiesSuccessState) {
+              LoadingBuilder(context).hideOpenDialog();
               cityList = state.listCities;
               selectedState = state.selectedState;
               selectedCity = null;
@@ -116,9 +123,29 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
             if (state is ChangeLocationDoctorCityState) {
               selectedCity = state.selectedCity;
             }
-            if (state is DoctorServiceState) {
-              //isServiceAvailible = state.doctorAvailable;
+            if (state is LocationErrorState) {
+              LoadingBuilder(context).hideOpenDialog();
               showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions:
+                          AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  });
+            }
+            if (state is DoctorServiceState) {
+              LoadingBuilder(context).hideOpenDialog();
+              //isServiceAvailible = state.doctorAvailable;
+              /* showDialog(
                   context: context,
                   barrierDismissible: false,
                   builder: (BuildContext context) {
@@ -133,10 +160,11 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                       isdialogCancel: false,
                       dialogCancel: () {},
                     );
-                  });
-              context.go(GeoAmdRoutes.home);
+                  }); */
+              context.go(GeoAmdRoutes.home, extra: DoctorServiceState);
             }
             if (state is DoctorServiceErrorState) {
+              LoadingBuilder(context).hideOpenDialog();
               showDialog(
                   context: context,
                   barrierDismissible: false,

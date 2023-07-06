@@ -113,3 +113,17 @@ class ChangeLocationDoctorCityState extends MainState {
 class HomeServiceEmptyState extends MainState {
   const HomeServiceEmptyState();
 }
+
+class LocationShowLoadingState extends MainState {
+  final String message;
+  const LocationShowLoadingState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class LocationErrorState extends MainState {
+  final String message;
+  const LocationErrorState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

@@ -24,18 +24,17 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowLocationDoctorStatesEvent>((event, emit) async {
       List<SelectModel> listAllStates = [];
       try {
+        emit(
+            const LocationShowLoadingState(message: 'Procesando su solicitud'));
         listAllStates =
             await doctorCareController.getListStates(event.countryCode);
         emit(LocationStatesSuccessState(listStates: listAllStates));
       } on ErrorAppException catch (exapp) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exapp.message));
+        emit(LocationErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exgen.message));
+        emit(LocationErrorState(message: exgen.message));
       } catch (unknowerror) {
-        emit(const DoctorServiceErrorState(
-            doctorAvailable: false,
+        emit(const LocationErrorState(
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
@@ -43,19 +42,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowLocationDoctorCitiesEvent>((event, emit) async {
       List<SelectModel> listAllCities = [];
       try {
+        emit(
+            const LocationShowLoadingState(message: 'Procesando su solicitud'));
         listAllCities =
             await doctorCareController.getListCities(event.stateCode);
         emit(LocationCitiesSuccessState(
             listCities: listAllCities, selectedState: event.stateCode));
       } on ErrorAppException catch (exapp) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exapp.message));
+        emit(LocationErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
-        emit(DoctorServiceErrorState(
-            doctorAvailable: false, message: exgen.message));
+        emit(LocationErrorState(message: exgen.message));
       } catch (unknowerror) {
-        emit(const DoctorServiceErrorState(
-            doctorAvailable: false,
+        emit(const LocationErrorState(
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
@@ -77,6 +75,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 latitude: latitudeUser!,
                 longitude: longitudeUser!,
                 cityId: int.parse(event.locationCity));
+                
+            emit(const LocationShowLoadingState(
+                message: 'Activando su servicio'));
             bool isConnect =
                 await doctorCareController.doConnectDoctorAmd(requestConnect);
 
@@ -112,6 +113,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<DisconectDoctorAmdEvent>((event, emit) async {
       //doctorAvailableSwitch = true;
       try {
+        emit(const MainShowLoadingState(message: 'Desactivando su servicio'));
         bool isDisconect = await doctorCareController.doDisconectDoctorAmd();
         if (isDisconect) {
           doctorAvailableSwitch = false;

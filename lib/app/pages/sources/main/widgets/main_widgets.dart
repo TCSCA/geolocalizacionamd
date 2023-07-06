@@ -129,7 +129,8 @@ class MainWidgets {
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
         if (state is DoctorServiceState) {
-          //LoadingBuilder(context).hideOpenDialog();
+          //desactivarservicio
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = state.doctorAvailable;
           showDialog(
               context: context,
@@ -149,7 +150,8 @@ class MainWidgets {
               });
         }
         if (state is DoctorServiceErrorState) {
-          //LoadingBuilder(context).hideOpenDialog();
+          //desactivarservicio
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = state.doctorAvailable;
           showDialog(
               context: context,
