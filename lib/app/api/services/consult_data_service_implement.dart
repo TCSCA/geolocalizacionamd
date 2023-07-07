@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
@@ -52,9 +53,13 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     try {
-      responseApi = await http.post(urlApiGetActiveAmdOrder,
-          headers: headerActiveAmdOrder);
-      decodeRespApi = json.decode(responseApi.body);
+      final resp =
+          await rootBundle.loadString('assets/data/amd_confirmed.json');
+      decodeRespApi = json.decode(resp);
+
+      // responseApi = await http.post(urlApiGetActiveAmdOrder,
+      //     headers: headerActiveAmdOrder);
+      // decodeRespApi = json.decode(responseApi.body);
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {

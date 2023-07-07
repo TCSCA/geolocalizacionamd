@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:location/location.dart' as liblocation;
+import '../../../../api/mappings/reason_rejection_mapping.dart';
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/models/connect_doctor_model.dart';
 import '/app/core/models/home_service_model.dart';
@@ -75,7 +76,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 latitude: latitudeUser!,
                 longitude: longitudeUser!,
                 cityId: int.parse(event.locationCity));
-                
+
             emit(const LocationShowLoadingState(
                 message: 'Activando su servicio'));
             bool isConnect =
@@ -243,10 +244,52 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         if (userHomeService) {
           await doctorCareController.changeDoctorInAttention('false');
           //doctorAvailableSwitch = false;
-          emit(const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'));
+          emit(
+            const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'),
+          );
         } else {
-          emit(const HomeServiceErrorState(message: 'MSGAPP-005'));
+          emit(
+            const HomeServiceErrorState(message: 'MSGAPP-005'),
+          );
         }
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<GetAllReasonRejectionEvent>((event, emit) async {
+      try {
+        final reasonController =
+            await doctorCareController.getReasonRejection();
+        emit(ReasonRejectionState(data: reasonController.data));
+        //   emit(ReasonRejectionState(message: ));
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<ConfirmRejectEvent>((event, emit) async {
+      try {
+        emit(const MainShowLoadingState(message: 'Rechazando la orden'));
+        var userHomeService = await doctorCareController.saveReasonRejection(
+          event.idReasonRejection,
+          event.typeReasonRejection,
+          event.reasonForRejection,
+        );
+        emit(SaveRejectionState(
+            idHomeServiceAttention: event.typeReasonRejection.toString(),
+            comment: event.reasonForRejection,
+            idReasonReject: event.idReasonRejection.toString()));
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {

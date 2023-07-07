@@ -1,3 +1,10 @@
+import 'package:geolocalizacionamd/app/api/mappings/reason_rejection_mapping.dart';
+import 'package:geolocalizacionamd/app/api/mappings/success_save_rejection_mapping.dart';
+import 'package:geolocalizacionamd/app/api/services/reason_rejection_implement.dart';
+import 'package:geolocalizacionamd/app/api/services/reason_rejection_service.dart';
+import 'package:geolocalizacionamd/app/api/services/save_rejection_implement.dart';
+import 'package:geolocalizacionamd/app/api/services/save_rejection_service.dart';
+
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/register_date_mapping.dart';
 import '/app/api/services/consult_data_service.dart';
@@ -16,8 +23,11 @@ import 'secure_storage_controller.dart';
 
 class DoctorCareController {
   final SaveDataService saveDataService = SaveDataServiceImp();
+
   final SecureStorageController secureStorageController =
       SecureStorageController();
+  final ReasonRejectionService rejectionService = ReasonRejectionImp();
+  final SaveRejectionService saveRejectionService = SaveRejectionImp();
   final ConsultDataService consultDataService = ConsultDataServiceImp();
   final ListsService listsService = ListsServiceImp();
 
@@ -253,6 +263,48 @@ class DoctorCareController {
   Future<void> changeDoctorInAttention(final String inAttention) async {
     await secureStorageController.writeSecureData(
         ApiConstants.doctorInAttentionLabel, inAttention);
+  }
+
+  Future<ReasonRejectionMapping> getReasonRejection() async {
+    late ReasonRejectionMapping rejectionResponse;
+
+    try {
+      var tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      rejectionResponse =
+          await rejectionService.getReasonRejection(tokenUser.toString());
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return rejectionResponse;
+  }
+
+  Future<SaveRejectionModel> saveReasonRejection(
+    final int idReasonRejection,
+    final int typeReasonRejection,
+    final String reasonForRejection,
+  ) async {
+    try {
+      var tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      saveRejectionService.saveRejectionService(
+        tokenUser,
+        reasonForRejection,
+        typeReasonRejection,
+        idReasonRejection,
+      );
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return {'', ''} as SaveRejectionModel;
   }
 
   DateTime parseFecha(RegisterDate registerDate) {

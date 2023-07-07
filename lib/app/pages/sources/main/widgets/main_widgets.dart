@@ -66,54 +66,56 @@ class MainWidgets {
   }
 
   Widget createDoctorInfo({required BuildContext context}) {
-    return Container(
-      color: const Color(0xFFfbfcff),
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 7,
-      child: BlocBuilder<LoginBloc, LoginState>(
-        buildWhen: (previous, current) =>
-            previous != current && current is LoginSuccessState,
-        builder: (context, state) {
-          final user = (state as LoginSuccessState).user;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: const Color(0xff2B5178),
-                    radius: 70,
-                    child: CircleAvatar(
+    return Expanded(
+      child: Container(
+        color: const Color(0xFFfbfcff),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 7,
+        child: BlocBuilder<LoginBloc, LoginState>(
+          buildWhen: (previous, current) =>
+              previous != current && current is LoginSuccessState,
+          builder: (context, state) {
+            final user = (state as LoginSuccessState).user;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
-                      radius: 90,
+                      radius: 70,
                       child: CircleAvatar(
-                        backgroundImage:
-                            Image.memory(Uint8List.fromList(user.photoPerfil))
-                                .image,
-                        radius: 55,
+                        backgroundColor: const Color(0xff2B5178),
+                        radius: 90,
+                        child: CircleAvatar(
+                          backgroundImage:
+                              Image.memory(Uint8List.fromList(user.photoPerfil))
+                                  .image,
+                          radius: 55,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 5.0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Bienvenido(a)',
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18)),
-                      Text(user.name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20))
-                    ],
-                  )
-                ],
-              ),
-            ],
-          );
-        },
+                    const SizedBox(width: 5.0),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Bienvenido(a)',
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18)),
+                        Text(user.name,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20))
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -233,16 +235,16 @@ class MainWidgets {
                 const SizedBox(
                   height: 8.0,
                 ),
-                Row(
+                const Row(
                   children: [
                     Row(
-                      children: const [
+                      children: [
                         Text('Disponible para atender:',
                             style:
                                 TextStyle(fontSize: 18.0, color: Colors.white)),
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 8.0,
                     ),
                   ],
