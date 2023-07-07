@@ -55,6 +55,7 @@
     "appMsg009": "Debes finalizar la atención antes de salir de la aplicación.",
     "appMsg010": "La atención fue confirmada con éxito.",
     "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?",
+    "appMsg229": "¿Desea que la opción huella dactilar se muestre como alternativa para iniciar sesión a futuro?",
     "changePasswordAction": "Cambiando contraseña",
     "forgotPassword": "¿olvidaste tu contraseña?",
     "biometricAuthentication": "Autenticación Biométrica",

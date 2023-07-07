@@ -38,20 +38,19 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool _visiblePasswordOff = true;
 
-  //late final SharedPreferences prefs;
   late SharedPreferences prefs;
 
   ///Variables de huella
-  /*bool _canCheckBiometric = false;
-  List<BiometricType> _availableBiometric = [];*/
+  bool _canCheckBiometric = false;
+  List<BiometricType> _availableBiometric = [];
   final auth = LocalAuthentication();
 
   ///Vareiables  para veirificar usuario guardado
   String userSave = '';
   bool checkUserSave = false;
 
-/*  String denyFingerprint = '';
-  bool isUsedFingerprint = false;*/
+  String denyFingerprint = '';
+  bool isUsedFingerprint = false;
 
   @override
   void initState() {
@@ -92,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     await prefs.setBool('checkUserSave', checkUserSave);
 
-                    /*if (!isUsedFingerprint)
+                    if (!isUsedFingerprint)
                       await prefs.setString('password', passwordController.text);
 
                     if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
@@ -105,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                                 title: AppMessages().getMessageTitle(
                                     context, AppConstants.statusSuccess),
                                 descriptions: AppMessages().getMessage(context,
-                                    '¿Deseas usar la huella para inicia mas rapido?'),
+                                    context.appLocalization.appMsg229),
                                 isConfirmation: true,
                                 dialogAction: () =>
                                     prefs.setString('denyFingerprint', 'Y'),
@@ -115,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                                     prefs.setString('denyFingerprint', 'N'),
                               );
                             });
-                    }*/
+                    }
                   }
 
                   LoadingBuilder(context).hideOpenDialog();
@@ -356,10 +355,10 @@ class _LoginPageState extends State<LoginPage> {
 
                                     await prefs.remove('userSave');
                                     await prefs.remove('checkUserSave');
-                                   // await prefs.remove('denyFingerprint');
+                                    await prefs.remove('denyFingerprint');
                                     await prefs.remove('password');
                                     userSave = '';
-                                   // denyFingerprint = '';
+                                    denyFingerprint = '';
                                   }
 
                                   setState(() {});
@@ -421,11 +420,11 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                     /* const SizedBox(height: 30.0),
+                      const SizedBox(height: 30.0),
                       if (_canCheckBiometric &&
                           (prefs.getBool('checkUserSave') ?? false) &&
-                          denyFingerprint != 'N')
-                        _BiometricWidget(onTap: () => _authenticate(context)),*/
+                          denyFingerprint == 'Y')
+                        _BiometricWidget(onTap: () => _authenticate(context)),
                       const SizedBox(height: 50.0),
                       /*Container(
                         alignment: Alignment.center,
@@ -508,7 +507,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (!mounted) return;
     setState(() {
-      //_canCheckBiometric = canCheckBiometric;
+      _canCheckBiometric = canCheckBiometric;
     });
   }
 
@@ -516,7 +515,7 @@ class _LoginPageState extends State<LoginPage> {
   Future _getAvailableBiometric() async {
     List<BiometricType> availableBiometric = [];
 
-    /*bool? autoStart = await isAutoStartAvailable;
+   /* bool? autoStart = await isAutoStartAvailable;
 
     if(autoStart != null && autoStart) {
 
@@ -547,7 +546,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     setState(() {
-     // _availableBiometric = availableBiometric;
+      _availableBiometric = availableBiometric;
     });
   }
 
@@ -585,7 +584,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (authenticated) {
         final String languageCode = context.localization.languageCode;
-        //isUsedFingerprint = true;
+        isUsedFingerprint = true;
         BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
             userSave, prefs.getString('password')!, languageCode));
       } else {
@@ -653,7 +652,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _validateUserSave() async {
     prefs = await SharedPreferences.getInstance();
-    //denyFingerprint = prefs.getString('denyFingerprint') ?? '';
+    denyFingerprint = prefs.getString('denyFingerprint') ?? '';
     userSave = prefs.getString('userSave') ?? '';
     checkUserSave = prefs.getBool('checkUserSave') ?? false;
 
