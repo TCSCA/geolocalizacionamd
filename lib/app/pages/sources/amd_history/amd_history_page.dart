@@ -21,7 +21,7 @@ class _AmdHistoryPageState extends State<AmdHistoryPage> {
         child: WillPopScope(
           onWillPop: () => backButtonActions(),
           child: BlocProvider(
-            create: (context) => AmdHistoryBloc(),
+            create: (context) => AmdHistoryBloc()..add(GetAmdHistoryEvent()),
             child: _HistoryPageView(),
           ),
         ),

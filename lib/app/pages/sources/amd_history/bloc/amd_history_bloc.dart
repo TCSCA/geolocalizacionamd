@@ -11,5 +11,12 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
     on<AmdHistoryEvent>((event, emit) {
       // TODO: implement event handler
     });
+
+    on<GetAmdHistoryEvent>((event, emit) {
+      emit(AmdHistoryLoadingState());
+
+
+
+    });
   }
 }
