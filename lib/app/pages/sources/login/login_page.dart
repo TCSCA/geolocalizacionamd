@@ -152,6 +152,7 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.text,
                             maxLength: 15,
                             decoration: InputDecoration(
+                                errorMaxLines: 2,
                                 fillColor: const Color(0xffD84835).withAlpha(50),
                                 counterStyle: const TextStyle(
                                     color: Colors.white,
@@ -182,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                                     vertical: 10.0, horizontal: 10.0),
                                 errorStyle: const TextStyle(
                                     color: Color(0xffD84835),
-                                    fontSize: 15.0,
+                                    fontSize: 14.0,
                                     fontFamily: 'TextsParagraphs')),
                             style: const TextStyle(
                                 color: Color(0xffFFFFFF),
@@ -220,6 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                                           : Icons.visibility,
                                       color: Colors.white,
                                     )),
+                                errorMaxLines: 2,
                                 fillColor: const Color(0xffD84835).withAlpha(50),
                                 counterStyle: const TextStyle(
                                     color: Colors.white,
@@ -250,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                                     vertical: 10.0, horizontal: 10.0),
                                 errorStyle: const TextStyle(
                                     color: Color(0xffD84835),
-                                    fontSize: 15.0,
+                                    fontSize: 14.0,
                                     fontFamily: 'TextsParagraphs')),
                             style: const TextStyle(
                                 color: Color(0xffFFFFFF),

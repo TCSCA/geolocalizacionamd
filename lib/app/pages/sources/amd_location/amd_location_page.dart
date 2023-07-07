@@ -230,6 +230,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 child: Text(selectiveState.name),
                               );
                             }).toList(),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue == null) {
                                 return 'Estado es requerido';
@@ -272,6 +274,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 child: Text(selectiveCity.name),
                               );
                             }).toList(),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue == null) {
                                 return 'Ciudad es requerido';

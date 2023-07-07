@@ -12,7 +12,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with MainWidgets {
-  final double dataSpaceHeight = 25.0;
+  final double dataSpaceHeight = 22.0;
   /*final MainBloc _newsBloc =
       MainBloc(doctorCareController: DoctorCareController());*/
 
@@ -37,23 +37,26 @@ class _MainPageState extends State<MainPage> with MainWidgets {
               AppCommonWidgets.listenerNavigationBloc(),
               AppCommonWidgets.listenerLogoutBloc()
             ],
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  children: [
-                    SizedBox(height: dataSpaceHeight),
-                    createDoctorInfo(context: context),
-                    SizedBox(height: dataSpaceHeight),
-                    serviceAvailabilityDashboard(context: context),
-                    SizedBox(height: dataSpaceHeight),
-                    const TitleBar(title: 'Atenciones Pendientes:'),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    amdInformationAssigned(context: context)
-                  ],
+            child: SingleChildScrollView(
+              child: Container(
+                decoration: const BoxDecoration(color: Colors.white),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    children: [
+                      SizedBox(height: dataSpaceHeight),
+                      createDoctorInfo(context: context),
+                      SizedBox(height: dataSpaceHeight),
+                      serviceAvailabilityDashboard(context: context),
+                      SizedBox(height: dataSpaceHeight),
+                      const TitleBar(title: 'Atenciones Pendientes:'),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      amdInformationAssigned(context: context),
+                      SizedBox(height: dataSpaceHeight),
+                    ],
+                  ),
                 ),
               ),
             ),
