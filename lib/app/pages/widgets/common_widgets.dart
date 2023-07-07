@@ -121,6 +121,7 @@ class AppCommonWidgets {
         ),
         hoverColor: AppStyles.colorRedPrimary,
       );
+
       listaMenu.add(opcionMenu);
     }
 
