@@ -32,6 +32,7 @@ void main() async {
   );
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessageOpenedApp.listen(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, sound: true, badge: true);
@@ -149,7 +150,7 @@ void showFlutterNotification(RemoteMessage message) {
           playSound: true,
           enableVibration: true,
           channelDescription: channel.description,
-          icon: 'launch_background',
+          //icon: 'launch_background',
         ),
       ),
     );

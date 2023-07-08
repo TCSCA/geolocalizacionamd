@@ -3,15 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../shared/method/back_button_action.dart';
 import '/app/extensions/localization_ext.dart';
+import '../renew_password/renew_password_page.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
+
+import 'package:local_auth_android/local_auth_android.dart';
+import 'package:local_auth_ios/local_auth_ios.dart';
+import 'package:local_auth/error_codes.dart' as authError;
+
 import 'bloc/login_bloc.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,9 +34,34 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormFieldState> userFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> passwordFieldKey =
       GlobalKey<FormFieldState>();
-  final TextEditingController userController = TextEditingController();
+   TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _visiblePasswordOff = true;
+
+  late SharedPreferences prefs;
+
+  ///Variables de huella
+  bool _canCheckBiometric = false;
+  List<BiometricType> _availableBiometric = [];
+  final auth = LocalAuthentication();
+
+  ///Vareiables  para veirificar usuario guardado
+  String userSave = '';
+  bool checkUserSave = false;
+
+  String denyFingerprint = '';
+  bool isUsedFingerprint = false;
+
+  @override
+  void initState() {
+    _validateUserSave();
+
+    _checkBiometric();
+    _getAvailableBiometric();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -38,91 +71,125 @@ class _LoginPageState extends State<LoginPage> {
         body: Container(
           decoration: const BoxDecoration(
               gradient: LinearGradient(
-            colors: [Color(0xff2B5178), Color(0xff273456)],
+            colors: [
+              Color(0xff2B5178),
+              Color(0xff273456),
+            ],
             begin: Alignment(0.0, 0.0),
             end: Alignment(0.25, 0.75),
           )),
           child: SafeArea(
-              child: BlocListener<LoginBloc, LoginState>(
-            listener: (context, state) {
-              if (state is LoginShowLoadingState) {
-                LoadingBuilder(context).showLoadingIndicator(
-                    context.appLocalization.titleLoginLoading);
-              }
-              if (state is LoginSuccessState) {
-                LoadingBuilder(context).hideOpenDialog();
-                context.go(GeoAmdRoutes.home, extra: NavigationBloc());
-              }
-              if (state is LoginErrorState) {
-                LoadingBuilder(context).hideOpenDialog();
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return CustomDialogBox(
-                        title: AppMessages()
-                            .getMessageTitle(context, AppConstants.statusError),
-                        descriptions:
-                            AppMessages().getMessage(context, state.message),
-                        isConfirmation: false,
-                        dialogAction: () {},
-                        type: AppConstants.statusError,
-                        isdialogCancel: false,
-                        dialogCancel: () {},
-                      );
-                    });
-              }
-              if (state is LoginActiveState) {
-                LoadingBuilder(context).hideOpenDialog();
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return CustomDialogBox(
-                        title: AppMessages()
-                            .getMessageTitle(context, AppConstants.statusWarning),
-                        descriptions:
-                            AppMessages().getMessage(context, state.message),
-                        isConfirmation: true,
-                        dialogAction: () => BlocProvider.of<LoginBloc>(context)
-                            .add(ProcessResetLoginEvent(
-                                userController.text,
-                                passwordController.text,
-                                context.localization.languageCode)),
-                        type: AppConstants.statusWarning,
-                        isdialogCancel: false,
-                        dialogCancel: () {},
-                      );
-                    });
-              }
-              if (state is ShowFirebaseKeyState) {
-                LoadingBuilder(context).hideOpenDialog();
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return CustomDialogBox(
-                        title: 'Firebase Device Key',
-                        descriptions: state.firebaseKey,
-                        isConfirmation: true,
-                        dialogAction: () {
-                          Clipboard.setData(
-                                  ClipboardData(text: state.firebaseKey))
-                              .then((_) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Key Copiado a tu portapapeles!')));
-                          });
-                        },
-                        type: AppConstants.statusSuccess,
-                        isdialogCancel: false,
-                        dialogCancel: () {},
-                      );
-                    });
-              }
-            },
-            child: Form(
+            child: BlocListener<LoginBloc, LoginState>(
+              listener: (context, state) async {
+                if (state is LoginShowLoadingState) {
+                  LoadingBuilder(context).showLoadingIndicator(
+                      context.appLocalization.titleLoginLoading);
+                }
+                if (state is LoginSuccessState) {
+                  if (checkUserSave) {
+                    await prefs.setString('userSave', userController.text);
+
+                    await prefs.setBool('checkUserSave', checkUserSave);
+
+                    if (!isUsedFingerprint)
+                      await prefs.setString('password', passwordController.text);
+
+                    if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
+                      if (_canCheckBiometric)
+                        await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusSuccess),
+                                descriptions: AppMessages().getMessage(context,
+                                    context.appLocalization.appMsg229),
+                                isConfirmation: true,
+                                dialogAction: () =>
+                                    prefs.setString('denyFingerprint', 'Y'),
+                                type: AppConstants.statusSuccess,
+                                isdialogCancel: true,
+                                dialogCancel: () =>
+                                    prefs.setString('denyFingerprint', 'N'),
+                              );
+                            });
+                    }
+                  }
+
+                  LoadingBuilder(context).hideOpenDialog();
+                  context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                }
+                if (state is LoginErrorState) {
+                  LoadingBuilder(context).hideOpenDialog();
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomDialogBox(
+                          title: AppMessages()
+                              .getMessageTitle(context, AppConstants.statusError),
+                          descriptions:
+                              AppMessages().getMessage(context, state.message),
+                          isConfirmation: false,
+                          dialogAction: () {},
+                          type: AppConstants.statusError,
+                          isdialogCancel: false,
+                          dialogCancel: () {},
+                        );
+                      });
+                }
+                if (state is LoginActiveState) {
+                  LoadingBuilder(context).hideOpenDialog();
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomDialogBox(
+                          title: AppMessages().getMessageTitle(
+                              context, AppConstants.statusWarning),
+                          descriptions:
+                              AppMessages().getMessage(context, state.message),
+                          isConfirmation: true,
+                          dialogAction: () => BlocProvider.of<LoginBloc>(context)
+                              .add(ProcessResetLoginEvent(
+                                  userController.text,
+                                  passwordController.text,
+                                  context.localization.languageCode)),
+                          type: AppConstants.statusWarning,
+                          isdialogCancel: false,
+                          dialogCancel: () {},
+                        );
+                      });
+                }
+                if (state is ShowFirebaseKeyState) {
+                  LoadingBuilder(context).hideOpenDialog();
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomDialogBox(
+                          title: 'Firebase Device Key',
+                          descriptions: state.firebaseKey,
+                          isConfirmation: true,
+                          dialogAction: () {
+                            Clipboard.setData(
+                                    ClipboardData(text: state.firebaseKey))
+                                .then((_) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Key Copiado a tu portapapeles!')));
+                            });
+                          },
+                          type: AppConstants.statusSuccess,
+                          isdialogCancel: false,
+                          dialogCancel: () {},
+                        );
+                      });
+                }
+              },
+              child: Form(
                 key: loginFormKey,
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
@@ -146,7 +213,6 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
                             key: userFieldKey,
                             controller: userController,
                             keyboardType: TextInputType.text,
@@ -203,7 +269,6 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
                             key: passwordFieldKey,
                             controller: passwordController,
                             keyboardType: TextInputType.text,
@@ -268,135 +333,121 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             }),
                       ),
-                      /* const SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
                           children: <Widget>[
                             Checkbox(
-                                value: false,
+                                value: checkUserSave,
                                 checkColor: const Color(0xffd84835),
                                 shape: const CircleBorder(),
                                 activeColor: Colors.white,
                                 fillColor: MaterialStateProperty.all<Color>(
                                     Colors.white),
-                                onChanged: (value) {}),
+                                onChanged: (value) async {
+                                  ///TODO: Falta guardar usuario
+                                  checkUserSave = value!;
+
+                                  if (checkUserSave == false) {
+                                    if (userSave != '') {
+                                      userController.clear();
+                                      passwordController.clear();
+                                    }
+
+                                    await prefs.remove('userSave');
+                                    await prefs.remove('checkUserSave');
+                                    await prefs.remove('denyFingerprint');
+                                    await prefs.remove('password');
+                                    userSave = '';
+                                    denyFingerprint = '';
+                                  }
+
+                                  setState(() {});
+                                }),
                             const Text(
                               'Recordar Usuario',
                               style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ],
                         ),
-                      ), */
+                      ),
                       const SizedBox(height: 40.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    elevation: 5,
-                                    side: const BorderSide(
-                                        width: 2, color: Color(0xffFFFFFF)),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30))),
-                                onPressed: () {
-                                  if (!loginFormKey.currentState!.validate()) {
-                                    return;
-                                  } else {
-                                    final String languageCode =
-                                        context.localization.languageCode;
-                                    BlocProvider.of<LoginBloc>(context).add(
-                                        ProcessLoginEvent(
-                                            userController.text,
-                                            passwordController.text,
-                                            languageCode));
-                                  }
-                                },
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(colors: [
-                                        Color(0xffF96352),
-                                        Color(0xffD84835)
-                                      ]),
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 40),
-                                    child: const Text(
-                                      'Ingresar',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 19.0,
-                                          color: Color(0xffFFFFFF),
-                                          fontFamily: 'TitlesHighlight',
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  elevation: 5,
+                                  side: const BorderSide(
+                                      width: 2, color: Color(0xffFFFFFF)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                              onPressed: () {
+                                if (!loginFormKey.currentState!.validate()) {
+                                  return;
+                                } else {
+                                  final String languageCode =
+                                      context.localization.languageCode;
+                                  BlocProvider.of<LoginBloc>(context).add(
+                                      ProcessLoginEvent(userController.text,
+                                          passwordController.text, languageCode));
+                                }
+                              },
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    gradient: const LinearGradient(colors: [
+                                      Color(0xffF96352),
+                                      Color(0xffD84835)
+                                    ]),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 40),
+                                  child: const Text(
+                                    'Ingresar',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 19.0,
+                                        color: Color(0xffFFFFFF),
+                                        fontFamily: 'TitlesHighlight',
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              )),
-                          //const SizedBox(width: 10.0),
-                          /* Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    elevation: 5,
-                                    side: const BorderSide(
-                                        width: 2, color: Color(0xffFFFFFF)),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30))),
-                                onPressed: () {
-                                  BlocProvider.of<LoginBloc>(context)
-                                      .add(const ShowFirebaseKeyEvent());
-                                },
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(colors: [
-                                        Color.fromARGB(255, 132, 130, 164),
-                                        Color.fromRGBO(108, 82, 155, 1)
-                                      ]),
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 40),
-                                    child: const Text(
-                                      'Firebase',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 19.0,
-                                          color: Color(0xffFFFFFF),
-                                          fontFamily: 'TitlesHighlight',
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              )) */
-                        ],
-                      ),
-                      /* const SizedBox(height: 30.0),
-                      InkWell(
-                        onTap: () {},
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              'Autenticación Biométrica',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.0,
                               ),
                             ),
-                            Icon(Icons.fingerprint,
-                                color: Color(0xffd84835), size: 35)
-                          ],
-                        ),
-                      ), */
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30.0),
+                      if (_canCheckBiometric &&
+                          (prefs.getBool('checkUserSave') ?? false) &&
+                          denyFingerprint == 'Y')
+                        _BiometricWidget(onTap: () => _authenticate(context)),
                       const SizedBox(height: 50.0),
+                      /*Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        //width: double.infinity,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RenewPasswordPage()));
+                          },
+                          child: Text(
+                            context.appLocalization.forgotPassword,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),*/
                       InkWell(
                         onTap: () => launchUrl(
                           Uri.parse(
@@ -405,7 +456,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: const Text.rich(
                           TextSpan(
-                            text: 'Al pulsar Ingresar, acepta los ',
+                            text: 'Al pulsar ingresar, acepta los ',
                             style: TextStyle(
                               color: Colors.white,
                             ),
@@ -427,11 +478,13 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
-                )),
-          )),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -442,5 +495,201 @@ class _LoginPageState extends State<LoginPage> {
     userController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  /// metodo para validar si el dispositivo cumple con la autenticacion biometrica.
+  Future<void> _checkBiometric() async {
+    bool canCheckBiometric = false;
+
+    try {
+      canCheckBiometric = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _canCheckBiometric = canCheckBiometric;
+    });
+  }
+
+  /// Verificar los tipos autenticacion registrados
+  Future _getAvailableBiometric() async {
+    List<BiometricType> availableBiometric = [];
+
+   /* bool? autoStart = await isAutoStartAvailable;
+
+    if(autoStart != null && autoStart) {
+
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CustomDialogBox(
+              title: AppMessages().getMessageTitle(
+                  context, AppConstants.statusSuccess),
+              descriptions: AppMessages().getMessage(context,
+                  'para poder hacer uso de todos nuestro servicios, debera'),
+              isConfirmation: true,
+              dialogAction: () {},
+              type: AppConstants.statusSuccess,
+              isdialogCancel: false,
+              dialogCancel: () {},
+            );
+          });
+
+      await getAutoStartPermission();
+    }*/
+
+    try {
+      availableBiometric = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      _availableBiometric = availableBiometric;
+    });
+  }
+
+  ///Metodo para iniciar la autenticacion biometrica
+  Future<void> _authenticate(BuildContext context) async {
+    bool authenticated = false;
+    try {
+      authenticated = await auth.authenticate(
+          authMessages: <AuthMessages>[
+            AndroidAuthMessages(
+              cancelButton: 'Cancelar',
+              goToSettingsButton: '',
+              goToSettingsDescription: '',
+              biometricNotRecognized:
+                  context.appLocalization.invalidFingerprint,
+              biometricSuccess: '',
+              biometricHint: '',
+              biometricRequiredTitle: '',
+              signInTitle: context.appLocalization.biometricAuthentication,
+            ),
+            IOSAuthMessages(
+              cancelButton: 'Cerrar',
+              goToSettingsButton: '',
+              goToSettingsDescription: '',
+              lockOut: context.appLocalization.limitBiometricAttempts,
+              localizedFallbackTitle: '',
+            ),
+          ],
+          localizedReason: "Coloque el dedo sobre el detector",
+          options: const AuthenticationOptions(
+            useErrorDialogs: false,
+            biometricOnly: true,
+            stickyAuth: true,
+          ));
+
+      if (authenticated) {
+        final String languageCode = context.localization.languageCode;
+        isUsedFingerprint = true;
+        BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
+            userSave, prefs.getString('password')!, languageCode));
+      } else {
+        print('ERROR');
+      }
+    } on PlatformException catch (e) {
+      /// _authorized = "Error - ${e.code}";
+      e.code == 'LockedOut'
+          ? showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions: AppMessages().getMessage(
+                      context, context.appLocalization.limitBiometricAttempts),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              })
+          : e.code == authError.notAvailable
+              ? showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions: AppMessages().getMessage(context,
+                          context.appLocalization.biometricNotSupported),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  })
+              : e.code == 'NoHardware' || e.code == 'NotEnrolled'
+                  ? showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomDialogBox(
+                          title: AppMessages().getMessageTitle(
+                              context, AppConstants.statusError),
+                          descriptions: AppMessages().getMessage(context,
+                              context.appLocalization.biometricNotSupported),
+                          isConfirmation: false,
+                          dialogAction: () {},
+                          type: AppConstants.statusError,
+                          isdialogCancel: false,
+                          dialogCancel: () {},
+                        );
+                      })
+                  : print('');
+
+      // logger.e("😢 Error loger show ${e.code}");
+    }
+    setState(() {});
+  }
+
+  _validateUserSave() async {
+    prefs = await SharedPreferences.getInstance();
+    denyFingerprint = prefs.getString('denyFingerprint') ?? '';
+    userSave = prefs.getString('userSave') ?? '';
+    checkUserSave = prefs.getBool('checkUserSave') ?? false;
+
+    userController = TextEditingController(text: userSave);
+    setState(() {});
+  }
+
+  _callShowDialog() {}
+}
+
+class _BiometricWidget extends StatelessWidget {
+  Function() onTap;
+
+  _BiometricWidget({
+    super.key,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            context.appLocalization.biometricAuthentication,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+            ),
+          ),
+          Icon(Icons.fingerprint, color: Color(0xffd84835), size: 35)
+        ],
+      ),
+    );
   }
 }

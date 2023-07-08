@@ -61,7 +61,6 @@ class AmdPendingCard extends StatelessWidget {
                         Flexible(child: Text(homeService.phoneNumberPatient))
                       ],
                     ),
-                    const SizedBox(height: 3.0),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [

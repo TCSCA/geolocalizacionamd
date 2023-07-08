@@ -146,29 +146,31 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                         ))
                   ] else ...[
                     TextButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                AppStyles.colorBluePrimary),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  side: BorderSide(
-                                      style: BorderStyle.solid,
-                                      color: AppStyles.colorBeige
-                                          .withOpacity(0.4))),
-                            )),
-                        onPressed: () {
-                          context.pop();
-                        },
-                        child: Text(
-                          context.appLocalization.nameButtonAccept,
-                          style: const TextStyle(
-                              fontSize: AppStyles.textSizeParagraph,
-                              color: AppStyles.colorWhite,
-                              fontFamily: AppStyles.fontTitlesHighlight,
-                              fontWeight: FontWeight.bold),
-                        ))
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            AppStyles.colorBluePrimary),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: BorderSide(
+                                  style: BorderStyle.solid,
+                                  color:
+                                      AppStyles.colorBeige.withOpacity(0.4))),
+                        ),
+                      ),
+                      onPressed: () {
+                        context.pop();
+                      },
+                      child: Text(
+                        context.appLocalization.nameButtonAccept,
+                        style: const TextStyle(
+                            fontSize: AppStyles.textSizeParagraph,
+                            color: AppStyles.colorWhite,
+                            fontFamily: AppStyles.fontTitlesHighlight,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )
                   ]
                 ],
               ),

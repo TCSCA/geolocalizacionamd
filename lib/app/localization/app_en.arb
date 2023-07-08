@@ -54,5 +54,12 @@
     "appMsg007": "Home Medical Care was completed successfully.",
     "appMsg008": "No assigned home medical care.",
     "appMsg009": "You must end home medical care before you sign off.",
-    "appMsg010": "Home Medical Care was confirmed successfully."
+    "appMsg010": "Home Medical Care was confirmed successfully.",
+    "appMsg229": "Do you want the fingerprint option to be shown as an alternative for future log-in?",
+    "changePasswordAction": "Changing password",
+    "forgotPassword": "Forgot your password?",
+    "biometricAuthentication": "Biometric Authentication",
+    "biometricNotSupported": "This device does not support biometric authentication or the functionality is not enabled.",
+    "limitBiometricAttempts": "You have reached the maximum number of failed attempts allowed. Enter the password or wait a few seconds to use the biometric authentication process.",
+    "invalidFingerprint": "The fingerprint is incorrect, please try again."
 }
