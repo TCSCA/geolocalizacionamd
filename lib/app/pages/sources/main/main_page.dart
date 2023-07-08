@@ -41,19 +41,22 @@ class _MainPageState extends State<MainPage> with MainWidgets {
               decoration: const BoxDecoration(color: Colors.white),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  children: [
-                    SizedBox(height: dataSpaceHeight),
-                    createDoctorInfo(context: context),
-                    SizedBox(height: dataSpaceHeight),
-                    serviceAvailabilityDashboard(context: context),
-                    SizedBox(height: dataSpaceHeight),
-                    const TitleBar(title: 'Atenciones Pendientes:'),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    amdInformationAssigned(context: context)
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: dataSpaceHeight),
+                      createDoctorInfo(context: context),
+                      SizedBox(height: dataSpaceHeight),
+                      serviceAvailabilityDashboard(context: context),
+                      SizedBox(height: dataSpaceHeight),
+                      const TitleBar(title: 'Atenciones Pendientes:'),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      amdInformationAssigned(context: context),
+                      SizedBox(height: dataSpaceHeight),
+                    ],
+                  ),
                 ),
               ),
             ),

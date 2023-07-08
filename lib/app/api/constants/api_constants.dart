@@ -19,10 +19,6 @@ class ApiConstants {
   static final String urlApiResetLogin = '$urlApi/invalidateTokenByLogin';
   static final String urlApiLogout = '$urlApi/logout';
   static final String urlApiPhotos = '$urlApi/getPhotos';
-  static final String urlApiReasonRejection =
-      '$urlApi/getAllReasonRejectionAmd';
-  static final String urlApiRejectHomeServiceAttention =
-      '$urlApi/rejectHomeServiceAttention';
   static final String urlApiConnectDoctorAmd = '$urlApi/connectDoctorAmd';
   static final String urlApiDisconectDoctorAmd = '$urlApi/disconectDoctorAmd';
   static final String urlApiGetActiveAmdOrder = '$urlApi/getActiveAmdOrder';
@@ -36,6 +32,8 @@ class ApiConstants {
       '$urlApi/rejectHomeServiceAttention';
   static final String urlApiCompleteHomeService =
       '$urlApi/completeHomeServiceAttention';
+  static final String urlApiGetAllReasonRejection =
+      '$urlApi/getAllReasonRejectionAmd';
   static const String generalErrorCodeApi = 'MSG-001';
   static const String statusLabelApi = 'status';
   static const String statusSuccessApi = 'SUCCESS';

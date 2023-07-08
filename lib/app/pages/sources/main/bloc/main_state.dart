@@ -13,26 +13,6 @@ class MainShowLoadingState extends MainState {
   List<Object> get props => [message];
 }
 
-class ReasonRejectionState extends MainState {
-  final List<Datum> data;
-  const ReasonRejectionState({required this.data});
-  @override
-  List<Object> get props => [data];
-}
-
-class SaveRejectionState extends MainState {
-  final String idHomeServiceAttention;
-  final String comment;
-  final String idReasonReject;
-  const SaveRejectionState({
-    required this.idHomeServiceAttention,
-    required this.comment,
-    required this.idReasonReject,
-  });
-  @override
-  List<Object> get props => [idHomeServiceAttention, comment, idReasonReject];
-}
-
 class MainInitial extends MainState {
   final bool doctorAvailable;
   const MainInitial({required this.doctorAvailable});
@@ -146,4 +126,13 @@ class LocationErrorState extends MainState {
   const LocationErrorState({required this.message});
   @override
   List<Object> get props => [message];
+}
+
+class ReasonRejectionSuccessState extends MainState {
+  final HomeServiceModel homeServiceAssigned;
+  final List<SelectModel> listReasonRejection;
+  const ReasonRejectionSuccessState(
+      {required this.homeServiceAssigned, required this.listReasonRejection});
+  @override
+  List<Object> get props => [homeServiceAssigned, listReasonRejection];
 }

@@ -13,6 +13,9 @@ import '/app/shared/loading/loading_builder.dart';
 import '/app/pages/sources/login/bloc/login_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
+import '/app/core/models/select_model.dart';
+import '/app/pages/styles/app_styles.dart';
+import '/app/shared/method/back_button_action.dart';
 
 class MainWidgets {
   PreferredSizeWidget generateAppBar({required BuildContext context}) {
@@ -66,56 +69,54 @@ class MainWidgets {
   }
 
   Widget createDoctorInfo({required BuildContext context}) {
-    return Expanded(
-      child: Container(
-        color: const Color(0xFFfbfcff),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 7,
-        child: BlocBuilder<LoginBloc, LoginState>(
-          buildWhen: (previous, current) =>
-              previous != current && current is LoginSuccessState,
-          builder: (context, state) {
-            final user = (state as LoginSuccessState).user;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
+    return Container(
+      color: const Color(0xFFfbfcff),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height / 7,
+      child: BlocBuilder<LoginBloc, LoginState>(
+        buildWhen: (previous, current) =>
+            previous != current && current is LoginSuccessState,
+        builder: (context, state) {
+          final user = (state as LoginSuccessState).user;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: const Color(0xff2B5178),
+                    radius: 70,
+                    child: CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
-                      radius: 70,
+                      radius: 90,
                       child: CircleAvatar(
-                        backgroundColor: const Color(0xff2B5178),
-                        radius: 90,
-                        child: CircleAvatar(
-                          backgroundImage:
-                              Image.memory(Uint8List.fromList(user.photoPerfil))
-                                  .image,
-                          radius: 55,
-                        ),
+                        backgroundImage:
+                            Image.memory(Uint8List.fromList(user.photoPerfil))
+                                .image,
+                        radius: 55,
                       ),
                     ),
-                    const SizedBox(width: 5.0),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Bienvenido(a)',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18)),
-                        Text(user.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20))
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            );
-          },
-        ),
+                  ),
+                  const SizedBox(width: 5.0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Bienvenido(a)',
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18)),
+                      Text(user.name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20))
+                    ],
+                  )
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -320,6 +321,10 @@ class MainWidgets {
   Widget amdInformationAssigned({required BuildContext context}) {
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc.add(const ShowHomeServiceAssignedEvent());
+    final GlobalKey<FormState> reasonRejectionFormKey = GlobalKey<FormState>();
+    final GlobalKey<FormFieldState> reasonFieldKey =
+        GlobalKey<FormFieldState>();
+    final TextEditingController reasonTextController = TextEditingController();
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
       child: BlocConsumer<MainBloc, MainState>(
@@ -369,6 +374,144 @@ class MainWidgets {
                   );
                 });
           }
+          if (state is ReasonRejectionSuccessState) {
+            LoadingBuilder(context).hideOpenDialog();
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: () async => backButtonActions(),
+                    child: AlertDialog(
+                      content: Stack(
+                        children: <Widget>[
+                          Form(
+                            key: reasonRejectionFormKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Row(
+                                  children: const [
+                                    Expanded(
+                                      child: Text(
+                                        'Indique el motivo de rechazo',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: AppStyles.colorBluePrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: DropdownButtonFormField(
+                                        isExpanded: true,
+                                        hint: const Text("Seleccione motivo"),
+                                        key: reasonFieldKey,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Motivo:',
+                                          hintText: 'Seleccione motivo',
+                                          labelStyle: TextStyle(
+                                              fontSize: 27.0,
+                                              color: Colors.black,
+                                              fontFamily: 'TitlesHighlight'),
+                                        ),
+                                        style: const TextStyle(
+                                            fontSize: 18.0,
+                                            color: Colors.black,
+                                            fontFamily: 'TextsParagraphs'),
+                                        items: state.listReasonRejection
+                                            .map((SelectModel selectiveReason) {
+                                          return DropdownMenuItem(
+                                            value: selectiveReason.id,
+                                            child: Text(selectiveReason.name),
+                                          );
+                                        }).toList(),
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        validator: (fieldValue) {
+                                          if (fieldValue == null) {
+                                            return 'Motivo es requerido';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (reasonCode) {
+                                          if (reasonCode != null) {
+                                            reasonTextController.text =
+                                                reasonCode;
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20.0),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          elevation: 5,
+                                          side: const BorderSide(
+                                              width: 2,
+                                              color: Color(0xffFFFFFF)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30))),
+                                      onPressed: () {
+                                        if (!reasonRejectionFormKey
+                                            .currentState!
+                                            .validate()) {
+                                          return;
+                                        } else {
+                                          context.pop();
+                                          BlocProvider.of<MainBloc>(context)
+                                              .add(DisallowAmdEvent(
+                                                  state.homeServiceAssigned
+                                                      .idHomeService,
+                                                  reasonTextController.text));
+                                        }
+                                      },
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xffF96352),
+                                                  Color(0xffD84835)
+                                                ]),
+                                            borderRadius:
+                                                BorderRadius.circular(30)),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 40),
+                                          child: const Text(
+                                            'Enviar',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 19.0,
+                                                color: Color(0xffFFFFFF),
+                                                fontFamily: 'TitlesHighlight',
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          }
         },
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */
@@ -376,6 +519,10 @@ class MainWidgets {
           if (state is HomeServiceSuccessState) {
             //LoadingBuilder(context).hideOpenDialog();
             final homeServiceAssigned = (state).homeServiceAssigned;
+            return AmdPendingCard(homeService: homeServiceAssigned);
+          } else if (state is ReasonRejectionSuccessState) {
+            //LoadingBuilder(context).hideOpenDialog();
+            final homeServiceAssigned = (state.homeServiceAssigned);
             return AmdPendingCard(homeService: homeServiceAssigned);
           } else {
             //LoadingBuilder(context).hideOpenDialog();

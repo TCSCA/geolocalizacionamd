@@ -1,10 +1,3 @@
-import 'package:geolocalizacionamd/app/api/mappings/reason_rejection_mapping.dart';
-import 'package:geolocalizacionamd/app/api/mappings/success_save_rejection_mapping.dart';
-import 'package:geolocalizacionamd/app/api/services/reason_rejection_implement.dart';
-import 'package:geolocalizacionamd/app/api/services/reason_rejection_service.dart';
-import 'package:geolocalizacionamd/app/api/services/save_rejection_implement.dart';
-import 'package:geolocalizacionamd/app/api/services/save_rejection_service.dart';
-
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/register_date_mapping.dart';
 import '/app/api/services/consult_data_service.dart';
@@ -18,16 +11,13 @@ import '/app/core/models/home_service_model.dart';
 import '/app/core/models/select_model.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/errors/exceptions.dart';
-
 import 'secure_storage_controller.dart';
+import '/app/core/models/reject_amd_model.dart';
 
 class DoctorCareController {
   final SaveDataService saveDataService = SaveDataServiceImp();
-
   final SecureStorageController secureStorageController =
       SecureStorageController();
-  final ReasonRejectionService rejectionService = ReasonRejectionImp();
-  final SaveRejectionService saveRejectionService = SaveRejectionImp();
   final ConsultDataService consultDataService = ConsultDataServiceImp();
   final ListsService listsService = ListsServiceImp();
 
@@ -183,14 +173,14 @@ class DoctorCareController {
     return responseHomeService;
   }
 
-  Future<bool> doRejectHomeService(final int idHomeService) async {
+  Future<bool> doRejectHomeService(final RejectAmdModel requestReject) async {
     bool respApiReject;
 
     try {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiReject =
-          await saveDataService.onRejectHomeService(tokenUser, idHomeService);
+          await saveDataService.onRejectHomeService(tokenUser, requestReject);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -265,48 +255,6 @@ class DoctorCareController {
         ApiConstants.doctorInAttentionLabel, inAttention);
   }
 
-  Future<ReasonRejectionMapping> getReasonRejection() async {
-    late ReasonRejectionMapping rejectionResponse;
-
-    try {
-      var tokenUser =
-          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-      rejectionResponse =
-          await rejectionService.getReasonRejection(tokenUser.toString());
-    } on ErrorAppException {
-      rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
-      throw ErrorGeneralException();
-    }
-    return rejectionResponse;
-  }
-
-  Future<SaveRejectionModel> saveReasonRejection(
-    final int idReasonRejection,
-    final int typeReasonRejection,
-    final String reasonForRejection,
-  ) async {
-    try {
-      var tokenUser =
-          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-      saveRejectionService.saveRejectionService(
-        tokenUser,
-        reasonForRejection,
-        typeReasonRejection,
-        idReasonRejection,
-      );
-    } on ErrorAppException {
-      rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
-      throw ErrorGeneralException();
-    }
-    return {'', ''} as SaveRejectionModel;
-  }
-
   DateTime parseFecha(RegisterDate registerDate) {
     String years = '',
         months = '',
@@ -334,5 +282,31 @@ class DoctorCareController {
         ((registerDate.dateTime.time.second) < 10 ? '0$seconds' : seconds);
 
     return DateTime.parse('$years-$months-$days $hours:$minutes:$seconds');
+  }
+
+  Future<List<SelectModel>> getListgetReasonRejection() async {
+    List<SelectModel> listReason = [];
+    late SelectModel opReason;
+
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+      var opcionesReason = await listsService.getAllReasonRejection(tokenUser);
+      for (var opcion in opcionesReason) {
+        opReason = SelectModel(
+            opcion.idReasonRejection.toString(), opcion.reasonForRejection);
+        listReason.add(opReason);
+      }
+      listReason.sort((a, b) => a.name.compareTo(b.name));
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return listReason;
   }
 }
