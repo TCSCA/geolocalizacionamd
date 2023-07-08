@@ -43,8 +43,8 @@ class AmdPendingCard extends StatelessWidget {
                 subtitle: Column(
                   children: [
                     const SizedBox(height: 3.0),
-                    const Row(
-                      children: [
+                    Row(
+                      children: const [
                         Text('Paciente:',
                             style: TextStyle(fontWeight: FontWeight.bold))
                       ],
@@ -66,9 +66,9 @@ class AmdPendingCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 3.0),
-                    const Row(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text('Dirección del paciente:',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
@@ -159,10 +159,10 @@ class ButtonAtentions extends StatelessWidget {
                             fontFamily: 'TextsParagraphs',
                             overflow: TextOverflow.visible,
                           ),
-                          padding: const EdgeInsets.symmetric(
+                          /* padding: const EdgeInsets.symmetric(
                             vertical: 2,
                             horizontal: 2,
-                          ),
+                          ), */
                           items: items.map((item) {
                             return DropdownMenuItem(
                               value: item.reasonForRejection,
