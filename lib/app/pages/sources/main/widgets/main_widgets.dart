@@ -383,6 +383,16 @@ class MainWidgets {
                   return WillPopScope(
                     onWillPop: () async => backButtonActions(),
                     child: AlertDialog(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                        side: BorderSide(
+                          color: AppStyles.colorBeige,
+                          style: BorderStyle.solid,
+                          width: 4.0,
+                        ),
+                      ),
                       content: Stack(
                         children: <Widget>[
                           Form(
@@ -390,14 +400,15 @@ class MainWidgets {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Row(
-                                  children: const [
+                                const Row(
+                                  children: [
                                     Expanded(
                                       child: Text(
                                         'Indique el motivo de rechazo',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
+                                          fontWeight: FontWeight.bold,
                                           color: AppStyles.colorBluePrimary,
                                         ),
                                       ),
@@ -409,9 +420,15 @@ class MainWidgets {
                                     Expanded(
                                       child: DropdownButtonFormField(
                                         isExpanded: true,
+                                        isDense: true,
+                                        itemHeight: null,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8.0)),
                                         hint: const Text("Seleccione motivo"),
                                         key: reasonFieldKey,
                                         decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 18),
                                           labelText: 'Motivo:',
                                           hintText: 'Seleccione motivo',
                                           labelStyle: TextStyle(
@@ -427,7 +444,14 @@ class MainWidgets {
                                             .map((SelectModel selectiveReason) {
                                           return DropdownMenuItem(
                                             value: selectiveReason.id,
-                                            child: Text(selectiveReason.name),
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              child: Text(
+                                                selectiveReason.name,
+                                                overflow: TextOverflow.visible,
+                                                softWrap: true,
+                                              ),
+                                            ),
                                           );
                                         }).toList(),
                                         autovalidateMode:
