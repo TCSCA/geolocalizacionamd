@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../shared/method/back_button_action.dart';
 import '/app/extensions/localization_ext.dart';
-import '../renew_password/renew_password_page.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
