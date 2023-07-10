@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
 import 'package:go_router/go_router.dart';
-import '../../../shared/method/back_button_action.dart';
+import '/app/pages/styles/app_styles.dart';
 import '/app/core/models/select_model.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/pages/constants/app_constants.dart';
@@ -10,10 +9,11 @@ import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
+import '/app/shared/loading/loading_builder.dart';
+import '/app/shared/method/back_button_action.dart';
 
 class AmdLocationPage extends StatefulWidget {
   const AmdLocationPage({super.key});
-
   @override
   State<AmdLocationPage> createState() => _AmdLocationPageState();
 }
@@ -37,68 +37,35 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
       onWillPop: () => backButtonActions(),
       child: Scaffold(
         appBar: AppBar(
-            backgroundColor: const Color(0xff2B5178),
-            /* leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              iconSize: 20.0,
-              onPressed: () {
-                context.go('/home');
-              },
-            ), */
+            backgroundColor: AppStyles.colorBluePrimary,
             toolbarHeight: 140.0,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //const SizedBox(height: 50.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
                         child: Image.asset(
-                      'assets/images/telemedicina24_logo_blanco_lineal.png',
+                      AppConstants.logoImageWhite,
                       width: 270,
                       height: 90,
-                    )),
-                    /* IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            //isDismissible: false,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20))),
-                            builder: (context) {
-                              return Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: AppCommonWidgets.generateMenuInfo(
-                                      context: context),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.menu,
-                          size: 35.0,
-                          color: Colors.white,
-                        )) */
+                    ))
                   ],
                 ),
                 const SizedBox(
                   height: 5.0,
                 ),
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.person_pin_circle, color: Colors.white),
-                    SizedBox(
+                    Icon(AppConstants.iconsMenu['doctorLocation'],
+                        color: AppStyles.colorWhite),
+                    const SizedBox(
                       width: 10.0,
                     ),
                     Text(
-                      'Ubicación de Servicio',
-                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                      context.appLocalization.titleDoctorLocation,
+                      style: AppStyles.textStyleTitle,
                     ),
                   ],
                 )
@@ -144,23 +111,6 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
             }
             if (state is DoctorServiceState) {
               LoadingBuilder(context).hideOpenDialog();
-              //isServiceAvailible = state.doctorAvailable;
-              /* showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return CustomDialogBox(
-                      title: AppMessages()
-                          .getMessageTitle(context, AppConstants.statusSuccess),
-                      descriptions:
-                          AppMessages().getMessage(context, state.message),
-                      isConfirmation: false,
-                      dialogAction: () {},
-                      type: AppConstants.statusSuccess,
-                      isdialogCancel: false,
-                      dialogCancel: () {},
-                    );
-                  }); */
               context.go(GeoAmdRoutes.home, extra: DoctorServiceState);
             }
             if (state is DoctorServiceErrorState) {
@@ -191,17 +141,13 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Flexible(
                             child: Text(
-                          'Para continuar necesitamos conocer la ubicación de su dispositivo móvil y donde prestará el servicio',
+                          context.appLocalization.messageDoctorLocation,
                           textAlign: TextAlign.justify,
-                          style: TextStyle(
-                              fontSize: 19.0,
-                              color: Colors.black,
-                              fontFamily: 'TitlesHighlight',
-                              fontWeight: FontWeight.bold),
+                          style: AppStyles.textStyleOnlineDoctor,
                         )),
                       ],
                     ),
@@ -210,20 +156,15 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField(
-                            hint: const Text("Seleccione su estado"),
+                            hint: Text(context.appLocalization.labelSelect),
                             key: estadoFieldKey,
                             value: selectedState,
-                            decoration: const InputDecoration(
-                                hintText: 'Seleccione su estado',
-                                labelText: 'Estado:',
-                                labelStyle: TextStyle(
-                                    fontSize: 27.0,
-                                    color: Colors.black,
-                                    fontFamily: 'TitlesHighlight')),
-                            style: const TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.black,
-                                fontFamily: 'TextsParagraphs'),
+                            decoration: InputDecoration(
+                                hintText: context.appLocalization.labelSelect,
+                                labelText: context.appLocalization.labelState,
+                                labelStyle: AppStyles.textStyleSelect,
+                                errorStyle: AppStyles.textFormFieldError),
+                            style: AppStyles.textStyleOptionSelect,
                             items: stateList.map((SelectModel selectiveState) {
                               return DropdownMenuItem(
                                 value: selectiveState.id,
@@ -234,7 +175,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue == null) {
-                                return 'Estado es requerido';
+                                return context.appLocalization.fieldRequired;
                               }
                               return null;
                             },
@@ -253,21 +194,16 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                       children: <Widget>[
                         Expanded(
                           child: DropdownButtonFormField(
-                            hint: const Text("Seleccione su ciudad"),
+                            hint: Text(context.appLocalization.labelSelect),
                             key: ciudadFieldKey,
                             value: selectedCity,
-                            decoration: const InputDecoration(
-                              labelText: 'Ciudad:',
-                              hintText: 'Seleccione su ciudad',
-                              labelStyle: TextStyle(
-                                  fontSize: 27.0,
-                                  color: Colors.black,
-                                  fontFamily: 'TitlesHighlight'),
+                            decoration: InputDecoration(
+                                labelText: context.appLocalization.labelCity,
+                                hintText: context.appLocalization.labelSelect,
+                                labelStyle: AppStyles.textStyleSelect,
+                                errorStyle: AppStyles.textFormFieldError
                             ),
-                            style: const TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.black,
-                                fontFamily: 'TextsParagraphs'),
+                            style: AppStyles.textStyleOptionSelect,
                             items: cityList.map((SelectModel selectiveCity) {
                               return DropdownMenuItem(
                                 value: selectiveCity.id,
@@ -278,7 +214,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue == null) {
-                                return 'Ciudad es requerido';
+                                return context.appLocalization.fieldRequired;
                               }
                               return null;
                             },
@@ -320,8 +256,9 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                         return CustomDialogBox(
                                             title: context
                                                 .appLocalization.titleWarning,
-                                            descriptions:
-                                                '¿Estás seguro de activar su servicio?',
+                                            descriptions: context
+                                                .appLocalization
+                                                .messageConnectDoctor,
                                             isConfirmation: true,
                                             dialogAction: () =>
                                                 BlocProvider.of<MainBloc>(context)
@@ -348,14 +285,11 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 15, horizontal: 20),
-                                  child: const Text(
-                                    'Activar servicio',
+                                  child: Text(
+                                    context.appLocalization
+                                        .nameButtonConnectDoctor,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Color(0xffFFFFFF),
-                                        fontFamily: 'TitlesHighlight',
-                                        fontWeight: FontWeight.bold),
+                                    style: AppStyles.textStyleButton,
                                   ),
                                 ),
                               ),
@@ -371,7 +305,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
                               onPressed: () {
-                                context.go('/home');
+                                context.go(GeoAmdRoutes.home);
                               },
                               child: Ink(
                                 decoration: BoxDecoration(
@@ -383,14 +317,10 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 15, horizontal: 20),
-                                  child: const Text(
-                                    'Regresar',
+                                  child: Text(
+                                    context.appLocalization.nameButtonReturn,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Color(0xffFFFFFF),
-                                        fontFamily: 'TitlesHighlight',
-                                        fontWeight: FontWeight.bold),
+                                    style: AppStyles.textStyleButton,
                                   ),
                                 ),
                               ),

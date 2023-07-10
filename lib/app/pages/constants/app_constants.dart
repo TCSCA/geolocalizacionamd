@@ -40,6 +40,7 @@ class AppConstants {
     'closeMenu': FontAwesomeIcons.xmark,
     statusError: FontAwesomeIcons.xmark,
     statusWarning: FontAwesomeIcons.triangleExclamation,
-    statusSuccess: FontAwesomeIcons.check
+    statusSuccess: FontAwesomeIcons.check,
+    'doctorLocation': FontAwesomeIcons.locationDot
   };
 }
