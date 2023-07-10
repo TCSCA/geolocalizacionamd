@@ -233,16 +233,16 @@ class MainWidgets {
                 const SizedBox(
                   height: 8.0,
                 ),
-                Row(
+                const Row(
                   children: [
                     Row(
-                      children: const [
+                      children: [
                         Text('Disponible para atender:',
                             style:
                                 TextStyle(fontSize: 18.0, color: Colors.white)),
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 8.0,
                     ),
                   ],

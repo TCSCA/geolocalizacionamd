@@ -90,8 +90,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                 const SizedBox(
                   height: 5.0,
                 ),
-                Row(
-                  children: const [
+                const Row(
+                  children: [
                     Icon(Icons.person_pin_circle, color: Colors.white),
                     SizedBox(
                       width: 10.0,
@@ -191,8 +191,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Flexible(
                             child: Text(
                           'Para continuar necesitamos conocer la ubicación de su dispositivo móvil y donde prestará el servicio',

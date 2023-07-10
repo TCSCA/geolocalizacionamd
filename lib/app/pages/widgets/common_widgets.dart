@@ -91,10 +91,10 @@ class AppCommonWidgets {
     final List<MenuModel> opcionesMenu =
         BlocProvider.of<LoginBloc>(context).listMenu;
 
-    listaMenu.add(Row(
+    listaMenu.add(const Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Text(
           "MENÚ DE OPCIONES",
           style: TextStyle(

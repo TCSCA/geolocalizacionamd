@@ -96,8 +96,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                           return Column(
                             children: [
                               const SizedBox(height: 20.0),
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   SizedBox(width: 20.0),
                                   Text(
                                     "Datos de Orden Médica:",
@@ -138,8 +138,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 ],
                               ),
                               const SizedBox(height: 20.0),
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   SizedBox(width: 20.0),
                                   Text(
                                     "Datos del Paciente:",
@@ -212,8 +212,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 ],
                               ),
                               const SizedBox(height: 20.0),
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   SizedBox(width: 20.0),
                                   Text(
                                     "Datos del Doctor:",

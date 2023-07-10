@@ -56,8 +56,8 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
                                 title: const Text('Orden Nro. 258746'),
                                 subtitle: Column(
                                   children: [
-                                    Row(
-                                      children: const [
+                                    const Row(
+                                      children: [
                                         Text('Paciente:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
@@ -65,8 +65,8 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
                                       ],
                                     ),
                                     const SizedBox(height: 3.0),
-                                    Row(
-                                      children: const [
+                                    const Row(
+                                      children: [
                                         Text('Teléfono:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
@@ -74,8 +74,8 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
                                       ],
                                     ),
                                     const SizedBox(height: 3.0),
-                                    Row(
-                                      children: const [
+                                    const Row(
+                                      children: [
                                         Text('Doctor Solicitante:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
@@ -83,8 +83,8 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
                                       ],
                                     ),
                                     const SizedBox(height: 3.0),
-                                    Row(
-                                      children: const [
+                                    const Row(
+                                      children: [
                                         Text('Fecha y Hora:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
@@ -132,38 +132,38 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
                                 leading: Image.asset(
                                     'assets/images/gps_doctor_image.png'),
                                 title: const Text('Rechazo Nro. 258746'),
-                                subtitle: Column(
+                                subtitle: const Column(
                                   children: [
-                                    const SizedBox(height: 3.0),
+                                    SizedBox(height: 3.0),
                                     Row(
-                                      children: const [
+                                      children: [
                                         Text('Paciente:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         Text('Ruperto Lugo')
                                       ],
                                     ),
-                                    const SizedBox(height: 3.0),
+                                    SizedBox(height: 3.0),
                                     Row(
-                                      children: const [
+                                      children: [
                                         Text('Teléfono:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         Text('04241234567')
                                       ],
                                     ),
-                                    const SizedBox(height: 3.0),
+                                    SizedBox(height: 3.0),
                                     Row(
-                                      children: const [
+                                      children: [
                                         Text('Doctor Solicitante:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         Text('Jhoander Armas')
                                       ],
                                     ),
-                                    const SizedBox(height: 3.0),
+                                    SizedBox(height: 3.0),
                                     Row(
-                                      children: const [
+                                      children: [
                                         Text('Fecha y Hora:',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),

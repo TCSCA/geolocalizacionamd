@@ -76,22 +76,22 @@ class AmdHistoryWidgets {
           )
         ],
       ),
-      bottom: TabBar(
-          labelColor: const Color(0xffD84835),
+      bottom: const TabBar(
+          labelColor: Color(0xffD84835),
           unselectedLabelColor: Colors.white,
-          indicatorColor: const Color(0xffD84835),
+          indicatorColor: Color(0xffD84835),
           indicatorWeight: 5,
           /* indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(30), // Creates border
                     color: Colors.greenAccent), */
           tabs: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(FontAwesomeIcons.houseMedicalCircleCheck, size: 30.0),
                   SizedBox(
                     width: 17.0,
@@ -107,7 +107,7 @@ class AmdHistoryWidgets {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(FontAwesomeIcons.houseMedicalCircleXmark, size: 30.0),
                 SizedBox(
                   width: 17.0,
