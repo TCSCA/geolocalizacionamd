@@ -4,8 +4,6 @@ import '/app/api/services/consult_data_service_implement.dart';
 import '/app/api/constants/api_constants.dart';
 import '/app/api/services/login_service.dart';
 import '/app/api/services/login_service_implement.dart';
-import '/app/api/services/websocket_service.dart';
-import '/app/api/services/websocket_service_implement.dart';
 import '/app/errors/error_active_connection.dart';
 import '/app/errors/exceptions.dart';
 import '/app/core/models/user_model.dart';
@@ -13,7 +11,6 @@ import 'secure_storage_controller.dart';
 
 class LoginController {
   final LoginService loginService = LoginServiceImp();
-  final WebSocketService webSocketService = WebSocketServiceImp();
   final SecureStorageController secureStorageController =
       SecureStorageController();
   final ConsultDataService consultDataService = ConsultDataServiceImp();
