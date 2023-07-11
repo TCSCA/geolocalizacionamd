@@ -1,3 +1,5 @@
+import 'package:geolocalizacionamd/app/core/models/reject_amd_model.dart';
+
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/register_date_mapping.dart';
 import '/app/api/services/consult_data_service.dart';
@@ -192,14 +194,14 @@ class DoctorCareController {
     return respApiReject;
   }
 
-  Future<bool> doCompleteHomeService(final int idHomeService) async {
+  Future<bool> doCompleteHomeService(final RejectAmdModel requestReject) async {
     bool respApiComplete;
 
     try {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiComplete =
-          await saveDataService.onCompleteHomeService(tokenUser, idHomeService);
+          await saveDataService.onCompleteHomeService(tokenUser, requestReject);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -282,5 +284,31 @@ class DoctorCareController {
         ((registerDate.dateTime.time.second) < 10 ? '0$seconds' : seconds);
 
     return DateTime.parse('$years-$months-$days $hours:$minutes:$seconds');
+  }
+
+  Future<List<SelectModel>> getListgetReasonRejection() async {
+    List<SelectModel> listReason = [];
+    late SelectModel opReason;
+
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+      var opcionesReason = await listsService.getAllReasonRejection(tokenUser);
+      for (var opcion in opcionesReason) {
+        opReason = SelectModel(
+            opcion.idReasonRejection.toString(), opcion.reasonForRejection);
+        listReason.add(opReason);
+      }
+      listReason.sort((a, b) => a.name.compareTo(b.name));
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return listReason;
   }
 }

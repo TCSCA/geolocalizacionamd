@@ -10,6 +10,8 @@
     "nameLinkBiometric": "Autenticación Biométrica",
     "nameButtonConnectDoctor": "Activar Servicio",
     "nameButtonReturn": "Regresar",
+    "nameButtonNo": "No",
+    "nameButtonYes": "Si",
     "titleAboutApp": "Acerca de Geolocalización",
     "titleCloseMenu": "Cerrar menú",
     "titleHome": "Inicio",

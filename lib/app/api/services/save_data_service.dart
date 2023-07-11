@@ -1,3 +1,5 @@
+import 'package:geolocalizacionamd/app/core/models/reject_amd_model.dart';
+
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/core/models/connect_doctor_model.dart';
 
@@ -10,5 +12,5 @@ abstract class SaveDataService {
   Future<bool> onRejectHomeService(
       final String tokenUser, final int idHomeService);
   Future<bool> onCompleteHomeService(
-      final String tokenUser, final int idHomeService);
+      final String tokenUser, final RejectAmdModel requestReject);
 }

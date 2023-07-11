@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:geolocalizacionamd/app/core/models/reject_amd_model.dart';
 import 'package:location/location.dart' as liblocation;
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/models/connect_doctor_model.dart';
@@ -75,7 +76,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 latitude: latitudeUser!,
                 longitude: longitudeUser!,
                 cityId: int.parse(event.locationCity));
-                
+
             emit(const LocationShowLoadingState(
                 message: 'Activando su servicio'));
             bool isConnect =
@@ -185,7 +186,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceInAttentionEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        //emit(const MainShowLoadingState(message: 'Procesando su solicitud'));
+        emit(const ShowLoadingInAttentionState(
+            message: 'Procesando su solicitud'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
@@ -259,9 +261,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<CompleteAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState(message: 'Finalizando la orden'));
-        var userHomeService = await doctorCareController
-            .doCompleteHomeService(event.idHomeService);
+        emit(
+            const ShowLoadingInAttentionState(message: 'Finalizando la orden'));
+        var requestReject = RejectAmdModel(
+            idHomeServiceAttention: event.idHomeService,
+            idReasonReject: int.parse(event.idReason),
+            comment: '');
+        var userHomeService =
+            await doctorCareController.doCompleteHomeService(requestReject);
         if (userHomeService) {
           //doctorAvailableSwitch = false;
           await doctorCareController.changeDoctorInAttention('false');
@@ -283,6 +290,25 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ChangeLocationDoctorCityEvent>((event, emit) async {
       //emit(const LoginShowLoadingState());
       emit(ChangeLocationDoctorCityState(selectedCity: event.cityCode));
+    });
+
+    on<ShowReasonCompleteStatesEvent>((event, emit) async {
+      List<SelectModel> listAllReason = [];
+      try {
+        emit(
+            const ShowLoadingInAttentionState(message: 'Procesando solicitud'));
+        listAllReason = await doctorCareController.getListgetReasonRejection();
+        emit(ReasonCompleteSuccessState(
+            homeServiceAssigned: event.homeServiceAssigned,
+            listReasonComplete: listAllReason));
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
     });
   }
 }

@@ -32,6 +32,8 @@ class ApiConstants {
       '$urlApi/rejectHomeServiceAttention';
   static final String urlApiCompleteHomeService =
       '$urlApi/completeHomeServiceAttention';
+  static final String urlApiGetAllReasonRejection =
+      '$urlApi/getAllReasonRejectionAmd';
   static final String urlApiChangePassword = '$urlApi/changePassword';
   static const String generalErrorCodeApi = 'MSG-001';
   static const String statusLabelApi = 'status';
