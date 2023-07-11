@@ -105,7 +105,6 @@ class ConsultDataServiceImp implements ConsultDataService {
           ApiConstants.statusSuccessApi) {
         if (decodeResApi[ApiConstants.dataLabelApi] != null) {
           // responseGetProfile
-
         }
       }
     } on EmptyDataException {

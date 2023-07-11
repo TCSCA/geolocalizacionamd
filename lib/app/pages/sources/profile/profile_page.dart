@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/core/controllers/profile_controller.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import '../../../shared/dialog/custom_dialog_box.dart';
+import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
+import '../../constants/app_constants.dart';
+import '../../messages/app_messages.dart';
 import '/app/pages/widgets/common_widgets.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -55,8 +60,29 @@ class ListViewProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state is ProfileInitial) {
-          // context.read<ProfileBloc>().add(GetProfileEvent());
+        if (state is ProfileLoadingState) {
+          LoadingBuilder(context).showLoadingIndicator(
+              'Cargando perfil del doctor');
+        } else if(state is ProfileSuccessState){
+          LoadingBuilder(context).hideOpenDialog();
+        } else if(state is ProfileErrorState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions:
+                  AppMessages().getMessage(context, state.messageError),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
         }
       },
       builder: (context, state) {
@@ -103,12 +129,58 @@ class ListViewProfileWidget extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              buildTextField(
-                labelText: 'Nombre Completo',
-                placeHolder: state.profileModel.fullName ?? '',
-                isReadOnly: false,
+              _ProfileDataWidget(
+                  title: 'Nombre Completo',
+                  subtitle: state.profileModel.fullName ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Documento de Identidad',
+                  subtitle: state.profileModel.identificationDocument ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Correo Electrónico',
+                  subtitle: state.profileModel.email ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Género', subtitle: state.profileModel.gender ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Fecha de Nacimiento',
+                  subtitle:
+                      '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}'),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Numero de Teléfono',
+                  subtitle: state.profileModel.phoneNumber ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Otro teléfono',
+                  subtitle: state.profileModel.otherNumber ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'País', subtitle: state.profileModel.country ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Estado', subtitle: state.profileModel.state ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Ciudad', subtitle: state.profileModel.city ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Dirección',
+                  subtitle: state.profileModel.direction ?? ''),
+              const Divider(),
+              _ProfileDataWidget(title: 'M.P.P.S', subtitle: state.profileModel.mpps ?? ''),
+              const Divider(),
+              _ProfileDataWidget(title: 'C.M', subtitle: state.profileModel.mc ?? ''),
+              const Divider(),
+              _ProfileDataWidget(
+                  title: 'Especialidad',
+                  subtitle: state.profileModel.speciality ?? ''),
+              const Divider(
+                height: 10,
               ),
-              buildTextField(
+              /* buildTextField(
                 labelText: 'Documento de Identidad',
                 placeHolder: state.profileModel.identificationDocument ?? '',
                 isReadOnly: true,
@@ -125,7 +197,8 @@ class ListViewProfileWidget extends StatelessWidget {
               ),
               buildTextField(
                 labelText: 'Fecha de Nacimiento',
-                placeHolder: '1996-06-06',
+                placeHolder:
+                    '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}',
                 isReadOnly: false,
               ),
               buildTextField(
@@ -172,11 +245,11 @@ class ListViewProfileWidget extends StatelessWidget {
                 labelText: 'Especialidad',
                 placeHolder: state.profileModel.speciality ?? '',
                 isReadOnly: true,
-              ),
+              ),*/
               const SizedBox(
                 height: 10,
               ),
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,13 +288,12 @@ class ListViewProfileWidget extends StatelessWidget {
                     )
                   ],
                 ),
-              )
+              )*/
             ],
           );
         } else {
           return Container();
         }
-
       },
     );
   }
@@ -245,6 +317,25 @@ class ListViewProfileWidget extends StatelessWidget {
             hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
       ),
+    );
+  }
+}
+
+class _ProfileDataWidget extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const _ProfileDataWidget(
+      {super.key, required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(subtitle),
     );
   }
 }

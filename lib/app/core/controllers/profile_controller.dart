@@ -5,6 +5,9 @@ import 'package:geolocalizacionamd/app/core/models/profile_model.dart';
 
 import '../../api/constants/api_constants.dart';
 import '../../api/services/consult_data_service.dart';
+import '../../errors/error_active_connection.dart';
+import '../../errors/error_app_exception.dart';
+import '../../errors/error_general_exception.dart';
 
 class ProfileController {
   final ConsultDataService consultDataService = ConsultDataServiceImp();
@@ -18,26 +21,49 @@ class ProfileController {
     final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
 
-    profileMap = await consultDataService.getProfile(tokenUser);
+    try {
+      profileMap = await consultDataService.getProfile(tokenUser);
 
-    final variable =  profileMap.data?.medicalLicense?.split('|');
+      final mppsAndmc = profileMap.data?.medicalLicense?.split('|');
+      final String mpps = mppsAndmc?[0] ?? '';
+      final String mc = mppsAndmc?.length == 2 ? mppsAndmc![1] :'';
 
+      final day = profileMap.data!.birthday!.dayOfMonth! < 10
+          ? '0${profileMap.data!.birthday!.dayOfMonth!}'
+          : profileMap.data!.birthday!.dayOfMonth.toString();
 
-    profileModel = ProfileModel(
-      fullName: profileMap.data?.fullName,
-      identificationDocument: profileMap.data?.identificationDocument,
-      email: profileMap.data?.email,
-     // birthday: profileMap.data.birthday,
-      phoneNumber: profileMap.data?.phoneNumber,
-      otherNumber: profileMap.data?.otherNumber,
-      city: profileMap.data?.city,
-      state: profileMap.data?.state,
-      country: profileMap.data?.country,
-      direction: profileMap.data?.direction,
-      speciality: profileMap.data?.speciality,
+      final month = profileMap.data!.birthday!.month! < 10
+          ? '0${profileMap.data?.birthday?.month.toString()}'
+          : profileMap.data?.birthday?.month.toString();
 
-    );
-
+      profileModel = ProfileModel(
+        fullName: profileMap.data?.fullName,
+        identificationDocument: profileMap.data?.identificationDocument,
+        email: profileMap.data?.email,
+        gender: profileMap.data?.gender,
+        dayBirthday: day,
+        monthBirthday: month,
+        yearBirthday: profileMap.data?.birthday?.year.toString(),
+        phoneNumber: profileMap.data?.phoneNumber,
+        otherNumber: profileMap.data?.otherNumber,
+        city: profileMap.data?.city,
+        state: profileMap.data?.state,
+        country: profileMap.data?.country,
+        direction: profileMap.data?.direction,
+        speciality: profileMap.data?.speciality,
+        medicalLicense: profileMap.data?.medicalLicense,
+        mpps: mpps,
+        mc: mc
+      );
+    } on ErrorAppException {
+      rethrow;
+    } on ActiveConnectionException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
 
     return profileModel;
   }
