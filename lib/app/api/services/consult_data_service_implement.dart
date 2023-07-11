@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:geolocalizacionamd/app/api/mappings/profile_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
@@ -76,5 +77,44 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
 
     return responseActiveAmdOrder;
+  }
+
+  @override
+  Future<ProfileMap> getProfile(String tokenUser) async {
+    ProfileMap profileMap;
+
+    http.Response responseApi;
+
+    Map<String, dynamic> decodeResApi;
+
+    final Uri urlApiGetProfile = Uri.parse(ApiConstants.urlApiGetProfile);
+
+    final Map<String, String> headerProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.post(urlApiGetProfile, headers: headerProfile);
+
+      decodeResApi = json.decode(responseApi.body);
+
+      profileMap = ProfileMap.fromJson(decodeResApi);
+
+      if (decodeResApi[ApiConstants.statusSuccessApi] ==
+          ApiConstants.statusSuccessApi) {
+        if (decodeResApi[ApiConstants.dataLabelApi] != null) {
+          // responseGetProfile
+        }
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return profileMap;
   }
 }
