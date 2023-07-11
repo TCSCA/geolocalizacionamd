@@ -201,8 +201,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 labelText: context.appLocalization.labelCity,
                                 hintText: context.appLocalization.labelSelect,
                                 labelStyle: AppStyles.textStyleSelect,
-                                errorStyle: AppStyles.textFormFieldError
-                            ),
+                                errorStyle: AppStyles.textFormFieldError),
                             style: AppStyles.textStyleOptionSelect,
                             items: cityList.map((SelectModel selectiveCity) {
                               return DropdownMenuItem(
@@ -221,8 +220,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                             onChanged: (cityCode) {
                               if (cityCode != null) {
                                 cityTextController.text = cityCode;
-                                userMainBloc
-                                    .add(ChangeLocationDoctorCityEvent(cityCode));
+                                userMainBloc.add(
+                                    ChangeLocationDoctorCityEvent(cityCode));
                               }
                             },
                           ),
@@ -236,7 +235,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                       children: [
                         const SizedBox(width: 20.0),
                         Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 7.0),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.zero,
@@ -246,7 +246,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
                               onPressed: () {
-                                if (!ubicacionFormKey.currentState!.validate()) {
+                                if (!ubicacionFormKey.currentState!
+                                    .validate()) {
                                   return;
                                 } else {
                                   showDialog(
@@ -261,7 +262,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                                 .messageConnectDoctor,
                                             isConfirmation: true,
                                             dialogAction: () =>
-                                                BlocProvider.of<MainBloc>(context)
+                                                BlocProvider.of<MainBloc>(
+                                                        context)
                                                     .add(ConnectDoctorAmdEvent(
                                                         locationState:
                                                             stateTextController
@@ -295,7 +297,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                               ),
                             )),
                         Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 7.0),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.zero,

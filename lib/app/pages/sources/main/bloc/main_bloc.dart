@@ -10,6 +10,7 @@ import '/app/errors/error_empty_data.dart';
 import '/app/errors/exceptions.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/shared/permissions/handle_location_permissions.dart';
+import '/app/core/models/reject_amd_model.dart';
 part 'main_event.dart';
 part 'main_state.dart';
 
@@ -75,7 +76,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
                 latitude: latitudeUser!,
                 longitude: longitudeUser!,
                 cityId: int.parse(event.locationCity));
-                
+
             emit(const LocationShowLoadingState(
                 message: 'Activando su servicio'));
             bool isConnect =
@@ -237,15 +238,25 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<DisallowAmdEvent>((event, emit) async {
       try {
         emit(const MainShowLoadingState(message: 'Rechazando la orden'));
+
+        var requestReject = RejectAmdModel(
+            idHomeServiceAttention: event.idHomeService,
+            comment: '',
+            idReasonReject: int.parse(event.idReason));
+
         var userHomeService =
-            await doctorCareController.doRejectHomeService(event.idHomeService);
+            await doctorCareController.doRejectHomeService(requestReject);
 
         if (userHomeService) {
           await doctorCareController.changeDoctorInAttention('false');
           //doctorAvailableSwitch = false;
-          emit(const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'));
+          emit(
+            const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'),
+          );
         } else {
-          emit(const HomeServiceErrorState(message: 'MSGAPP-005'));
+          emit(
+            const HomeServiceErrorState(message: 'MSGAPP-005'),
+          );
         }
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
@@ -283,6 +294,24 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ChangeLocationDoctorCityEvent>((event, emit) async {
       //emit(const LoginShowLoadingState());
       emit(ChangeLocationDoctorCityState(selectedCity: event.cityCode));
+    });
+
+    on<ShowReasonRejectionStatesEvent>((event, emit) async {
+      List<SelectModel> listAllReason = [];
+      try {
+        emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+        listAllReason = await doctorCareController.getListgetReasonRejection();
+        emit(ReasonRejectionSuccessState(
+            homeServiceAssigned: event.homeServiceAssigned,
+            listReasonRejection: listAllReason));
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
     });
   }
 }

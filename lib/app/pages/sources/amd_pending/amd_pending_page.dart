@@ -118,7 +118,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                           fontWeight: FontWeight.bold)),
                                   Text(
                                     DateFormat("dd-MM-yyyy hh:mm a").format(
-                                        state.homeServiceConfirmed.registerDate),
+                                        state
+                                            .homeServiceConfirmed.registerDate),
                                     style: const TextStyle(fontSize: 16),
                                   )
                                 ],
@@ -160,7 +161,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                           fontWeight: FontWeight.bold)),
                                   Flexible(
                                     child: Text(
-                                      state.homeServiceConfirmed.fullNamePatient,
+                                      state
+                                          .homeServiceConfirmed.fullNamePatient,
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                   )
@@ -190,7 +192,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold)),
                                   Text(
-                                    state.homeServiceConfirmed.phoneNumberPatient,
+                                    state.homeServiceConfirmed
+                                        .phoneNumberPatient,
                                     style: const TextStyle(fontSize: 16),
                                   )
                                 ],
@@ -234,7 +237,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                           fontWeight: FontWeight.bold)),
                                   Flexible(
                                     child: Text(
-                                      state.homeServiceConfirmed.applicantDoctor,
+                                      state
+                                          .homeServiceConfirmed.applicantDoctor,
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                   )
@@ -249,7 +253,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold)),
                                   Text(
-                                    state.homeServiceConfirmed.phoneNumberDoctor,
+                                    state
+                                        .homeServiceConfirmed.phoneNumberDoctor,
                                     style: const TextStyle(fontSize: 16),
                                   )
                                 ],
@@ -350,8 +355,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                     BorderRadius.circular(30))),
                                         onPressed: () {
                                           _launchURL(
-                                              url: state
-                                                  .homeServiceConfirmed.linkAmd);
+                                              url: state.homeServiceConfirmed
+                                                  .linkAmd);
                                         },
                                         child: Ink(
                                           decoration: BoxDecoration(

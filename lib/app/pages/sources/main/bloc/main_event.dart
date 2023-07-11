@@ -57,9 +57,10 @@ class ConfirmAmdEvent extends MainEvent {
 
 class DisallowAmdEvent extends MainEvent {
   final int idHomeService;
-  const DisallowAmdEvent(this.idHomeService);
+  final String idReason;
+  const DisallowAmdEvent(this.idHomeService, this.idReason);
   @override
-  List<Object> get props => [idHomeService];
+  List<Object> get props => [idHomeService, idReason];
 }
 
 class CompleteAmdEvent extends MainEvent {
@@ -80,4 +81,11 @@ class ChangeLocationDoctorCityEvent extends MainEvent {
   const ChangeLocationDoctorCityEvent(this.cityCode);
   @override
   List<Object> get props => [cityCode];
+}
+
+class ShowReasonRejectionStatesEvent extends MainEvent {
+  final HomeServiceModel homeServiceAssigned;
+  const ShowReasonRejectionStatesEvent(this.homeServiceAssigned);
+  @override
+  List<Object> get props => [homeServiceAssigned];
 }

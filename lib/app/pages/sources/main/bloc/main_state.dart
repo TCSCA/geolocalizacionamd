@@ -127,3 +127,12 @@ class LocationErrorState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class ReasonRejectionSuccessState extends MainState {
+  final HomeServiceModel homeServiceAssigned;
+  final List<SelectModel> listReasonRejection;
+  const ReasonRejectionSuccessState(
+      {required this.homeServiceAssigned, required this.listReasonRejection});
+  @override
+  List<Object> get props => [homeServiceAssigned, listReasonRejection];
+}

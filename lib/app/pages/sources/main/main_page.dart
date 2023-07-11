@@ -37,11 +37,11 @@ class _MainPageState extends State<MainPage> with MainWidgets {
               AppCommonWidgets.listenerNavigationBloc(),
               AppCommonWidgets.listenerLogoutBloc()
             ],
-            child: SingleChildScrollView(
-              child: Container(
-                decoration: const BoxDecoration(color: Colors.white),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       SizedBox(height: dataSpaceHeight),

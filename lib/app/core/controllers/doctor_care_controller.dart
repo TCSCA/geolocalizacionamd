@@ -11,8 +11,8 @@ import '/app/core/models/home_service_model.dart';
 import '/app/core/models/select_model.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/errors/exceptions.dart';
-
 import 'secure_storage_controller.dart';
+import '/app/core/models/reject_amd_model.dart';
 
 class DoctorCareController {
   final SaveDataService saveDataService = SaveDataServiceImp();
@@ -173,14 +173,14 @@ class DoctorCareController {
     return responseHomeService;
   }
 
-  Future<bool> doRejectHomeService(final int idHomeService) async {
+  Future<bool> doRejectHomeService(final RejectAmdModel requestReject) async {
     bool respApiReject;
 
     try {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiReject =
-          await saveDataService.onRejectHomeService(tokenUser, idHomeService);
+          await saveDataService.onRejectHomeService(tokenUser, requestReject);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -282,5 +282,31 @@ class DoctorCareController {
         ((registerDate.dateTime.time.second) < 10 ? '0$seconds' : seconds);
 
     return DateTime.parse('$years-$months-$days $hours:$minutes:$seconds');
+  }
+
+  Future<List<SelectModel>> getListgetReasonRejection() async {
+    List<SelectModel> listReason = [];
+    late SelectModel opReason;
+
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+      var opcionesReason = await listsService.getAllReasonRejection(tokenUser);
+      for (var opcion in opcionesReason) {
+        opReason = SelectModel(
+            opcion.idReasonRejection.toString(), opcion.reasonForRejection);
+        listReason.add(opReason);
+      }
+      listReason.sort((a, b) => a.name.compareTo(b.name));
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return listReason;
   }
 }
