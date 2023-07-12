@@ -45,5 +45,4 @@ class ApiConstants {
   static const String tokenLabel = 'token';
   static const String tokenFirebaseLabel = 'tokenFirebaseRegister';
   static const String doctorInAttentionLabel = 'doctorInAttention';
-  static const String idHomeServiceConfirmedLabel = 'idHomeServiceConfirmed';
 }

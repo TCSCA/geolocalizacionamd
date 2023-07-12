@@ -11,5 +11,5 @@ abstract class SaveDataService {
   Future<bool> onRejectHomeService(
       final String tokenUser, final RejectAmdModel requestReject);
   Future<bool> onCompleteHomeService(
-      final String tokenUser, final int idHomeService);
+      final String tokenUser, final RejectAmdModel requestReject);
 }

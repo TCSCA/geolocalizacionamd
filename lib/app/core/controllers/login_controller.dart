@@ -64,8 +64,6 @@ class LoginController {
       await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
       await secureStorageController
           .deleteSecureData(ApiConstants.doctorInAttentionLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.idHomeServiceConfirmedLabel);
     }
 
     return respWebSocket;

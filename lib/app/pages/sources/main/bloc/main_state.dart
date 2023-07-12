@@ -136,3 +136,19 @@ class ReasonRejectionSuccessState extends MainState {
   @override
   List<Object> get props => [homeServiceAssigned, listReasonRejection];
 }
+
+class ReasonCompleteSuccessState extends MainState {
+  final HomeServiceModel homeServiceAssigned;
+  final List<SelectModel> listReasonComplete;
+  const ReasonCompleteSuccessState(
+      {required this.homeServiceAssigned, required this.listReasonComplete});
+  @override
+  List<Object> get props => [homeServiceAssigned, listReasonComplete];
+}
+
+class ShowLoadingInAttentionState extends MainState {
+  final String message;
+  const ShowLoadingInAttentionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

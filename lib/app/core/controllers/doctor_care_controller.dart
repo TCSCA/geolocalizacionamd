@@ -112,43 +112,6 @@ class DoctorCareController {
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       var responseService =
           await saveDataService.onConfirmHomeService(tokenUser, idHomeService);
-      await secureStorageController.writeSecureData(
-          ApiConstants.idHomeServiceConfirmedLabel,
-          responseService.idHomeService.toString());
-      responseHomeService = HomeServiceModel(
-          responseService.idHomeService,
-          responseService.orderNumber,
-          parseFecha(responseService.registerDate),
-          responseService.fullNamePatient,
-          responseService.documentType,
-          responseService.identificationDocument,
-          responseService.phoneNumberPatient,
-          responseService.address,
-          responseService.applicantDoctor,
-          responseService.phoneNumberDoctor,
-          responseService.typeService,
-          responseService.linkAmd);
-    } on ErrorAppException {
-      rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
-      throw ErrorGeneralException();
-    }
-
-    return responseHomeService;
-  }
-
-  Future<HomeServiceModel> getConfirmedHomeService() async {
-    late HomeServiceModel responseHomeService;
-
-    try {
-      var tokenUser =
-          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-      var idHomeService = await secureStorageController
-          .readSecureData(ApiConstants.idHomeServiceConfirmedLabel);
-      var responseService = await saveDataService.onConfirmHomeService(
-          tokenUser, int.parse(idHomeService));
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
           responseService.orderNumber,
@@ -192,14 +155,14 @@ class DoctorCareController {
     return respApiReject;
   }
 
-  Future<bool> doCompleteHomeService(final int idHomeService) async {
+  Future<bool> doCompleteHomeService(final RejectAmdModel requestReject) async {
     bool respApiComplete;
 
     try {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiComplete =
-          await saveDataService.onCompleteHomeService(tokenUser, idHomeService);
+          await saveDataService.onCompleteHomeService(tokenUser, requestReject);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {

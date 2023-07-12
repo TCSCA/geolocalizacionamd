@@ -16,6 +16,7 @@ part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
   bool doctorAvailableSwitch = false;
+  late HomeServiceModel homeServiceConfirmed;
   final HandleLocationPermissions handleLocationPermissions =
       HandleLocationPermissions();
   liblocation.Location location = liblocation.Location();
@@ -186,15 +187,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceInAttentionEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        //emit(const MainShowLoadingState(message: 'Procesando su solicitud'));
+        emit(const ShowLoadingInAttentionState(
+            message: 'Procesando su solicitud'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
         if (doctorInAttention) {
-          var userHomeService =
-              await doctorCareController.getConfirmedHomeService();
           emit(ConfirmHomeServiceSuccessState(
-              homeServiceConfirmed: userHomeService));
+              homeServiceConfirmed: homeServiceConfirmed));
         } else {
           emit(const HomeServiceInAttentionState(
               message: AppConstants.codeDoctorInAttention));
@@ -220,6 +220,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           await doctorCareController.doDisconectDoctorAmd();
         } catch (e) {/*Nada que hacer si falla*/}
         doctorAvailableSwitch = false;
+        //Almecenar AMD para mostrar en atencion
+        homeServiceConfirmed = userHomeService;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
       } on ErrorAppException catch (exapp) {
@@ -249,7 +251,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
         if (userHomeService) {
           await doctorCareController.changeDoctorInAttention('false');
-          //doctorAvailableSwitch = false;
+          doctorAvailableSwitch = false;
           emit(
             const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'),
           );
@@ -270,9 +272,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<CompleteAmdEvent>((event, emit) async {
       try {
-        //emit(const MainShowLoadingState(message: 'Finalizando la orden'));
-        var userHomeService = await doctorCareController
-            .doCompleteHomeService(event.idHomeService);
+        emit(
+            const ShowLoadingInAttentionState(message: 'Finalizando la orden'));
+        var requestReject = RejectAmdModel(
+            idHomeServiceAttention: event.idHomeService,
+            idReasonReject: int.parse(event.idReason),
+            comment: '');
+        var userHomeService =
+            await doctorCareController.doCompleteHomeService(requestReject);
         if (userHomeService) {
           //doctorAvailableSwitch = false;
           await doctorCareController.changeDoctorInAttention('false');
@@ -304,6 +311,25 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(ReasonRejectionSuccessState(
             homeServiceAssigned: event.homeServiceAssigned,
             listReasonRejection: listAllReason));
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+    
+    on<ShowReasonCompleteStatesEvent>((event, emit) async {
+      List<SelectModel> listAllReason = [];
+      try {
+        emit(
+            const ShowLoadingInAttentionState(message: 'Procesando solicitud'));
+        listAllReason = await doctorCareController.getListgetReasonRejection();
+        emit(ReasonCompleteSuccessState(
+            homeServiceAssigned: event.homeServiceAssigned,
+            listReasonComplete: listAllReason));
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {

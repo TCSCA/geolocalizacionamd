@@ -325,8 +325,11 @@ class MainWidgets {
     final GlobalKey<FormFieldState> reasonFieldKey =
         GlobalKey<FormFieldState>();
     final TextEditingController reasonTextController = TextEditingController();
+    // ignore: unused_local_variable
+    bool doctorAvailableSwitch = userMainBloc.doctorAvailableSwitch;
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
+      
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is MainShowLoadingState) {
@@ -338,6 +341,7 @@ class MainWidgets {
           } */
           if (state is DisallowHomeServiceSuccessState) {
             LoadingBuilder(context).hideOpenDialog();
+            doctorAvailableSwitch = false;
             showDialog(
                 context: context,
                 barrierDismissible: false,
