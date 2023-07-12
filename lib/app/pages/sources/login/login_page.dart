@@ -254,6 +254,8 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color(0xffFFFFFF),
                                 fontSize: 19.0,
                                 fontFamily: 'TitlesHighlight'),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue!.isEmpty) {
                                 return 'Campo requerido';
@@ -322,6 +324,8 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color(0xffFFFFFF),
                                 fontSize: 19.0,
                                 fontFamily: 'TitlesHighlight'),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue!.isEmpty) {
                                 return 'Campo requerido';
