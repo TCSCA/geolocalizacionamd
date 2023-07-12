@@ -193,9 +193,12 @@ class MainWidgets {
                 );
               });
         }
-        /* if (state is DisallowHomeServiceSuccessState) {
+        if (state is DisallowHomeServiceSuccessState) {
           doctorAvailableSwitch = false;
-        } */
+        }
+        if (state is HomeServiceSuccessState) {
+          doctorAvailableSwitch = false;
+        }
       },
       builder: (context, state) {
         return Container(

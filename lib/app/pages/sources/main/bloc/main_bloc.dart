@@ -170,6 +170,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           var userHomeService =
               await doctorCareController.getHomeServiceAssigned();
+          doctorAvailableSwitch = false;
           emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
         }
       } on EmptyDataException {
