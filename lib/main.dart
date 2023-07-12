@@ -150,7 +150,7 @@ void showFlutterNotification(RemoteMessage message) {
           playSound: true,
           enableVibration: true,
           channelDescription: channel.description,
-          //icon: 'launch_background',
+          icon: 'launch_background',
         ),
       ),
     );

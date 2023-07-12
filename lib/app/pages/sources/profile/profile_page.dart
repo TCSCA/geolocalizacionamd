@@ -105,10 +105,10 @@ class ListViewProfileWidget extends StatelessWidget {
                           ],
                           shape: BoxShape.circle,
                           image: const DecorationImage(
-                              image: AssetImage('assets/images/doctor_1.jpg'),
+                              image: AssetImage('assets/images/profile_default.png'),
                               fit: BoxFit.cover)),
                     ),
-                    Positioned(
+                    /*Positioned(
                         bottom: 0,
                         right: 0,
                         child: Container(
@@ -122,7 +122,7 @@ class ListViewProfileWidget extends StatelessWidget {
                             Icons.edit,
                             color: Colors.white,
                           ),
-                        ))
+                        ))*/
                   ],
                 ),
               ),
