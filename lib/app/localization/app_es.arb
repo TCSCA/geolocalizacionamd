@@ -54,6 +54,7 @@
     "apiMsg125": "Este usuario no posee un rol autorizado para ingresar a través de esta plataforma.",
     "apiMsg135": "Estimado Usuario, su código de activación se encuentra Inactivo. Por favor contacte al Administrador.",
     "apiMsg225": "Estimado Usuario, su código de activación está vencido. Por favor contacte al Administrador.",
+    "apiMsg230": "Actualmente, tiene una atención pendiente. Es necesario que finalice la misma para continuar recibiendo nuevas atenciones.",
     "appMsg001": "Ya se encuentra disponible para atender.",
     "appMsg002": "No se tiene permisos para procesar solicitud.",
     "appMsg003": "Servicio de GPS no activo en tu dispositivo.",

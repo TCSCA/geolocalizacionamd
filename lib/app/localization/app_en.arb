@@ -55,6 +55,7 @@
     "apiMsg125": "This user does not have an authorized role to enter through this platform.",
     "apiMsg135": "Dear User, your activation code is Inactive. Please contact the Administrator.",
     "apiMsg225": "Dear User, your activation code has expired. Please contact the Administrator.",
+    "apiMsg230": "Currently, he has a pending attention. It is necessary to finish it to continue receiving new care.",
     "appMsg001": "Your services are already available.",
     "appMsg002": "No permissions to process request.",
     "appMsg003": "GPS service not active on your device.",

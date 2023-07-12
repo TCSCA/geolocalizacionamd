@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:geolocalizacionamd/app/core/models/reject_amd_model.dart';
 import 'package:location/location.dart' as liblocation;
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/models/connect_doctor_model.dart';
@@ -11,11 +10,13 @@ import '/app/errors/error_empty_data.dart';
 import '/app/errors/exceptions.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/shared/permissions/handle_location_permissions.dart';
+import '/app/core/models/reject_amd_model.dart';
 part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
   bool doctorAvailableSwitch = false;
+  late HomeServiceModel homeServiceConfirmed;
   final HandleLocationPermissions handleLocationPermissions =
       HandleLocationPermissions();
   liblocation.Location location = liblocation.Location();
@@ -192,10 +193,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             await doctorCareController.validateDoctorInAttention();
 
         if (doctorInAttention) {
-          var userHomeService =
-              await doctorCareController.getConfirmedHomeService();
           emit(ConfirmHomeServiceSuccessState(
-              homeServiceConfirmed: userHomeService));
+              homeServiceConfirmed: homeServiceConfirmed));
         } else {
           emit(const HomeServiceInAttentionState(
               message: AppConstants.codeDoctorInAttention));
@@ -221,6 +220,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           await doctorCareController.doDisconectDoctorAmd();
         } catch (e) {/*Nada que hacer si falla*/}
         doctorAvailableSwitch = false;
+        //Almecenar AMD para mostrar en atencion
+        homeServiceConfirmed = userHomeService;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
       } on ErrorAppException catch (exapp) {

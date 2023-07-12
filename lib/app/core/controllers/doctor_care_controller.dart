@@ -1,5 +1,3 @@
-import 'package:geolocalizacionamd/app/core/models/reject_amd_model.dart';
-
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/register_date_mapping.dart';
 import '/app/api/services/consult_data_service.dart';
@@ -13,7 +11,7 @@ import '/app/core/models/home_service_model.dart';
 import '/app/core/models/select_model.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/errors/exceptions.dart';
-
+import '/app/core/models/reject_amd_model.dart';
 import 'secure_storage_controller.dart';
 
 class DoctorCareController {
@@ -114,43 +112,6 @@ class DoctorCareController {
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       var responseService =
           await saveDataService.onConfirmHomeService(tokenUser, idHomeService);
-      await secureStorageController.writeSecureData(
-          ApiConstants.idHomeServiceConfirmedLabel,
-          responseService.idHomeService.toString());
-      responseHomeService = HomeServiceModel(
-          responseService.idHomeService,
-          responseService.orderNumber,
-          parseFecha(responseService.registerDate),
-          responseService.fullNamePatient,
-          responseService.documentType,
-          responseService.identificationDocument,
-          responseService.phoneNumberPatient,
-          responseService.address,
-          responseService.applicantDoctor,
-          responseService.phoneNumberDoctor,
-          responseService.typeService,
-          responseService.linkAmd);
-    } on ErrorAppException {
-      rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
-      throw ErrorGeneralException();
-    }
-
-    return responseHomeService;
-  }
-
-  Future<HomeServiceModel> getConfirmedHomeService() async {
-    late HomeServiceModel responseHomeService;
-
-    try {
-      var tokenUser =
-          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-      var idHomeService = await secureStorageController
-          .readSecureData(ApiConstants.idHomeServiceConfirmedLabel);
-      var responseService = await saveDataService.onConfirmHomeService(
-          tokenUser, int.parse(idHomeService));
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
           responseService.orderNumber,

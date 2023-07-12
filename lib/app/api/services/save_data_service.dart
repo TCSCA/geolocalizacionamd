@@ -1,7 +1,6 @@
-import 'package:geolocalizacionamd/app/core/models/reject_amd_model.dart';
-
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/core/models/connect_doctor_model.dart';
+import '/app/core/models/reject_amd_model.dart';
 
 abstract class SaveDataService {
   Future<bool> onConnectDoctorAmd(
