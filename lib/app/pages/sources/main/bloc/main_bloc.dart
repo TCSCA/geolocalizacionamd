@@ -308,6 +308,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       List<SelectModel> listAllReason = [];
       try {
         emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+
+      await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(event.homeServiceAssigned.idHomeService);
+
         listAllReason = await doctorCareController.getListgetReasonRejection();
         emit(ReasonRejectionSuccessState(
             homeServiceAssigned: event.homeServiceAssigned,

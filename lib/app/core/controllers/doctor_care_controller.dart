@@ -272,4 +272,14 @@ class DoctorCareController {
 
     return listReason;
   }
+
+  Future<void> validateIfOrderIsCompletedOrRejectedCtrl(int idHomeService) async {
+
+    final tokenUser =
+    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+    await consultDataService.validateIfOrderIsCompletedOrRejected(tokenUser, idHomeService);
+
+
+  }
 }

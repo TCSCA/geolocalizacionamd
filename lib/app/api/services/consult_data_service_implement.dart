@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:geolocalizacionamd/app/api/mappings/profile_mapping.dart';
+import 'package:geolocalizacionamd/app/api/mappings/validate_order_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
@@ -117,4 +118,42 @@ class ConsultDataServiceImp implements ConsultDataService {
 
     return profileMap;
   }
+
+  @override
+  Future<ValidateOrderMap> validateIfOrderIsCompletedOrRejected(
+      String tokenUser, int idHomeServiceAttention) async {
+    http.Response responseApi;
+
+     ValidateOrderMap  validateOrderMap;
+
+    Map<String, dynamic> decodeResApi;
+
+    final Uri urlValidateIfOrderIsCompletedOrRejected =
+        Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
+
+    final Map<String, String> header = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyValidateIfOrderIsCompletedOrRejected =
+        jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
+
+    try {
+      responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
+          headers: header, body: bodyValidateIfOrderIsCompletedOrRejected);
+      decodeResApi = jsonDecode(responseApi.body);
+
+      validateOrderMap = ValidateOrderMap.fromJson(decodeResApi);
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return validateOrderMap;
+  }
+
 }

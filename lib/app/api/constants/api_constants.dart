@@ -23,6 +23,8 @@ class ApiConstants {
   static final String urlApiDisconectDoctorAmd = '$urlApi/disconectDoctorAmd';
   static final String urlApiGetActiveAmdOrder = '$urlApi/getActiveAmdOrder';
   static final String urlApiGetProfile= '$urlApi/profile';
+  static final String urlApiValidateIfOrderIsCompletedOrRejected
+  = '$urlApi/validateIfOrderIsCompletedOrRejected';
   static final String urlApiGetAllStatesByCountry =
       '$urlApi/getAllStatesByCountry/idCountry';
   static final String urlApiGetAllCityByState =
