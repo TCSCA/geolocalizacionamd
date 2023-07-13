@@ -273,13 +273,22 @@ class DoctorCareController {
     return listReason;
   }
 
-  Future<void> validateIfOrderIsCompletedOrRejectedCtrl(int idHomeService) async {
+  Future<void> validateIfOrderIsCompletedOrRejectedCtrl(
+      int idHomeService) async {
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
 
-    final tokenUser =
-    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-
-    await consultDataService.validateIfOrderIsCompletedOrRejected(tokenUser, idHomeService);
-
-
+      await consultDataService.validateIfOrderIsCompletedOrRejected(
+          tokenUser, idHomeService);
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
   }
 }

@@ -213,6 +213,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ConfirmAmdEvent>((event, emit) async {
       try {
         emit(const MainShowLoadingState(message: 'Confirmando la orden'));
+
+        await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(event.idHomeService);
+
         var userHomeService = await doctorCareController
             .doConfirmHomeService(event.idHomeService);
         await doctorCareController.changeDoctorInAttention('true');
