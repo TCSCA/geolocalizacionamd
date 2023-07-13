@@ -278,10 +278,12 @@ class DoctorCareController {
   Future<void> validateIfOrderIsCompletedOrRejectedCtrl(
       int idHomeService) async {
     try {
+
       final tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       await consultDataService.validateIfOrderIsCompletedOrRejected(
           tokenUser, idHomeService);
+
     } on AmdOrderAdminFinalizedException {
       rethrow;
     } on ErrorAppException {
