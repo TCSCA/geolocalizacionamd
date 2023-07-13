@@ -214,7 +214,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ConfirmAmdEvent>((event, emit) async {
       late HomeServiceModel userHomeService;
       try {
-
         emit(const MainShowLoadingState(message: 'Confirmando la orden'));
         await doctorCareController
             .validateIfOrderIsCompletedOrRejectedCtrl(event.idHomeService);
@@ -230,7 +229,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         homeServiceConfirmed = userHomeService;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
-        
       } on ErrorAppException catch (exapp) {
         await doctorCareController.changeDoctorInAttention('false');
         emit(HomeServiceErrorState(message: exapp.message));
@@ -329,7 +327,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(ReasonRejectionSuccessState(
             homeServiceAssigned: event.homeServiceAssigned,
             listReasonRejection: listAllReason));
-        
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
@@ -343,7 +340,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
-    
+
     on<ShowReasonCompleteStatesEvent>((event, emit) async {
       List<SelectModel> listAllReason = [];
       try {
