@@ -1,12 +1,11 @@
-import 'package:geolocalizacionamd/app/api/mappings/profile_mapping.dart';
-import 'package:geolocalizacionamd/app/api/mappings/validate_order_mapping.dart';
-
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/api/mappings/photo_mapping.dart';
+import '/app/api/mappings/profile_mapping.dart';
 
 abstract class ConsultDataService {
   Future<PhotoMap> getPhotos(final String tokenUser);
   Future<HomeServiceMap> getActiveAmdOrder(final String tokenUser);
   Future<ProfileMap> getProfile(String tokenUser);
-  Future<ValidateOrderMap> validateIfOrderIsCompletedOrRejected(String tokenUser, int idHomeServiceAttention);
+  Future<void> validateIfOrderIsCompletedOrRejected(
+      String tokenUser, int idHomeServiceAttention);
 }

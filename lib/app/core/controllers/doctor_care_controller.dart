@@ -1,3 +1,5 @@
+import 'package:geolocalizacionamd/app/errors/error_amd_admin_finalized.dart';
+
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/register_date_mapping.dart';
 import '/app/api/services/consult_data_service.dart';
@@ -274,12 +276,21 @@ class DoctorCareController {
   }
 
   Future<void> validateIfOrderIsCompletedOrRejectedCtrl(int idHomeService) async {
+    try {
 
-    final tokenUser =
-    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      await consultDataService.validateIfOrderIsCompletedOrRejected(
+          tokenUser, idHomeService);
 
-    await consultDataService.validateIfOrderIsCompletedOrRejected(tokenUser, idHomeService);
-
-
+    } on AmdOrderAdminFinalizedException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
   }
 }
