@@ -199,6 +199,26 @@ class MainWidgets {
         if (state is HomeServiceSuccessState) {
           doctorAvailableSwitch = false;
         }
+        if (state is ShowAmdOrderAdminFinalizedState) {
+          LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = false;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
       },
       builder: (context, state) {
         return Container(
@@ -540,6 +560,26 @@ class MainWidgets {
                         ],
                       ),
                     ),
+                  );
+                });
+          }
+          if (state is ShowAmdOrderAdminFinalizedState) {
+            LoadingBuilder(context).hideOpenDialog();
+            doctorAvailableSwitch = false;
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusWarning),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusWarning,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
                   );
                 });
           }

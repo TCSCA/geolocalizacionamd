@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:geolocalizacionamd/app/errors/error_amd_admin_finalized.dart';
 import 'package:location/location.dart' as liblocation;
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/models/connect_doctor_model.dart';
@@ -225,9 +226,13 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<ConfirmAmdEvent>((event, emit) async {
+      late HomeServiceModel userHomeService;
       try {
+
         emit(const MainShowLoadingState(message: 'Confirmando la orden'));
-        var userHomeService = await doctorCareController
+        await doctorCareController
+            .validateIfOrderIsCompletedOrRejectedCtrl(event.idHomeService);
+        userHomeService = await doctorCareController
             .doConfirmHomeService(event.idHomeService);
         await doctorCareController.changeDoctorInAttention('true');
         try {
@@ -239,12 +244,20 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         homeServiceConfirmed = userHomeService;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
+        
       } on ErrorAppException catch (exapp) {
         await doctorCareController.changeDoctorInAttention('false');
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         await doctorCareController.changeDoctorInAttention('false');
         emit(HomeServiceErrorState(message: exgen.message));
+      } on AmdOrderAdminFinalizedException catch (exadmin) {
+        await doctorCareController.changeDoctorInAttention('false');
+        try {
+          await doctorCareController.doDisconectDoctorAmd();
+        } catch (e) {/*Nada que hacer si falla*/}
+        doctorAvailableSwitch = false;
+        emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
       } catch (unknowerror) {
         await doctorCareController.changeDoctorInAttention('false');
         emit(const HomeServiceErrorState(
@@ -322,14 +335,23 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       List<SelectModel> listAllReason = [];
       try {
         emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+
+        await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(
+            event.homeServiceAssigned.idHomeService);
+
         listAllReason = await doctorCareController.getListgetReasonRejection();
         emit(ReasonRejectionSuccessState(
             homeServiceAssigned: event.homeServiceAssigned,
             listReasonRejection: listAllReason));
+        
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceErrorState(message: exgen.message));
+      } on AmdOrderAdminFinalizedException catch (exadmin) {
+        await doctorCareController.changeDoctorInAttention('false');
+        doctorAvailableSwitch = false;
+        emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
             message: AppConstants.codeGeneralErrorMessage));
