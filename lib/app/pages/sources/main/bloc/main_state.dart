@@ -127,3 +127,35 @@ class LocationErrorState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class ReasonRejectionSuccessState extends MainState {
+  final HomeServiceModel homeServiceAssigned;
+  final List<SelectModel> listReasonRejection;
+  const ReasonRejectionSuccessState(
+      {required this.homeServiceAssigned, required this.listReasonRejection});
+  @override
+  List<Object> get props => [homeServiceAssigned, listReasonRejection];
+}
+
+class ReasonCompleteSuccessState extends MainState {
+  final HomeServiceModel homeServiceAssigned;
+  final List<SelectModel> listReasonComplete;
+  const ReasonCompleteSuccessState(
+      {required this.homeServiceAssigned, required this.listReasonComplete});
+  @override
+  List<Object> get props => [homeServiceAssigned, listReasonComplete];
+}
+
+class ShowLoadingInAttentionState extends MainState {
+  final String message;
+  const ShowLoadingInAttentionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class ShowAmdOrderAdminFinalizedState extends MainState {
+  final String message;
+  const ShowAmdOrderAdminFinalizedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

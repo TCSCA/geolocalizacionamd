@@ -6,9 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../shared/method/back_button_action.dart';
+import '/app/shared/method/back_button_action.dart';
 import '/app/extensions/localization_ext.dart';
-import '../renew_password/renew_password_page.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
@@ -218,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.text,
                             maxLength: 15,
                             decoration: InputDecoration(
+                                errorMaxLines: 2,
                                 fillColor: const Color(0xffD84835).withAlpha(50),
                                 counterStyle: const TextStyle(
                                     color: Colors.white,
@@ -248,12 +248,14 @@ class _LoginPageState extends State<LoginPage> {
                                     vertical: 10.0, horizontal: 10.0),
                                 errorStyle: const TextStyle(
                                     color: Color(0xffD84835),
-                                    fontSize: 15.0,
+                                    fontSize: 14.0,
                                     fontFamily: 'TextsParagraphs')),
                             style: const TextStyle(
                                 color: Color(0xffFFFFFF),
                                 fontSize: 19.0,
                                 fontFamily: 'TitlesHighlight'),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue!.isEmpty) {
                                 return 'Campo requerido';
@@ -285,6 +287,7 @@ class _LoginPageState extends State<LoginPage> {
                                           : Icons.visibility,
                                       color: Colors.white,
                                     )),
+                                errorMaxLines: 2,
                                 fillColor: const Color(0xffD84835).withAlpha(50),
                                 counterStyle: const TextStyle(
                                     color: Colors.white,
@@ -315,12 +318,14 @@ class _LoginPageState extends State<LoginPage> {
                                     vertical: 10.0, horizontal: 10.0),
                                 errorStyle: const TextStyle(
                                     color: Color(0xffD84835),
-                                    fontSize: 15.0,
+                                    fontSize: 14.0,
                                     fontFamily: 'TextsParagraphs')),
                             style: const TextStyle(
                                 color: Color(0xffFFFFFF),
                                 fontSize: 19.0,
                                 fontFamily: 'TitlesHighlight'),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue!.isEmpty) {
                                 return 'Campo requerido';
@@ -680,12 +685,12 @@ class _BiometricWidget extends StatelessWidget {
         children: [
           Text(
             context.appLocalization.biometricAuthentication,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 16.0,
             ),
           ),
-          Icon(Icons.fingerprint, color: Color(0xffd84835), size: 35)
+          const Icon(Icons.fingerprint, color: Color(0xffd84835), size: 35)
         ],
       ),
     );

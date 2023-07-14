@@ -5,6 +5,8 @@ import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/photo_mapping.dart';
 import '/app/errors/exceptions.dart';
+import '/app/api/mappings/profile_mapping.dart';
+import '/app/errors/error_amd_admin_finalized.dart';
 import 'consult_data_service.dart';
 
 class ConsultDataServiceImp implements ConsultDataService {
@@ -77,4 +79,85 @@ class ConsultDataServiceImp implements ConsultDataService {
 
     return responseActiveAmdOrder;
   }
+
+  @override
+  Future<ProfileMap> getProfile(String tokenUser) async {
+    ProfileMap profileMap;
+
+    http.Response responseApi;
+
+    Map<String, dynamic> decodeResApi;
+
+    final Uri urlApiGetProfile = Uri.parse(ApiConstants.urlApiGetProfile);
+
+    final Map<String, String> headerProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.post(urlApiGetProfile, headers: headerProfile);
+
+      decodeResApi = json.decode(responseApi.body);
+
+      profileMap = ProfileMap.fromJson(decodeResApi);
+
+      if (decodeResApi[ApiConstants.statusSuccessApi] ==
+          ApiConstants.statusSuccessApi) {
+        if (decodeResApi[ApiConstants.dataLabelApi] != null) {
+          // responseGetProfile
+        }
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return profileMap;
+  }
+
+  @override
+  Future<void> validateIfOrderIsCompletedOrRejected(
+      String tokenUser, int idHomeServiceAttention) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    final Uri urlValidateIfOrderIsCompletedOrRejected =
+        Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
+    final Map<String, String> header = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyValidateIfOrderIsCompletedOrRejected =
+        jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
+
+    try {
+      responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
+          headers: header, body: bodyValidateIfOrderIsCompletedOrRejected);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] !=
+          ApiConstants.statusSuccessApi) {
+        final String error =
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        
+        if (error == ApiConstants.amdPendingAdminFinalizedCodeApi ||
+            error == ApiConstants.amdconfirmedAdminFinalizedCodeApi) {
+          throw AmdOrderAdminFinalizedException(message: error);
+        } else {
+          throw ErrorAppException(message: error);
+        }
+      }
+    } on AmdOrderAdminFinalizedException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+  }
+
 }

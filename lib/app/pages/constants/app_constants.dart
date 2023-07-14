@@ -26,6 +26,7 @@ class AppConstants {
   static const String statusSuccess = 'success';
 
   static const String idCountryVzla = '25';
+  static const String idCompleteAmdSuccess = '0';
 
   static const Map<String, IconData?> iconsMenu = {
     'home': FontAwesomeIcons.house,
@@ -40,6 +41,7 @@ class AppConstants {
     'closeMenu': FontAwesomeIcons.xmark,
     statusError: FontAwesomeIcons.xmark,
     statusWarning: FontAwesomeIcons.triangleExclamation,
-    statusSuccess: FontAwesomeIcons.check
+    statusSuccess: FontAwesomeIcons.check,
+    'doctorLocation': FontAwesomeIcons.locationDot
   };
 }

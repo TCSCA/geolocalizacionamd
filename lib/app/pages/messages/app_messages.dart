@@ -38,9 +38,20 @@ class AppMessages {
     if (code.trim() == 'MSG-225') {
       return context.appLocalization.apiMsg225;
     }
+    if (code.trim() == 'MSG-230') {
+      return context.appLocalization.apiMsg230;
+    }
+
+    if (code.trim() == 'MSG-232') {
+      return context.appLocalization.apiMsg232;
+    }
+
     if (code.trim() == 'MSGAPP-001') {
       return context.appLocalization.appMsg001;
     }
+
+
+
     if (code.trim() == 'MSGAPP-002') {
       return context.appLocalization.appMsg002;
     }

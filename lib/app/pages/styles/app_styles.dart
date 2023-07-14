@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 abstract class AppStyles {
   static const double textSizeFormFiel = 14.0;
   static const double textSizeParagraph = 19.0;
-  static const double textSizeTitle = 22.0;
+  static const double textSizeTitle = 24.0;
   static const double borderRadiusButton = 30.0;
 
   static const String fontTitlesHighlight = 'TitlesHighlight';
@@ -26,7 +26,7 @@ abstract class AppStyles {
       fontSize: textSizeParagraph,
       fontFamily: fontTitlesHighlight);
   static const TextStyle textFormFieldError = TextStyle(
-      color: colorBeige,
+      color: colorError,
       fontSize: textSizeFormFiel,
       fontFamily: fontTextsParagraphs);
   static const TextStyle textStyleRadioButton = TextStyle(
@@ -99,6 +99,14 @@ abstract class AppStyles {
     fontFamily: fontTextsParagraphs,
     fontSize: 29.0,
   );
+  static const TextStyle textStyleTitle = TextStyle(
+      fontSize: textSizeTitle,
+      fontFamily: fontTitlesHighlight,
+      color: colorWhite);
+  static const TextStyle textStyleSelect = TextStyle(
+      fontSize: 28.0, color: Colors.black, fontFamily: fontTitlesHighlight);
+  static const TextStyle textStyleOptionSelect = TextStyle(
+      fontSize: 18.0, color: Colors.black, fontFamily: fontTextsParagraphs);
 
   static const EdgeInsets paddingBody = EdgeInsets.all(16.0);
   static const EdgeInsets paddingFormField =

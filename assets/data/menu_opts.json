@@ -17,7 +17,7 @@
 			"descripcionEn": "Profile",
 			"icon": "profile",
 			"route": "/profile",
-			"enable": false,
+			"enable": true,
 			"order": 2,
 			"parent": 0
 		},
