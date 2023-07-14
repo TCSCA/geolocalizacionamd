@@ -18,26 +18,90 @@ import '/app/core/controllers/save_data_storage.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
 import 'firebase_options.dart';
+import 'package:timezone/data/latest_all.dart' as timezone;
+import 'package:timezone/timezone.dart' as timezone;
+
+int id = 0;
+
+class NotificationApi {
+  static final _notification = FlutterLocalNotificationsPlugin();
+
+  static void init() {
+    _notification.initialize(
+      const InitializationSettings(
+        android:
+            AndroidInitializationSettings('@mipmap/ic_launcher_foreground'),
+        iOS: DarwinInitializationSettings(),
+      ),
+    );
+  }
+
+  static scheduleNotification() async {
+    timezone.initializeTimeZones();
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'channel id',
+      'channel name',
+      channelDescription: 'channel description',
+      importance: Importance.max, // set the importance of the notification
+      priority: Priority.high, // set prority
+    );
+    var iOSPlatformChannelSpecifics = const DarwinNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+    await _notification.zonedSchedule(
+      id,
+      "notification title",
+      'Message goes here',
+      timezone.TZDateTime.now(timezone.local).add(const Duration(seconds: 5)),
+      platformChannelSpecifics,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exact,
+    );
+  }
+
+  static pushNotification(
+    RemoteMessage message,
+  ) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'channed id',
+      'channel name',
+      channelDescription: 'channel description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    var iOSPlatformChannelSpecifics = const DarwinNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+    await _notification.show(id, message.notification!.title,
+        message.notification!.body, platformChannelSpecifics);
+  }
+}
 
 void main() async {
-
   const String environment = String.fromEnvironment(
       AppConstants.environmentVariableName,
       defaultValue: AppConstants.environmentDevelopment);
   Environment().initConfig(environment);
 
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationApi.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessageOpenedApp.listen(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessageOpenedApp
+      .listen(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, sound: true, badge: true);
-  String? tokenFirebaseRegister = await FirebaseMessaging.instance.getToken(
-      vapidKey: Environment().config.idAppMessagingFirebase);
+  String? tokenFirebaseRegister = await FirebaseMessaging.instance
+      .getToken(vapidKey: Environment().config.idAppMessagingFirebase);
   if (kDebugMode) {
     print('tokenFirebaseRegister: $tokenFirebaseRegister');
   }
@@ -51,8 +115,18 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +205,10 @@ Future<void> setupFlutterNotifications() async {
     badge: true,
     sound: true,
   );
+
+  FirebaseMessaging.onMessage.listen((event) async {
+    await NotificationApi.pushNotification(event);
+  });
   isFlutterLocalNotificationsInitialized = true;
 }
 
@@ -150,7 +228,7 @@ void showFlutterNotification(RemoteMessage message) {
           playSound: true,
           enableVibration: true,
           channelDescription: channel.description,
-          icon: 'launch_background',
+          icon: android.smallIcon,
         ),
       ),
     );
