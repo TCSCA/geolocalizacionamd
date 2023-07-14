@@ -124,7 +124,8 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd);
+          responseService.linkAmd,
+          responseService.idStatusHomeService);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -193,7 +194,8 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd);
+          responseService.linkAmd,
+          responseService.idStatusHomeService);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {

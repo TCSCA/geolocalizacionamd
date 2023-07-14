@@ -27,6 +27,7 @@ class AppConstants {
 
   static const String idCountryVzla = '25';
   static const String idCompleteAmdSuccess = '0';
+  static const int idHomeServiceConfirmed = 2;
 
   static const Map<String, IconData?> iconsMenu = {
     'home': FontAwesomeIcons.house,

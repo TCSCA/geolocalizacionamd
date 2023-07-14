@@ -170,8 +170,22 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           var userHomeService =
               await doctorCareController.getHomeServiceAssigned();
-          doctorAvailableSwitch = false;
-          emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
+          if (userHomeService.idStatusHomeService ==
+              AppConstants.idHomeServiceConfirmed) {
+            await doctorCareController.changeDoctorInAttention('true');
+            try {
+              //Desconectar para que no reciba otra atencion.
+              await doctorCareController.doDisconectDoctorAmd();
+            } catch (e) {/*Nada que hacer si falla*/}
+            doctorAvailableSwitch = false;
+            //Almecenar AMD para mostrar en atencion
+            homeServiceConfirmed = userHomeService;
+            emit(ConfirmHomeServiceSuccessState(
+                homeServiceConfirmed: userHomeService));
+          } else {
+            doctorAvailableSwitch = false;
+            emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
+          }
         }
       } on EmptyDataException {
         emit(const HomeServiceEmptyState());
@@ -192,7 +206,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             message: 'Procesando su solicitud'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
-
+        await Future.delayed(const Duration(seconds: 2));
         if (doctorInAttention) {
           emit(ConfirmHomeServiceSuccessState(
               homeServiceConfirmed: homeServiceConfirmed));
