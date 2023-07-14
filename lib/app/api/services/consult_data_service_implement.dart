@@ -1,11 +1,12 @@
 import 'dart:convert';
-import 'package:geolocalizacionamd/app/api/mappings/profile_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';
 import '/app/api/mappings/photo_mapping.dart';
 import '/app/errors/exceptions.dart';
+import '/app/api/mappings/profile_mapping.dart';
+import '/app/errors/error_amd_admin_finalized.dart';
 import 'consult_data_service.dart';
 
 class ConsultDataServiceImp implements ConsultDataService {
@@ -117,4 +118,46 @@ class ConsultDataServiceImp implements ConsultDataService {
 
     return profileMap;
   }
+
+  @override
+  Future<void> validateIfOrderIsCompletedOrRejected(
+      String tokenUser, int idHomeServiceAttention) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    final Uri urlValidateIfOrderIsCompletedOrRejected =
+        Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
+    final Map<String, String> header = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyValidateIfOrderIsCompletedOrRejected =
+        jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
+
+    try {
+      responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
+          headers: header, body: bodyValidateIfOrderIsCompletedOrRejected);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] !=
+          ApiConstants.statusSuccessApi) {
+        final String error =
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        
+        if (error == ApiConstants.amdPendingAdminFinalizedCodeApi ||
+            error == ApiConstants.amdconfirmedAdminFinalizedCodeApi) {
+          throw AmdOrderAdminFinalizedException(message: error);
+        } else {
+          throw ErrorAppException(message: error);
+        }
+      }
+    } on AmdOrderAdminFinalizedException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+  }
+
 }

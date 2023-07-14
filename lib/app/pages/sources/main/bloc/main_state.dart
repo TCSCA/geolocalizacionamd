@@ -152,3 +152,10 @@ class ShowLoadingInAttentionState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class ShowAmdOrderAdminFinalizedState extends MainState {
+  final String message;
+  const ShowAmdOrderAdminFinalizedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
