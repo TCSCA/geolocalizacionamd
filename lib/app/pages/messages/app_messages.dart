@@ -41,17 +41,12 @@ class AppMessages {
     if (code.trim() == 'MSG-230') {
       return context.appLocalization.apiMsg230;
     }
-
     if (code.trim() == 'MSG-232') {
       return context.appLocalization.apiMsg232;
     }
-
     if (code.trim() == 'MSGAPP-001') {
       return context.appLocalization.appMsg001;
     }
-
-
-
     if (code.trim() == 'MSGAPP-002') {
       return context.appLocalization.appMsg002;
     }
@@ -78,6 +73,9 @@ class AppMessages {
     }
     if (code.trim() == 'MSGAPP-010') {
       return context.appLocalization.appMsg010;
+    }
+    if (code.trim() == 'MSGAPP-011') {
+      return context.appLocalization.appMsg011;
     }
     return code;
   }

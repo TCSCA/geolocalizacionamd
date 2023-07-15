@@ -66,8 +66,13 @@ class ConsultDataServiceImp implements ConsultDataService {
           throw EmptyDataException(message: 'NODATA');
         }
       } else {
-        throw ErrorAppException(
-            message: decodeRespApi[ApiConstants.dataLabelApi]);
+        final String error =
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        if (error.isNotEmpty) {
+          throw ErrorAppException(message: error);
+        } else {
+          throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
+        }
       }
     } on EmptyDataException {
       rethrow;

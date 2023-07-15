@@ -159,3 +159,24 @@ class ShowAmdOrderAdminFinalizedState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class AmdOrderAdminSuccessState extends MainState {
+  final HomeServiceModel homeServiceAssigned;
+  const AmdOrderAdminSuccessState({required this.homeServiceAssigned});
+  @override
+  List<Object> get props => [homeServiceAssigned];
+}
+
+class HomeServicePendingFinishState extends MainState {
+  final String message;
+  const HomeServicePendingFinishState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class HomeServiceAssignedErrorState extends MainState {
+  final String message;
+  const HomeServiceAssignedErrorState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

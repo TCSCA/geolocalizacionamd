@@ -181,8 +181,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             doctorAvailableSwitch = false;
             //Almecenar AMD para mostrar en atencion
             homeServiceConfirmed = userHomeService;
-            emit(ConfirmHomeServiceSuccessState(
-                homeServiceConfirmed: userHomeService));
+            emit(const HomeServicePendingFinishState(message: "MSGAPP-011"));
           } else {
             doctorAvailableSwitch = false;
             emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
@@ -191,11 +190,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } on EmptyDataException {
         emit(const HomeServiceEmptyState());
       } on ErrorAppException catch (exapp) {
-        emit(HomeServiceErrorState(message: exapp.message));
+        emit(HomeServiceAssignedErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
-        emit(HomeServiceErrorState(message: exgen.message));
+        emit(HomeServiceAssignedErrorState(message: exgen.message));
       } catch (unknowerror) {
-        emit(const HomeServiceErrorState(
+        emit(const HomeServiceAssignedErrorState(
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
@@ -204,10 +203,10 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       bool doctorInAttention;
       try {
         emit(const ShowLoadingInAttentionState(
-            message: 'Procesando su solicitud'));
+            message: 'Procesando su solicitudd'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
-        await Future.delayed(const Duration(seconds: 2));
+        //await Future.delayed(const Duration(seconds: 2));
         if (doctorInAttention) {
           emit(ConfirmHomeServiceSuccessState(
               homeServiceConfirmed: homeServiceConfirmed));
@@ -228,7 +227,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ConfirmAmdEvent>((event, emit) async {
       late HomeServiceModel userHomeService;
       try {
-
         emit(const MainShowLoadingState(message: 'Confirmando la orden'));
         await doctorCareController
             .validateIfOrderIsCompletedOrRejectedCtrl(event.idHomeService);
@@ -244,7 +242,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         homeServiceConfirmed = userHomeService;
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
-        
       } on ErrorAppException catch (exapp) {
         await doctorCareController.changeDoctorInAttention('false');
         emit(HomeServiceErrorState(message: exapp.message));
@@ -343,7 +340,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(ReasonRejectionSuccessState(
             homeServiceAssigned: event.homeServiceAssigned,
             listReasonRejection: listAllReason));
-        
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
@@ -357,7 +353,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
-    
+
     on<ShowReasonCompleteStatesEvent>((event, emit) async {
       List<SelectModel> listAllReason = [];
       try {
@@ -371,6 +367,26 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<ValidateOrderAmdProcessedAdminEvent>((event, emit) async {
+      try {
+        emit(
+            const ShowLoadingInAttentionState(message: 'Procesando solicitud'));
+        await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(
+            event.homeServiceAssigned.idHomeService);
+        emit(AmdOrderAdminSuccessState(
+            homeServiceAssigned: event.homeServiceAssigned));
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } on AmdOrderAdminFinalizedException catch (exadmin) {
+        emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
             message: AppConstants.codeGeneralErrorMessage));

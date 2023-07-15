@@ -53,7 +53,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
               child: Column(
                 children: [
                   Flexible(
-                      child: Container(
+                    child: Container(
                       padding: const EdgeInsets.only(right: 20.0),
                       decoration: const BoxDecoration(
                           color: Colors.white,
@@ -69,7 +69,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                             LoadingBuilder(context).hideOpenDialog();
                           }
                           if (state is HomeServiceInAttentionState) {
-                            //LoadingBuilder(context).hideOpenDialog();
+                            LoadingBuilder(context).hideOpenDialog();
                           }
                           if (state is ReasonCompleteSuccessState) {
                             LoadingBuilder(context).hideOpenDialog();
@@ -325,12 +325,62 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                   );
                                 });
                           }
+                          if (state is AmdOrderAdminSuccessState) {
+                            LoadingBuilder(context).hideOpenDialog();
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomDialogSino(
+                                      title:
+                                          context.appLocalization.titleWarning,
+                                      descriptions:
+                                          '¿La atención finalizó exitosamente?',
+                                      dialogAction: () =>
+                                          BlocProvider.of<MainBloc>(context)
+                                              .add(CompleteAmdEvent(
+                                                  state.homeServiceAssigned
+                                                      .idHomeService,
+                                                  AppConstants
+                                                      .idCompleteAmdSuccess)),
+                                      type: AppConstants.statusWarning,
+                                      dialogCancel: () => BlocProvider.of<
+                                              MainBloc>(context)
+                                          .add(ShowReasonCompleteStatesEvent(
+                                              state.homeServiceAssigned)));
+                                });
+                          }
+                          if (state is ShowAmdOrderAdminFinalizedState) {
+                            LoadingBuilder(context).hideOpenDialog();
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                    title: AppMessages().getMessageTitle(
+                                        context, AppConstants.statusWarning),
+                                    descriptions: AppMessages()
+                                        .getMessage(context, state.message),
+                                    isConfirmation: false,
+                                    dialogAction: () {},
+                                    type: AppConstants.statusWarning,
+                                    isdialogCancel: false,
+                                    dialogCancel: () {},
+                                  );
+                                });
+                          }
                         },
+                        /* buildWhen: (previous, current) =>
+                            previous != current &&
+                            (current is ConfirmHomeServiceSuccessState), */
                         builder: (context, state) {
                           if (state is ConfirmHomeServiceSuccessState) {
                             return showDataAmd(
                                 state.homeServiceConfirmed, context);
                           } else if (state is ReasonCompleteSuccessState) {
+                            return showDataAmd(
+                                state.homeServiceAssigned, context);
+                          } else if (state is AmdOrderAdminSuccessState) {
                             return showDataAmd(
                                 state.homeServiceAssigned, context);
                           } else {
@@ -380,260 +430,261 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
 
   Widget showDataAmd(
       HomeServiceModel homeServiceConfirmed, BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 20.0),
-          const Row(
-            children: [
-              SizedBox(width: 20.0),
-              Text(
-                "Datos de Orden Médica:",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Fecha y Hora:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(
-                DateFormat("dd-MM-yyyy hh:mm a")
-                    .format(homeServiceConfirmed.registerDate),
-                style: const TextStyle(fontSize: 16),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Nro. de Orden:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(
-                homeServiceConfirmed.orderNumber,
-                style: const TextStyle(fontSize: 16),
-              )
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          const Row(
-            children: [
-              SizedBox(width: 20.0),
-              Text(
-                "Datos del Paciente:",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Nombre del Paciente:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Flexible(
-                child: Text(
-                  homeServiceConfirmed.fullNamePatient,
-                  style: const TextStyle(fontSize: 16),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 2,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(height: 20.0),
+            const Row(
+              children: [
+                SizedBox(width: 20.0),
+                Text(
+                  "Datos de Orden Médica:",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline),
                 ),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Documento de identidad:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(
-                homeServiceConfirmed.identificationDocument,
-                style: const TextStyle(fontSize: 16),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Teléfono:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(
-                homeServiceConfirmed.phoneNumberPatient,
-                style: const TextStyle(fontSize: 16),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Dirección :',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Flexible(
-                child: Text(homeServiceConfirmed.address,
-                    style: const TextStyle(fontSize: 16)),
-              )
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          const Row(
-            children: [
-              SizedBox(width: 20.0),
-              Text(
-                "Datos del Doctor:",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Doctor Solicitante:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Flexible(
-                child: Text(
-                  homeServiceConfirmed.applicantDoctor,
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Fecha y Hora:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  DateFormat("dd-MM-yyyy hh:mm a")
+                      .format(homeServiceConfirmed.registerDate),
                   style: const TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Nro. de Orden:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  homeServiceConfirmed.orderNumber,
+                  style: const TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            const Row(
+              children: [
+                SizedBox(width: 20.0),
+                Text(
+                  "Datos del Paciente:",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline),
                 ),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Teléfono del Doctor:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(
-                homeServiceConfirmed.phoneNumberDoctor,
-                style: const TextStyle(fontSize: 16),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            children: [
-              const SizedBox(width: 20.0),
-              const Text('Tipo de Servicio:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text(
-                homeServiceConfirmed.typeService,
-                style: const TextStyle(fontSize: 16),
-              )
-            ],
-          ),
-          const SizedBox(height: 20.0),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(width: 20.0),
-              Flexible(
-                child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          elevation: 5,
-                          side: const BorderSide(
-                              width: 2, color: Color(0xffFFFFFF)),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30))),
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return CustomDialogSino(
-                                  title: context.appLocalization.titleWarning,
-                                  descriptions:
-                                      '¿La atención finalizó exitosamente?',
-                                  dialogAction: () => BlocProvider.of<MainBloc>(
-                                          context)
-                                      .add(CompleteAmdEvent(
-                                          homeServiceConfirmed.idHomeService,
-                                          AppConstants.idCompleteAmdSuccess)),
-                                  type: AppConstants.statusWarning,
-                                  dialogCancel: () =>
-                                      BlocProvider.of<MainBloc>(context).add(
-                                          ShowReasonCompleteStatesEvent(
-                                              homeServiceConfirmed)));
-                            });
-                      },
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                                colors: [Color(0xffF96352), Color(0xffD84835)]),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 15),
-                          child: const Text(
-                            'Finalizar AMD',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 17.0,
-                                color: Color(0xffFFFFFF),
-                                fontFamily: 'TitlesHighlight',
-                                fontWeight: FontWeight.bold),
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Nombre del Paciente:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Flexible(
+                  child: Text(
+                    homeServiceConfirmed.fullNamePatient,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Documento de identidad:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  homeServiceConfirmed.identificationDocument,
+                  style: const TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Teléfono:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  homeServiceConfirmed.phoneNumberPatient,
+                  style: const TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Dirección :',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Flexible(
+                  child: Text(homeServiceConfirmed.address,
+                      style: const TextStyle(fontSize: 16)),
+                )
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            const Row(
+              children: [
+                SizedBox(width: 20.0),
+                Text(
+                  "Datos del Doctor:",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Doctor Solicitante:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Flexible(
+                  child: Text(
+                    homeServiceConfirmed.applicantDoctor,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Teléfono del Doctor:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  homeServiceConfirmed.phoneNumberDoctor,
+                  style: const TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                const Text('Tipo de Servicio:',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  homeServiceConfirmed.typeService,
+                  style: const TextStyle(fontSize: 16),
+                )
+              ],
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 20.0),
+                Flexible(
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            elevation: 5,
+                            side: const BorderSide(
+                                width: 2, color: Color(0xffFFFFFF)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30))),
+                        onPressed: () {
+                          BlocProvider.of<MainBloc>(context).add(
+                              ValidateOrderAmdProcessedAdminEvent(
+                                  homeServiceConfirmed));
+                        },
+                        child: Ink(
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [
+                                Color(0xffF96352),
+                                Color(0xffD84835)
+                              ]),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15),
+                            child: const Text(
+                              'Finalizar AMD',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 17.0,
+                                  color: Color(0xffFFFFFF),
+                                  fontFamily: 'TitlesHighlight',
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                      ),
-                    )),
-              ),
-              Flexible(
-                child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          elevation: 5,
-                          side: const BorderSide(
-                              width: 2, color: Color(0xffFFFFFF)),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30))),
-                      onPressed: () {
-                        _launchURL(url: homeServiceConfirmed.linkAmd);
-                      },
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                                colors: [Color(0xff2B5178), Color(0xff273456)]),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 15, horizontal: 15),
-                          child: const Text(
-                            'Formulario AMD',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 17.0,
-                                color: Color(0xffFFFFFF),
-                                fontFamily: 'TitlesHighlight',
-                                fontWeight: FontWeight.bold),
+                      )),
+                ),
+                Flexible(
+                  child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            elevation: 5,
+                            side: const BorderSide(
+                                width: 2, color: Color(0xffFFFFFF)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30))),
+                        onPressed: () {
+                          _launchURL(url: homeServiceConfirmed.linkAmd);
+                        },
+                        child: Ink(
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [
+                                Color(0xff2B5178),
+                                Color(0xff273456)
+                              ]),
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15),
+                            child: const Text(
+                              'Formulario AMD',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 17.0,
+                                  color: Color(0xffFFFFFF),
+                                  fontFamily: 'TitlesHighlight',
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                      ),
-                    )),
-              ),
-              const SizedBox(height: 20.0),
-            ],
-          ),
-        ],
+                      )),
+                ),
+                const SizedBox(height: 20.0),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

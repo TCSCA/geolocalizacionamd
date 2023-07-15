@@ -184,7 +184,7 @@ class MainWidgets {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusSuccess),
                   descriptions: AppMessages().getMessage(
-                      context, 'La atención fue confirmada con éxito'),
+                      context, context.appLocalization.appMsg010),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,
@@ -352,16 +352,31 @@ class MainWidgets {
     bool doctorAvailableSwitch = userMainBloc.doctorAvailableSwitch;
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
-      
       child: BlocConsumer<MainBloc, MainState>(
         listener: (context, state) {
           if (state is MainShowLoadingState) {
             LoadingBuilder(context).showLoadingIndicator(state.message);
           }
-          /* if (state is ConfirmHomeServiceSuccessState) {
-            //LoadingBuilder(context).hideOpenDialog();
-            context.go(GeoAmdRoutes.medicalCareAccepted);
-          } */
+          if (state is HomeServicePendingFinishState) {
+            //atencion pendiente por finalizar
+            doctorAvailableSwitch = false;
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusWarning),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusWarning,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
           if (state is DisallowHomeServiceSuccessState) {
             LoadingBuilder(context).hideOpenDialog();
             doctorAvailableSwitch = false;
@@ -384,6 +399,24 @@ class MainWidgets {
           }
           if (state is HomeServiceErrorState) {
             LoadingBuilder(context).hideOpenDialog();
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
+          if (state is HomeServiceAssignedErrorState) {
             showDialog(
                 context: context,
                 barrierDismissible: false,

@@ -97,3 +97,10 @@ class ShowReasonCompleteStatesEvent extends MainEvent {
   @override
   List<Object> get props => [homeServiceAssigned];
 }
+
+class ValidateOrderAmdProcessedAdminEvent extends MainEvent {
+  final HomeServiceModel homeServiceAssigned;
+  const ValidateOrderAmdProcessedAdminEvent(this.homeServiceAssigned);
+  @override
+  List<Object> get props => [homeServiceAssigned];
+}

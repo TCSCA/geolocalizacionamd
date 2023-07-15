@@ -68,6 +68,7 @@
     "appMsg008": "No assigned home medical care.",
     "appMsg009": "You must end home medical care before you sign off.",
     "appMsg010": "Home Medical Care was confirmed successfully.",
+    "appMsg011": "You have previously confirmed service, press the 'See Service' button to end it.",
     "appMsg229": "Do you want the fingerprint option to be shown as an alternative for future log-in?",
     "changePasswordAction": "Changing password",
     "forgotPassword": "Forgot your password?",
