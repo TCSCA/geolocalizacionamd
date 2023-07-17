@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../mappings/history_amd_mapping.dart';
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';
@@ -160,4 +161,51 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
   }
 
+
+  @override
+  Future<void> getHistoryAmdOrderList(String tokenUser, int idDoctorAmd)  async{
+
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    HomeServiceMap homeServiceMap;
+
+    final Uri urlGetHistoryAmdOrder =
+    Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
+
+    final Map<String, String> header = {
+      ApiConstants.headerToken: tokenUser,
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    final String bodyGetHistoryAmdOrder =
+    jsonEncode({'idDoctorAmd': idDoctorAmd});
+
+    HistoryAmdMap historyAmdMapList;
+    HomeServiceMap homeServiceList;
+    try {
+
+      responseApi = await http.post(urlGetHistoryAmdOrder,
+          headers: header, body: bodyGetHistoryAmdOrder);
+       decodeRespApi = jsonDecode(responseApi.body);
+
+       if(decodeRespApi[ApiConstants.statusLabelApi] ==
+           ApiConstants.statusSuccessApi) {
+
+         historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
+
+         /*List<HomeServiceMap> home= List<HomeServiceMap>.from(decodeRespApi[ApiConstants.dataLabelApi]
+             .map((data) => HomeServiceMap.fromJson(data)));*/
+       } else {
+         throw ErrorAppException(
+             message: decodeRespApi[ApiConstants.dataLabelApi]);
+       }
+
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+  }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/core/controllers/amd_history_controller.dart';
+import 'package:geolocalizacionamd/app/pages/sources/amd_history/bloc/amd_history_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/expansion_title_widget.dart';
 import '../../../shared/method/back_button_action.dart';
 import '/app/pages/widgets/common_widgets.dart';
-import 'bloc/amd_history_bloc.dart';
 import 'widgets/amd_history_widgets.dart';
 
 class AmdHistoryPage extends StatefulWidget {
@@ -12,7 +14,8 @@ class AmdHistoryPage extends StatefulWidget {
   State<AmdHistoryPage> createState() => _AmdHistoryPageState();
 }
 
-class _AmdHistoryPageState extends State<AmdHistoryPage> {
+class _AmdHistoryPageState extends State<AmdHistoryPage>
+    with AmdHistoryWidgets {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -20,9 +23,19 @@ class _AmdHistoryPageState extends State<AmdHistoryPage> {
         length: 2,
         child: WillPopScope(
           onWillPop: () => backButtonActions(),
-          child: BlocProvider(
-            create: (context) => AmdHistoryBloc()..add(GetAmdHistoryEvent()),
-            child: _HistoryPageView(),
+          child: Scaffold(
+            appBar: generateAppBarWithTabBar(context: context),
+            body: MultiBlocListener(
+              listeners: [
+                //NavigationBloc y LogoutBloc comunes en todas las paginas.
+                AppCommonWidgets.listenerNavigationBloc(),
+                AppCommonWidgets.listenerLogoutBloc()
+              ],
+              child: BlocProvider(
+                create: (context) => AmdHistoryBloc(amdHistoryController: AmdHistoryController())..add(GetAmdHistoryEvent()),
+                child: const TabBarViewWidget(),
+              ),
+            ),
           ),
         ),
       ),
@@ -30,27 +43,24 @@ class _AmdHistoryPageState extends State<AmdHistoryPage> {
   }
 }
 
-class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
-  const _HistoryPageView({
+class TabBarViewWidget extends StatelessWidget {
+  const TabBarViewWidget({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: generateAppBarWithTabBar(context: context),
-      body: MultiBlocListener(
-        listeners: [
-          //NavigationBloc y LogoutBloc comunes en todas las paginas.
-          AppCommonWidgets.listenerNavigationBloc(),
-          AppCommonWidgets.listenerLogoutBloc()
-        ],
-        child: TabBarView(
+    return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        return TabBarView(
           children: [
             ListView(
               padding: const EdgeInsets.all(8.0),
               children: [
-                Card(
+                /*Card(
                   margin: const EdgeInsets.all(2),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -68,13 +78,13 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
                         ListTile(
                           leading: Image.asset(
                               'assets/images/gps_doctor_image.png'),
-                          /* trailing: TextButton(
-                                    onPressed: () => {}, child: const Text('Ver')), */
-                          title: const Text('Orden Nro. 258746'),
+                          *//* trailing: TextButton(
+                                  onPressed: () => {}, child: const Text('Ver')), *//*
+                          title: const Text('Orden Nro. 8888888'),
                           subtitle: Column(
                             children: [
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   Text('Paciente:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
@@ -82,8 +92,8 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
                                 ],
                               ),
                               const SizedBox(height: 3.0),
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   Text('Teléfono:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
@@ -91,8 +101,8 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
                                 ],
                               ),
                               const SizedBox(height: 3.0),
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   Text('Doctor Solicitante:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
@@ -100,8 +110,8 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
                                 ],
                               ),
                               const SizedBox(height: 3.0),
-                              Row(
-                                children: const [
+                              const Row(
+                                children: [
                                   Text('Fecha y Hora:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
@@ -114,10 +124,19 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
                             ],
                           ),
                         ),
+                        *//* Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                TextButton(
+                                    onPressed: () => {},
+                                    child: const Text('Ver Detalle')),
+                              ],
+                            ) *//*
                       ],
                     ),
                   ),
-                )
+                )*/
+                ExpansionTitleWidget()
               ],
             ),
             ListView(
@@ -141,38 +160,38 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
                           leading: Image.asset(
                               'assets/images/gps_doctor_image.png'),
                           title: const Text('Rechazo Nro. 258746'),
-                          subtitle: Column(
+                          subtitle: const Column(
                             children: [
-                              const SizedBox(height: 3.0),
+                              SizedBox(height: 3.0),
                               Row(
-                                children: const [
+                                children: [
                                   Text('Paciente:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text('Ruperto Lugo')
                                 ],
                               ),
-                              const SizedBox(height: 3.0),
+                              SizedBox(height: 3.0),
                               Row(
-                                children: const [
+                                children: [
                                   Text('Teléfono:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text('04241234567')
                                 ],
                               ),
-                              const SizedBox(height: 3.0),
+                              SizedBox(height: 3.0),
                               Row(
-                                children: const [
+                                children: [
                                   Text('Doctor Solicitante:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   Text('Jhoander Armas')
                                 ],
                               ),
-                              const SizedBox(height: 3.0),
+                              SizedBox(height: 3.0),
                               Row(
-                                children: const [
+                                children: [
                                   Text('Fecha y Hora:',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold)),
@@ -189,8 +208,8 @@ class _HistoryPageView extends StatelessWidget  with AmdHistoryWidgets{
               ],
             )
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

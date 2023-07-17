@@ -294,4 +294,9 @@ class DoctorCareController {
       throw ErrorGeneralException();
     }
   }
+
+
+
+
+
 }
