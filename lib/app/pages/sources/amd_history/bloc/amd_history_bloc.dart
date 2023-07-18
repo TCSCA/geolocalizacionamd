@@ -13,7 +13,7 @@ part 'amd_history_state.dart';
 
 class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
   final AmdHistoryController amdHistoryController;
-
+ List<HomeServiceModel> homeServiceModel = [];
   AmdHistoryBloc({required this.amdHistoryController})
       : super(AmdHistoryInitial()) {
     on<AmdHistoryEvent>((event, emit) {
@@ -23,9 +23,9 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
     on<GetAmdHistoryEvent>((event, emit) async {
       emit(AmdHistoryLoadingState());
       try {
-        await amdHistoryController.getHistoryAmdOrderListCtrl();
+       homeServiceModel = await amdHistoryController.getHistoryAmdOrderListCtrl();
 
-
+        emit(AmdHistorySuccessDataState(homeService: homeServiceModel));
 
       } on ErrorAppException catch (exapp) {
         emit(AmdHistoryErrorState(messageError: exapp.message));

@@ -58,6 +58,7 @@ class TabBarViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
+
       listener: (context, state) {
 
         if(state is AmdHistoryLoadingState) {
@@ -94,26 +95,33 @@ class TabBarViewWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 itemCount: state.homeService.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ExpansionTitleWidget(
-                    orderNumber: state.homeService[index].orderNumber,
-                    dateOrderDay:
-                        state.homeService[index].registerDate.day.toString(),
-                    dateOrderMonth:
-                        state.homeService[index].registerDate.month.toString(),
-                    dateOrderYear:
-                        state.homeService[index].registerDate.year.toString(),
-                    fullNamePatient: state.homeService[index].fullNamePatient,
-                    identificationDocument:
-                        state.homeService[index].identificationDocument,
-                    phoneNumberPatient:
-                        state.homeService[index].phoneNumberPatient,
-                    address: state.homeService[index].address,
-                    applicantDoctor: state.homeService[index].applicantDoctor,
-                    phoneNumberDoctor:
-                        state.homeService[index].phoneNumberDoctor,
-                    typeService: state.homeService[index].typeService,
-                    linkAmd: state.homeService[index].linkAmd,
-                  );
+                //   Finalizado
+                  if(state.homeService[index].statusHomeService == 'Finalizado') {
+                    return ExpansionTitleWidget(
+                      orderNumber: state.homeService[index].orderNumber,
+                      dateOrderDay:
+                      state.homeService[index].registerDate.day.toString(),
+                      dateOrderMonth:
+                      state.homeService[index].registerDate.month.toString(),
+                      dateOrderYear:
+                      state.homeService[index].registerDate.year.toString(),
+                      fullNamePatient: state.homeService[index].fullNamePatient,
+                      identificationDocument:
+                      state.homeService[index].identificationDocument,
+                      phoneNumberPatient:
+                      state.homeService[index].phoneNumberPatient,
+                      address: state.homeService[index].address,
+                      applicantDoctor: state.homeService[index].applicantDoctor,
+                      phoneNumberDoctor:
+                      state.homeService[index].phoneNumberDoctor,
+                      typeService: state.homeService[index].typeService,
+                      linkAmd: state.homeService[index].linkAmd,
+                      statusHomeService: state.homeService[index].statusHomeService,
+
+                    );
+                  } else {
+                    return SizedBox();
+                  }
                 },
                 /*children: [
                   */ /*Card(
@@ -195,10 +203,38 @@ class TabBarViewWidget extends StatelessWidget {
 
                 ],*/
               ),
-              ListView(
+              ListView.builder(
                 padding: const EdgeInsets.all(8.0),
-                children: [
-                  /*Card(
+                itemCount: state.homeService.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if(state.homeService[index].statusHomeService == "Rechazada") {
+                    return ExpansionTitleWidget(
+                      orderNumber: state.homeService[index].orderNumber,
+                      dateOrderDay:
+                      state.homeService[index].registerDate.day.toString(),
+                      dateOrderMonth:
+                      state.homeService[index].registerDate.month.toString(),
+                      dateOrderYear:
+                      state.homeService[index].registerDate.year.toString(),
+                      fullNamePatient: state.homeService[index].fullNamePatient,
+                      identificationDocument:
+                      state.homeService[index].identificationDocument,
+                      phoneNumberPatient:
+                      state.homeService[index].phoneNumberPatient,
+                      address: state.homeService[index].address,
+                      applicantDoctor: state.homeService[index].applicantDoctor,
+                      phoneNumberDoctor:
+                      state.homeService[index].phoneNumberDoctor,
+                      typeService: state.homeService[index].typeService,
+                      linkAmd: state.homeService[index].linkAmd,
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+
+                },
+                /*children: [
+                  *//*Card(
                   margin: const EdgeInsets.all(2),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -260,9 +296,9 @@ class TabBarViewWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                )*/
+                )*//*
                   ExpansionTitleWidget()
-                ],
+                ],*/
               )
             ],
           );

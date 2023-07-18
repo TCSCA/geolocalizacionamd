@@ -16,6 +16,7 @@ class HomeServiceMap {
   String phoneNumberDoctor;
   String typeService;
   String linkAmd;
+  String statusHomeService;
 
   HomeServiceMap(
       {required this.idHomeService,
@@ -32,23 +33,24 @@ class HomeServiceMap {
       required this.applicantDoctor,
       required this.phoneNumberDoctor,
       required this.typeService,
-      required this.linkAmd});
+      required this.linkAmd,
+      required this.statusHomeService});
 
   factory HomeServiceMap.fromJson(Map<String, dynamic> json) => HomeServiceMap(
-        idHomeService: json["idHomeService"],
-        idMedicalOrder: json["idMedicalOrder"],
-        orderNumber: json["orderNumber"],
-        registerDate: RegisterDate.fromJson(json["registerDate"]),
-        fullNamePatient: json["fullNamePatient"],
-        documentType: json["documentType"],
-        identificationDocument: json["identificationDocument"],
-        phoneNumberPatient: json["phoneNumberPatient"],
-        address: json["address"],
-        latitude: json["latitude"],
-        longitude: json["longitude"],
-        applicantDoctor: json["applicantDoctor"],
-        phoneNumberDoctor: json["phoneNumberDoctor"],
-        typeService: json["typeService"],
-        linkAmd: json["linkAmd"] ?? '',
-      );
+      idHomeService: json["idHomeService"],
+      idMedicalOrder: json["idMedicalOrder"],
+      orderNumber: json["orderNumber"],
+      registerDate: RegisterDate.fromJson(json["registerDate"]),
+      fullNamePatient: json["fullNamePatient"],
+      documentType: json["documentType"],
+      identificationDocument: json["identificationDocument"],
+      phoneNumberPatient: json["phoneNumberPatient"],
+      address: json["address"],
+      latitude: json["latitude"],
+      longitude: json["longitude"],
+      applicantDoctor: json["applicantDoctor"],
+      phoneNumberDoctor: json["phoneNumberDoctor"],
+      typeService: json["typeService"],
+      linkAmd: json["linkAmd"] ?? '',
+      statusHomeService: json["statusHomeService"] ?? '');
 }

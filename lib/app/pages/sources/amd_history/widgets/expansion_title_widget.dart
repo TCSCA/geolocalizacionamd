@@ -14,6 +14,7 @@ class ExpansionTitleWidget extends StatelessWidget {
   String? phoneNumberDoctor;
   String? typeService;
   String? linkAmd;
+  String? statusHomeService;
 
   ExpansionTitleWidget(
       {super.key,
@@ -28,7 +29,8 @@ class ExpansionTitleWidget extends StatelessWidget {
       this.applicantDoctor,
       this.phoneNumberDoctor,
       this.typeService,
-      this.linkAmd});
+      this.linkAmd,
+      this.statusHomeService});
 
   double interlineado = 7.0;
   double tamanioLetra = 15.0;

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../mappings/history_amd_mapping.dart';
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';
@@ -168,7 +167,7 @@ class ConsultDataServiceImp implements ConsultDataService {
 
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
-    HomeServiceMap homeServiceMap;
+    ///HomeServiceMap homeServiceMap;
 
     final Uri urlGetHistoryAmdOrder =
     Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
@@ -191,7 +190,6 @@ class ConsultDataServiceImp implements ConsultDataService {
 
        if(decodeRespApi[ApiConstants.statusLabelApi] ==
            ApiConstants.statusSuccessApi) {
-
         // historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
 
          homeServiceList = List<HomeServiceMap>.from(decodeRespApi[ApiConstants.dataLabelApi]
