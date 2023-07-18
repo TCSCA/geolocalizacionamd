@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:geolocalizacionamd/app/core/controllers/amd_history_controller.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/bloc/amd_history_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/expansion_title_widget.dart';
+import '../../../shared/dialog/custom_dialog_box.dart';
+import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
+import '../../constants/app_constants.dart';
+import '../../messages/app_messages.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import 'widgets/amd_history_widgets.dart';
 
@@ -32,7 +37,9 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
                 AppCommonWidgets.listenerLogoutBloc()
               ],
               child: BlocProvider(
-                create: (context) => AmdHistoryBloc(amdHistoryController: AmdHistoryController())..add(GetAmdHistoryEvent()),
+                create: (context) =>
+                    AmdHistoryBloc(amdHistoryController: AmdHistoryController())
+                      ..add(GetAmdHistoryEvent()),
                 child: const TabBarViewWidget(),
               ),
             ),
@@ -52,15 +59,64 @@ class TabBarViewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
       listener: (context, state) {
-        // TODO: implement listener
+
+        if(state is AmdHistoryLoadingState) {
+          LoadingBuilder(context).showLoadingIndicator(
+              'Cargando historial');
+        } else if (state is AmdHistorySuccessDataState) {
+          LoadingBuilder(context).hideOpenDialog();
+
+        } if(state is AmdHistoryErrorState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages().getMessageTitle(
+                      context, AppConstants.statusError),
+                  descriptions:
+                  AppMessages().getMessage(context, state.messageError),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
       },
       builder: (context, state) {
-        return TabBarView(
-          children: [
-            ListView(
-              padding: const EdgeInsets.all(8.0),
-              children: [
-                /*Card(
+        if (state is AmdHistorySuccessDataState) {
+          return TabBarView(
+            children: [
+              ListView.builder(
+                padding: const EdgeInsets.all(8.0),
+                itemCount: state.homeService.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ExpansionTitleWidget(
+                    orderNumber: state.homeService[index].orderNumber,
+                    dateOrderDay:
+                        state.homeService[index].registerDate.day.toString(),
+                    dateOrderMonth:
+                        state.homeService[index].registerDate.month.toString(),
+                    dateOrderYear:
+                        state.homeService[index].registerDate.year.toString(),
+                    fullNamePatient: state.homeService[index].fullNamePatient,
+                    identificationDocument:
+                        state.homeService[index].identificationDocument,
+                    phoneNumberPatient:
+                        state.homeService[index].phoneNumberPatient,
+                    address: state.homeService[index].address,
+                    applicantDoctor: state.homeService[index].applicantDoctor,
+                    phoneNumberDoctor:
+                        state.homeService[index].phoneNumberDoctor,
+                    typeService: state.homeService[index].typeService,
+                    linkAmd: state.homeService[index].linkAmd,
+                  );
+                },
+                /*children: [
+                  */ /*Card(
                   margin: const EdgeInsets.all(2),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -135,14 +191,14 @@ class TabBarViewWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                )*/
-                ExpansionTitleWidget()
-              ],
-            ),
-            ListView(
-              padding: const EdgeInsets.all(8.0),
-              children: [
-                /*Card(
+                )*/ /*
+
+                ],*/
+              ),
+              ListView(
+                padding: const EdgeInsets.all(8.0),
+                children: [
+                  /*Card(
                   margin: const EdgeInsets.all(2),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -205,11 +261,14 @@ class TabBarViewWidget extends StatelessWidget {
                     ),
                   ),
                 )*/
-                ExpansionTitleWidget()
-              ],
-            )
-          ],
-        );
+                  ExpansionTitleWidget()
+                ],
+              )
+            ],
+          );
+        } else {
+          return Container();
+        }
       },
     );
   }
