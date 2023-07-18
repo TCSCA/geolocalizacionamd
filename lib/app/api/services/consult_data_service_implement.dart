@@ -61,7 +61,8 @@ class ConsultDataServiceImp implements ConsultDataService {
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
         if (decodeRespApi[ApiConstants.dataLabelApi] != null) {
-          responseActiveAmdOrder = HomeServiceMap.fromJson(decodeRespApi);
+          responseActiveAmdOrder =
+              HomeServiceMap.fromJson(decodeRespApi[ApiConstants.dataLabelApi]);
         } else {
           throw EmptyDataException(message: 'NODATA');
         }

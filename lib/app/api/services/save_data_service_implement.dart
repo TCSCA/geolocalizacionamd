@@ -107,7 +107,8 @@ class SaveDataServiceImp implements SaveDataService {
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-        responseActiveAmdOrder = HomeServiceMap.fromJson(decodeRespApi);
+        responseActiveAmdOrder =
+            HomeServiceMap.fromJson(decodeRespApi[ApiConstants.dataLabelApi]);
       } else {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
