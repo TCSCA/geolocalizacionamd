@@ -30,7 +30,7 @@ class NotificationApi {
     _notification.initialize(
       const InitializationSettings(
         android:
-            AndroidInitializationSettings('@mipmap/ic_launcher_foreground'),
+            AndroidInitializationSettings('ic_launcher_foreground'),
         iOS: DarwinInitializationSettings(),
       ),
     );
