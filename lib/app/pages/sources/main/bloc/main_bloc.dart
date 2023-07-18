@@ -386,6 +386,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceErrorState(message: exgen.message));
       } on AmdOrderAdminFinalizedException catch (exadmin) {
+        await doctorCareController.changeDoctorInAttention('false');
+        doctorAvailableSwitch = false;
         emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
