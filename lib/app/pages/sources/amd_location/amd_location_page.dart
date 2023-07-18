@@ -246,6 +246,38 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
                               onPressed: () {
+                                context.go(GeoAmdRoutes.home);
+                              },
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    gradient: const LinearGradient(colors: [
+                                      Color(0xffF96352),
+                                      Color(0xffD84835)
+                                    ]),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 20),
+                                  child: Text(
+                                    context.appLocalization.nameButtonReturn,
+                                    textAlign: TextAlign.center,
+                                    style: AppStyles.textStyleButton,
+                                  ),
+                                ),
+                              ),
+                            )),
+                        Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 7.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  elevation: 5,
+                                  side: const BorderSide(
+                                      width: 2, color: Color(0xffFFFFFF)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                              onPressed: () {
                                 if (!ubicacionFormKey.currentState!
                                     .validate()) {
                                   return;
@@ -280,39 +312,6 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                               child: Ink(
                                 decoration: BoxDecoration(
                                     gradient: const LinearGradient(colors: [
-                                      Color(0xffF96352),
-                                      Color(0xffD84835)
-                                    ]),
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 20),
-                                  child: Text(
-                                    context.appLocalization
-                                        .nameButtonConnectDoctor,
-                                    textAlign: TextAlign.center,
-                                    style: AppStyles.textStyleButton,
-                                  ),
-                                ),
-                              ),
-                            )),
-                        Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 7.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  elevation: 5,
-                                  side: const BorderSide(
-                                      width: 2, color: Color(0xffFFFFFF)),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30))),
-                              onPressed: () {
-                                context.go(GeoAmdRoutes.home);
-                              },
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    gradient: const LinearGradient(colors: [
                                       Color(0xff2B5178),
                                       Color(0xff273456)
                                     ]),
@@ -321,7 +320,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 15, horizontal: 20),
                                   child: Text(
-                                    context.appLocalization.nameButtonReturn,
+                                    context.appLocalization
+                                        .nameButtonConnectDoctor,
                                     textAlign: TextAlign.center,
                                     style: AppStyles.textStyleButton,
                                   ),
