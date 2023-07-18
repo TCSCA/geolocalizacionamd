@@ -1,7 +1,9 @@
 
 import 'package:geolocalizacionamd/app/core/controllers/secure_storage_controller.dart';
+import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
 
 import '../../api/constants/api_constants.dart';
+import '../../api/mappings/home_service_mapping.dart';
 import '../../api/services/consult_data_service.dart';
 import '../../api/services/consult_data_service_implement.dart';
 import '../../errors/error_app_exception.dart';
@@ -15,7 +17,10 @@ class AmdHistoryController {
   final ConsultDataService consultDataService = ConsultDataServiceImp();
 
 
-  Future<void> getHistoryAmdOrderListCtrl() async {
+  Future<List<HomeServiceModel>> getHistoryAmdOrderListCtrl() async {
+
+    List<HomeServiceModel> homeServiceModel = [];
+    List<HomeServiceMap> homeServiceMap = [];
 
     try {
       final tokenUser =
@@ -24,7 +29,7 @@ class AmdHistoryController {
       final idDocotorAmd =
       await secureStorageController.readSecureData(ApiConstants.idDoctorAmd);
 
-      var model = await consultDataService.getHistoryAmdOrderList(tokenUser, int.parse(idDocotorAmd));
+      homeServiceMap = await consultDataService.getHistoryAmdOrderList(tokenUser, int.parse(idDocotorAmd));
 
 
     } on ErrorAppException {
@@ -35,6 +40,7 @@ class AmdHistoryController {
       throw ErrorGeneralException();
     }
 
+    return homeServiceModel;
   }
 
 }

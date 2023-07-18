@@ -11,9 +11,11 @@ class AmdHistoryInitial extends AmdHistoryState {
 
 class AmdHistorySuccessDataState extends AmdHistoryState{
 
+  final List<HomeServiceModel> homeService;
 
+  const AmdHistorySuccessDataState({required this.homeService});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [homeService];
 }
 
 class AmdHistoryLoadingState extends AmdHistoryState {
@@ -23,8 +25,11 @@ class AmdHistoryLoadingState extends AmdHistoryState {
 }
 
 class AmdHistoryErrorState extends AmdHistoryState {
+
+ final String messageError;
+
+  const AmdHistoryErrorState({required this.messageError});
   @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [messageError];
 
 }

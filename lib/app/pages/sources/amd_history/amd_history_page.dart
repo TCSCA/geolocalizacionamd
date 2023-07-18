@@ -78,8 +78,8 @@ class TabBarViewWidget extends StatelessWidget {
                         ListTile(
                           leading: Image.asset(
                               'assets/images/gps_doctor_image.png'),
-                          *//* trailing: TextButton(
-                                  onPressed: () => {}, child: const Text('Ver')), *//*
+                           trailing: TextButton(
+                                  onPressed: () => {}, child: const Text('Ver')),
                           title: const Text('Orden Nro. 8888888'),
                           subtitle: Column(
                             children: [
@@ -124,14 +124,14 @@ class TabBarViewWidget extends StatelessWidget {
                             ],
                           ),
                         ),
-                        *//* Row(
+                         Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 TextButton(
                                     onPressed: () => {},
                                     child: const Text('Ver Detalle')),
                               ],
-                            ) *//*
+                            )
                       ],
                     ),
                   ),
@@ -142,7 +142,7 @@ class TabBarViewWidget extends StatelessWidget {
             ListView(
               padding: const EdgeInsets.all(8.0),
               children: [
-                Card(
+                /*Card(
                   margin: const EdgeInsets.all(2),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
@@ -204,7 +204,8 @@ class TabBarViewWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                )
+                )*/
+                ExpansionTitleWidget()
               ],
             )
           ],
