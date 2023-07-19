@@ -226,7 +226,7 @@ class TabBarViewWidget extends StatelessWidget {
                       phoneNumberDoctor:
                       state.homeService[index].phoneNumberDoctor,
                       typeService: state.homeService[index].typeService,
-                      linkAmd: state.homeService[index].linkAmd,
+                      linkAmd: '',
                     );
                   } else {
                     return SizedBox();

@@ -149,7 +149,7 @@ class ListViewProfileWidget extends StatelessWidget {
                       '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}'),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Numero de Teléfono',
+                  title: 'Número de Teléfono',
                   subtitle: state.profileModel.phoneNumber ?? ''),
               const Divider(),
               _ProfileDataWidget(

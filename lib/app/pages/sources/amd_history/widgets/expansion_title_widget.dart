@@ -193,27 +193,29 @@ class ExpansionTitleWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: interlineado),
-             Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Formulario AMD: ',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                InkWell(
-                  onTap: () => launchUrl(
-                    Uri.parse(linkAmd!),
-                    mode: LaunchMode.externalApplication,
+            if (linkAmd!.isNotEmpty) ...[
+              Row(
+                children: [
+                  const SizedBox(width: 20.0),
+                  Text('Formulario AMD: ',
+                      style: TextStyle(
+                          fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              Row(
+                children: [
+                  const SizedBox(width: 20.0),
+                  InkWell(
+                    onTap: () => launchUrl(
+                      Uri.parse(linkAmd!),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                    child: const Text('Ver formulario'),
                   ),
-                  child: const Text('Ver formulario'),
-                ),
-              ],
-            ),
-            SizedBox(height: interlineado),
+                ],
+              ),
+              SizedBox(height: interlineado),
+            ]
           ],
         ),
       ],
