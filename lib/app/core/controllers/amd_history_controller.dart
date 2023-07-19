@@ -60,6 +60,8 @@ class AmdHistoryController {
 
           homeServiceModelList.add(homeServiceModel);
         }
+        homeServiceModelList
+            .sort((a, b) => b.registerDate.compareTo(a.registerDate));
 
         /* homeServiceModel = List<HomeServiceModel>.from(
           homeServiceMap.map(

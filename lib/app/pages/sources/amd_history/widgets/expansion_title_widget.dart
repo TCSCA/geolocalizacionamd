@@ -209,7 +209,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                     Uri.parse(linkAmd!),
                     mode: LaunchMode.externalApplication,
                   ),
-                  child: const Text('https://n9.cl/vjupm'),
+                  child: const Text('Ver formulario'),
                 ),
               ],
             ),
