@@ -55,6 +55,7 @@ class AmdHistoryController {
             optionhistory.phoneNumberDoctor,
             optionhistory.typeService,
             optionhistory.linkAmd,
+            optionhistory.idStatusHomeService,
             optionhistory.statusHomeService
           );
 
