@@ -33,7 +33,7 @@
 		},
 		{
 			"id": 4,
-			"descripcionEs": "Historial Atención Médica",
+			"descripcionEs": "Historial de Atenciones",
 			"descripcionEn": "Medical Care History",
 			"icon": "medicalCareHome",
 			"route": "/medicalCareHistory",
