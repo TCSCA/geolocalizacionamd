@@ -83,6 +83,10 @@ class LoginController {
           ApiConstants.tokenLabel, responseLogin.data);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
+
+      await secureStorageController.writeSecureData(
+          ApiConstants.idDoctorAmd, responseLogin.user.toString());
+
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {

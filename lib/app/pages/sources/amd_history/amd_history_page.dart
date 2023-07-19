@@ -100,11 +100,11 @@ class TabBarViewWidget extends StatelessWidget {
                     return ExpansionTitleWidget(
                       orderNumber: state.homeService[index].orderNumber,
                       dateOrderDay:
-                      state.homeService[index].registerDate.day.toString(),
+                      state.homeService[index].registerDate.day,
                       dateOrderMonth:
-                      state.homeService[index].registerDate.month.toString(),
+                      state.homeService[index].registerDate.month,
                       dateOrderYear:
-                      state.homeService[index].registerDate.year.toString(),
+                      state.homeService[index].registerDate.year,
                       fullNamePatient: state.homeService[index].fullNamePatient,
                       identificationDocument:
                       state.homeService[index].identificationDocument,
@@ -211,11 +211,11 @@ class TabBarViewWidget extends StatelessWidget {
                     return ExpansionTitleWidget(
                       orderNumber: state.homeService[index].orderNumber,
                       dateOrderDay:
-                      state.homeService[index].registerDate.day.toString(),
+                      state.homeService[index].registerDate.day,
                       dateOrderMonth:
-                      state.homeService[index].registerDate.month.toString(),
+                      state.homeService[index].registerDate.month,
                       dateOrderYear:
-                      state.homeService[index].registerDate.year.toString(),
+                      state.homeService[index].registerDate.year,
                       fullNamePatient: state.homeService[index].fullNamePatient,
                       identificationDocument:
                       state.homeService[index].identificationDocument,
