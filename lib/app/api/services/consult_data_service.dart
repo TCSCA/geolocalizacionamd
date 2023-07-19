@@ -8,4 +8,5 @@ abstract class ConsultDataService {
   Future<ProfileMap> getProfile(String tokenUser);
   Future<void> validateIfOrderIsCompletedOrRejected(
       String tokenUser, int idHomeServiceAttention);
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(String tokenUser, int idDoctorAmd);
 }

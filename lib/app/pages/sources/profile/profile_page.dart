@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/core/controllers/profile_controller.dart';
-import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
 import '../../../shared/loading/loading_builder.dart';
@@ -40,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
                 child: GestureDetector(
                   onTap: () {},
-                  child: ListViewProfileWidget(),
+                  child: const ListViewProfileWidget(),
                 ),
               ),
             ),
@@ -326,14 +325,14 @@ class _ProfileDataWidget extends StatelessWidget {
   final String subtitle;
 
   const _ProfileDataWidget(
-      {super.key, required this.title, required this.subtitle});
+      {required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(subtitle),
     );

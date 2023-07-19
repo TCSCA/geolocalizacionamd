@@ -37,7 +37,7 @@
 			"descripcionEn": "Medical Care History",
 			"icon": "medicalCareHome",
 			"route": "/medicalCareHistory",
-			"enable": false,
+			"enable": true,
 			"order": 4,
 			"parent": 0
 		},

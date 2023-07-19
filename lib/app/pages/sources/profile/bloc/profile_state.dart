@@ -9,11 +9,12 @@ class ProfileInitial extends ProfileState {
   List<Object> get props => [];
 }
 
+
 class ProfileSuccessState extends ProfileState {
 
-  ProfileModel profileModel;
+  final ProfileModel profileModel;
 
-  ProfileSuccessState({required this.profileModel});
+ const ProfileSuccessState({required this.profileModel});
   @override
   List<Object> get props => [profileModel];
 }

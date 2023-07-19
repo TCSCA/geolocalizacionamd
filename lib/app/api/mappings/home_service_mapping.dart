@@ -16,7 +16,6 @@ class HomeServiceMap {
   String phoneNumberDoctor;
   String typeService;
   String linkAmd;
-  int idStatusHomeService;
   String statusHomeService;
 
   HomeServiceMap(
@@ -35,26 +34,23 @@ class HomeServiceMap {
       required this.phoneNumberDoctor,
       required this.typeService,
       required this.linkAmd,
-      required this.idStatusHomeService,
       required this.statusHomeService});
 
   factory HomeServiceMap.fromJson(Map<String, dynamic> json) => HomeServiceMap(
-        idHomeService: json["idHomeService"] ?? 0,
-        idMedicalOrder: json["idMedicalOrder"] ?? 0,
-        orderNumber: json["orderNumber"] ?? '',
-        registerDate: RegisterDate.fromJson(json["registerDate"]),
-        fullNamePatient: json["fullNamePatient"] ?? '',
-        documentType: json["documentType"] ?? '',
-        identificationDocument: json["identificationDocument"] ?? '',
-        phoneNumberPatient: json["phoneNumberPatient"] ?? '',
-        address: json["address"] ?? '',
-        latitude: json["latitude"] ?? '',
-        longitude: json["longitude"] ?? '',
-        applicantDoctor: json["applicantDoctor"] ?? '',
-        phoneNumberDoctor: json["phoneNumberDoctor"] ?? '',
-        typeService: json["typeService"] ?? '',
-        linkAmd: json["linkAmd"] ?? '',
-        idStatusHomeService: json["idStatusHomeService"] ?? 0,
-        statusHomeService: json["statusHomeService"] ?? '',
-      );
+      idHomeService: json["idHomeService"],
+      idMedicalOrder: json["idMedicalOrder"],
+      orderNumber: json["orderNumber"],
+      registerDate: RegisterDate.fromJson(json["registerDate"]),
+      fullNamePatient: json["fullNamePatient"],
+      documentType: json["documentType"],
+      identificationDocument: json["identificationDocument"],
+      phoneNumberPatient: json["phoneNumberPatient"],
+      address: json["address"],
+      latitude: json["latitude"],
+      longitude: json["longitude"],
+      applicantDoctor: json["applicantDoctor"],
+      phoneNumberDoctor: json["phoneNumberDoctor"],
+      typeService: json["typeService"],
+      linkAmd: json["linkAmd"] ?? '',
+      statusHomeService: json["statusHomeService"] ?? '');
 }

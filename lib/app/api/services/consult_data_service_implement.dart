@@ -166,4 +166,52 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
   }
 
+
+  @override
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(String tokenUser, int idDoctorAmd)  async{
+
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    ///HomeServiceMap homeServiceMap;
+
+    final Uri urlGetHistoryAmdOrder =
+    Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
+
+    final Map<String, String> header = {
+      ApiConstants.headerToken: tokenUser,
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    final String bodyGetHistoryAmdOrder =
+    jsonEncode({'idDoctorAmd': idDoctorAmd});
+
+    //List<HistoryAmdMap> historyAmdMapList;
+    List<HomeServiceMap> homeServiceList;
+    try {
+
+      responseApi = await http.post(urlGetHistoryAmdOrder,
+          headers: header, body: bodyGetHistoryAmdOrder);
+       decodeRespApi = jsonDecode(responseApi.body);
+
+       if(decodeRespApi[ApiConstants.statusLabelApi] ==
+           ApiConstants.statusSuccessApi) {
+        // historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
+
+         homeServiceList = List<HomeServiceMap>.from(decodeRespApi[ApiConstants.dataLabelApi]
+             .map((data) => HomeServiceMap.fromJson(data)));
+       } else {
+         throw ErrorAppException(
+             message: decodeRespApi[ApiConstants.dataLabelApi]);
+       }
+
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return homeServiceList;
+  }
 }

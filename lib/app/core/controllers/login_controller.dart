@@ -24,6 +24,11 @@ class LoginController {
 
       await secureStorageController.writeSecureData(
           ApiConstants.tokenLabel, responseLogin.data);
+
+      await secureStorageController.writeSecureData(
+          ApiConstants.idDoctorAmd, responseLogin.user.toString());
+
+
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
 

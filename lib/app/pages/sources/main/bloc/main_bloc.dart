@@ -171,7 +171,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         } else {
           var userHomeService =
               await doctorCareController.getHomeServiceAssigned();
-          if (userHomeService.idStatusHomeService ==
+          if (userHomeService.statusHomeService ==
               AppConstants.idHomeServiceConfirmed) {
             await doctorCareController.changeDoctorInAttention('true');
             try {

@@ -127,7 +127,7 @@ class DoctorCareController {
           responseService.phoneNumberDoctor,
           responseService.typeService,
           responseService.linkAmd,
-          responseService.idStatusHomeService);
+          responseService.statusHomeService);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -197,7 +197,7 @@ class DoctorCareController {
           responseService.phoneNumberDoctor,
           responseService.typeService,
           responseService.linkAmd,
-          responseService.idStatusHomeService);
+          responseService.statusHomeService);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
@@ -280,12 +280,10 @@ class DoctorCareController {
   Future<void> validateIfOrderIsCompletedOrRejectedCtrl(
       int idHomeService) async {
     try {
-
       final tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       await consultDataService.validateIfOrderIsCompletedOrRejected(
           tokenUser, idHomeService);
-
     } on AmdOrderAdminFinalizedException {
       rethrow;
     } on ErrorAppException {

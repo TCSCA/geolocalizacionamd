@@ -25,6 +25,7 @@ class ApiConstants {
   static final String urlApiGetProfile= '$urlApi/profile';
   static final String urlApiValidateIfOrderIsCompletedOrRejected
   = '$urlApi/validateIfOrderIsCompletedOrRejected';
+  static final String urlApiGetHistoryAmdOrder = '$urlApi/getHistoryAmdOrder';
   static final String urlApiGetAllStatesByCountry =
       '$urlApi/getAllStatesByCountry/idCountry';
   static final String urlApiGetAllCityByState =
@@ -45,6 +46,7 @@ class ApiConstants {
   static const String codeLabelApi = 'code';
   static const String activeConnectionCodeApi = 'MSG-057';
   static const String tokenLabel = 'token';
+  static const String idDoctorAmd = 'idDoctorAmd';
   static const String tokenFirebaseLabel = 'tokenFirebaseRegister';
   static const String doctorInAttentionLabel = 'doctorInAttention';
   static const String amdPendingAdminFinalizedCodeApi = 'MSG-226';
