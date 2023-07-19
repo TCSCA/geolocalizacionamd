@@ -77,7 +77,7 @@ class MainWidgets {
         buildWhen: (previous, current) =>
             previous != current && current is LoginSuccessState,
         builder: (context, state) {
-          final user = (state as LoginSuccessState).user;
+          final user = BlocProvider.of<LoginBloc>(context).user;
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

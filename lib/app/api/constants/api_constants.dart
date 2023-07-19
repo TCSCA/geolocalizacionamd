@@ -49,6 +49,7 @@ class ApiConstants {
   static const String idDoctorAmd = 'idDoctorAmd';
   static const String tokenFirebaseLabel = 'tokenFirebaseRegister';
   static const String doctorInAttentionLabel = 'doctorInAttention';
+  static const String doctorConnectedLabel = 'doctorConnected';
   static const String amdPendingAdminFinalizedCodeApi = 'MSG-226';
   static const String amdconfirmedAdminFinalizedCodeApi = 'MSG-232';
 }

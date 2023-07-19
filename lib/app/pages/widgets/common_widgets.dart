@@ -246,6 +246,26 @@ class AppCommonWidgets {
                 dialogCancel: () {},
               );
             });
+      } else if (state is LogoutDoctorConnectedState) {
+        LoadingBuilder(context).hideOpenDialog();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            routeSettings: const RouteSettings(name: GeoAmdRoutes.home),
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                title: AppMessages()
+                    .getMessageTitle(context, AppConstants.statusWarning),
+                descriptions: AppMessages().getMessage(context, state.message),
+                isConfirmation: false,
+                dialogAction: () {},
+                type: AppConstants.statusWarning,
+                isdialogCancel: false,
+                dialogCancel: () {},
+              );
+            }).then((value) {
+          context.go(GeoAmdRoutes.home);
+        });
       }
     });
   }
