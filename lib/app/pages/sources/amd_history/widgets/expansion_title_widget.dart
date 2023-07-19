@@ -3,9 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ExpansionTitleWidget extends StatelessWidget {
   String? orderNumber;
-  String? dateOrderDay;
-  String? dateOrderMonth;
-  String? dateOrderYear;
+  int? dateOrderDay;
+  int? dateOrderMonth;
+  int? dateOrderYear;
   String? fullNamePatient;
   String? identificationDocument;
   String? phoneNumberPatient;
@@ -38,6 +38,13 @@ class ExpansionTitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final String day;
+    final String month;
+
+    day = dateOrderDay! < 10 ? '0$dateOrderDay' : dateOrderDay.toString();
+    month = dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
+
     return Column(
       children: <Widget>[
         ExpansionTile(
@@ -67,7 +74,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                       fontSize: tamanioTitulo, fontWeight: FontWeight.bold)),
               Flexible(
                 child: Text(
-                  '$dateOrderDay-$dateOrderMonth-$dateOrderYear',
+                  '$day-$month-$dateOrderYear',
                   style: TextStyle(fontSize: tamanioTitulo),
                 ),
               )
