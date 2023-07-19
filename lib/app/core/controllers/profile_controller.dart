@@ -27,14 +27,15 @@ class ProfileController {
       final mppsAndmc = profileMap.data?.medicalLicense?.split('|');
       final String mpps = mppsAndmc?[0] ?? '';
       final String mc = mppsAndmc?.length == 2 ? mppsAndmc![1] :'';
+      final int realMonth = profileMap.data!.birthday!.month! + 1;
 
       final day = profileMap.data!.birthday!.dayOfMonth! < 10
           ? '0${profileMap.data!.birthday!.dayOfMonth!}'
           : profileMap.data!.birthday!.dayOfMonth.toString();
 
-      final month = profileMap.data!.birthday!.month! < 10
-          ? '0${profileMap.data?.birthday?.month.toString()}'
-          : profileMap.data?.birthday?.month.toString();
+      final month = realMonth < 10
+          ? '0$realMonth'
+          : realMonth.toString();
 
       profileModel = ProfileModel(
         fullName: profileMap.data?.fullName,

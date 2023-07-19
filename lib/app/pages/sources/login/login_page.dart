@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String denyFingerprint = '';
   bool isUsedFingerprint = false;
+  bool authenticated = false;
 
   @override
   void initState() {
@@ -158,8 +159,12 @@ class _LoginPageState extends State<LoginPage> {
                           dialogAction: () =>
                               BlocProvider.of<LoginBloc>(context).add(
                                   ProcessResetLoginEvent(
-                                      userController.text,
-                                      passwordController.text,
+                                      authenticated
+                                          ? userSave
+                                          : userController.text,
+                                      authenticated
+                                          ? prefs.getString('password')!
+                                          : passwordController.text,
                                       context.localization.languageCode)),
                           type: AppConstants.statusWarning,
                           isdialogCancel: false,
@@ -570,7 +575,6 @@ class _LoginPageState extends State<LoginPage> {
 
   ///Metodo para iniciar la autenticacion biometrica
   Future<void> _authenticate(BuildContext context) async {
-    bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
           authMessages: <AuthMessages>[
