@@ -127,6 +127,7 @@ class DoctorCareController {
           responseService.phoneNumberDoctor,
           responseService.typeService,
           responseService.linkAmd,
+          responseService.idStatusHomeService,
           responseService.statusHomeService);
     } on ErrorAppException {
       rethrow;
@@ -197,6 +198,7 @@ class DoctorCareController {
           responseService.phoneNumberDoctor,
           responseService.typeService,
           responseService.linkAmd,
+          responseService.idStatusHomeService,
           responseService.statusHomeService);
     } on EmptyDataException {
       rethrow;

@@ -96,7 +96,7 @@ class TabBarViewWidget extends StatelessWidget {
                 itemCount: state.homeService.length,
                 itemBuilder: (BuildContext context, int index) {
                 //   Finalizado
-                  if(state.homeService[index].statusHomeService == 'Finalizado') {
+                  if(state.homeService[index].idStatusHomeService == 4) {
                     return ExpansionTitleWidget(
                       orderNumber: state.homeService[index].orderNumber,
                       dateOrderDay:
@@ -207,7 +207,7 @@ class TabBarViewWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 itemCount: state.homeService.length,
                 itemBuilder: (BuildContext context, int index) {
-                  if(state.homeService[index].statusHomeService == "Rechazada") {
+                  if(state.homeService[index].idStatusHomeService == 3) {
                     return ExpansionTitleWidget(
                       orderNumber: state.homeService[index].orderNumber,
                       dateOrderDay:

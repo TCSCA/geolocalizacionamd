@@ -16,6 +16,7 @@ class HomeServiceMap {
   String phoneNumberDoctor;
   String typeService;
   String linkAmd;
+  int idStatusHomeService;
   String statusHomeService;
 
   HomeServiceMap(
@@ -34,6 +35,7 @@ class HomeServiceMap {
       required this.phoneNumberDoctor,
       required this.typeService,
       required this.linkAmd,
+      required this.idStatusHomeService,
       required this.statusHomeService});
 
   factory HomeServiceMap.fromJson(Map<String, dynamic> json) => HomeServiceMap(
@@ -52,5 +54,6 @@ class HomeServiceMap {
       phoneNumberDoctor: json["phoneNumberDoctor"],
       typeService: json["typeService"],
       linkAmd: json["linkAmd"] ?? '',
+      idStatusHomeService: json["idStatusHomeService"] ?? 0,
       statusHomeService: json["statusHomeService"] ?? '');
 }

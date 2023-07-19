@@ -11,6 +11,7 @@ class HomeServiceModel {
   String phoneNumberDoctor;
   String typeService;
   String linkAmd;
+  int idStatusHomeService;
   String statusHomeService;
 
   HomeServiceModel(
@@ -26,5 +27,6 @@ class HomeServiceModel {
       this.phoneNumberDoctor,
       this.typeService,
       this.linkAmd,
+      this.idStatusHomeService,
       this.statusHomeService);
 }
