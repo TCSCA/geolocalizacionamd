@@ -70,7 +70,6 @@ class LoginController {
       await secureStorageController
           .deleteSecureData(ApiConstants.doctorConnectedLabel);
     }
-
     return respWebSocket;
   }
 

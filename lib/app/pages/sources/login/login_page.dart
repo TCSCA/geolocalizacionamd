@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +17,7 @@ import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 
 import 'package:local_auth_android/local_auth_android.dart';
-import 'package:local_auth/error_codes.dart' as authError;
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 import 'bloc/login_bloc.dart';
 
@@ -525,7 +526,9 @@ class _LoginPageState extends State<LoginPage> {
     try {
       canCheckBiometric = await auth.canCheckBiometrics;
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     if (!mounted) return;
@@ -565,7 +568,9 @@ class _LoginPageState extends State<LoginPage> {
     try {
       availableBiometric = await auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -603,7 +608,9 @@ class _LoginPageState extends State<LoginPage> {
         BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
             userSave, prefs.getString('password')!, languageCode));
       } else {
-        print('ERROR');
+        if (kDebugMode) {
+          print('ERROR');
+        }
       }
     } on PlatformException catch (e) {
       /// _authorized = "Error - ${e.code}";
@@ -624,7 +631,7 @@ class _LoginPageState extends State<LoginPage> {
                   dialogCancel: () {},
                 );
               })
-          : e.code == authError.notAvailable
+          : e.code == auth_error.notAvailable
               ? showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -674,15 +681,12 @@ class _LoginPageState extends State<LoginPage> {
     userController = TextEditingController(text: userSave);
     setState(() {});
   }
-
-  _callShowDialog() {}
 }
 
+@immutable
 class _BiometricWidget extends StatelessWidget {
-  Function() onTap;
-
-  _BiometricWidget({
-    super.key,
+ final Function() onTap;
+  const _BiometricWidget({
     required this.onTap,
   });
 

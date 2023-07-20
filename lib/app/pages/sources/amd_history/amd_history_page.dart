@@ -120,7 +120,7 @@ class TabBarViewWidget extends StatelessWidget {
 
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 },
                 /*children: [
@@ -229,7 +229,7 @@ class TabBarViewWidget extends StatelessWidget {
                       linkAmd: '',
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
 
                 },

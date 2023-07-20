@@ -196,14 +196,12 @@ class ConsultDataServiceImp implements ConsultDataService {
        if(decodeRespApi[ApiConstants.statusLabelApi] ==
            ApiConstants.statusSuccessApi) {
         // historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
-
          homeServiceList = List<HomeServiceMap>.from(decodeRespApi[ApiConstants.dataLabelApi]
              .map((data) => HomeServiceMap.fromJson(data)));
        } else {
          throw ErrorAppException(
              message: decodeRespApi[ApiConstants.dataLabelApi]);
        }
-
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
@@ -211,7 +209,6 @@ class ConsultDataServiceImp implements ConsultDataService {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
-
     return homeServiceList;
   }
 }
