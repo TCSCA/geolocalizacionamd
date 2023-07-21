@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/core/controllers/profile_controller.dart';
+import 'package:geolocalizacionamd/app/pages/sources/edit_profile/edit_profile.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
 import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../messages/app_messages.dart';
+import '../../routes/geoamd_route.dart';
+import '../navigation/bloc/navigation_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -248,7 +252,7 @@ class ListViewProfileWidget extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              /*Padding(
+              Padding(
                 padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,7 +274,18 @@ class ListViewProfileWidget extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.read<ProfileBloc>().add(GetProfileEvent());
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: BlocProvider.of<ProfileBloc>(context),
+                              child: const EditProfile(),
+                            ),
+                          ),
+                        );
+
+                       // Navigator.of(context).push(PageRouteBuilder<void>(pageBuilder: (context, animation, secondaryAnimation) => const EditProfile()));
+                       // context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
+                       // context.read<ProfileBloc>().add(GetProfileEvent());
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -287,7 +302,7 @@ class ListViewProfileWidget extends StatelessWidget {
                     )
                   ],
                 ),
-              )*/
+              )
             ],
           );
         } else {

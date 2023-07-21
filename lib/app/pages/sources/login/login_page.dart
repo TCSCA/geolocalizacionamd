@@ -542,9 +542,7 @@ class _LoginPageState extends State<LoginPage> {
     List<BiometricType> availableBiometric = [];
 
     /* bool? autoStart = await isAutoStartAvailable;
-
     if(autoStart != null && autoStart) {
-
       await showDialog(
           context: context,
           barrierDismissible: false,
@@ -561,7 +559,6 @@ class _LoginPageState extends State<LoginPage> {
               dialogCancel: () {},
             );
           });
-
       await getAutoStartPermission();
     }*/
 
