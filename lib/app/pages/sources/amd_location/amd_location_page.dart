@@ -111,7 +111,24 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
             }
             if (state is DoctorServiceState) {
               LoadingBuilder(context).hideOpenDialog();
-              context.go(GeoAmdRoutes.home, extra: DoctorServiceState);
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusSuccess),
+                      descriptions:
+                          AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusSuccess,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  }).then((value) {
+                context.go(GeoAmdRoutes.home, extra: DoctorServiceState);
+              });
             }
             if (state is DoctorServiceErrorState) {
               LoadingBuilder(context).hideOpenDialog();
