@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/notification/bloc/notifications_bloc.dart';
 import '../../../shared/method/back_button_action.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import '/app/pages/widgets/title_bar_widget.dart';
@@ -26,6 +27,7 @@ class _MainPageState extends State<MainPage> with MainWidgets {
   Widget build(BuildContext context) {
     //MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     //userMainBloc.add(const ShowHomeServiceAssignedEvent());
+    context.read<NotificationsBloc>().requestPermission();
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
       child: SafeArea(
