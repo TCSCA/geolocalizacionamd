@@ -5,17 +5,20 @@ class BuildTextFieldWidget extends StatelessWidget {
       {super.key,
       required this.labelText,
       required this.placeHolder,
+        required this.textController,
       required this.isReadOnly});
 
   final String labelText;
   final String placeHolder;
   final bool isReadOnly;
+  final TextEditingController textController;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
-      child: TextField(
+      child: TextFormField(
+        controller: textController,
         readOnly: isReadOnly,
         minLines: 1,
         maxLines: 5,

@@ -23,34 +23,34 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return /*BlocProvider(
       create: (context) =>
-          ProfileBloc(getProfileController: ProfileController())
-            ..add(GetProfileEvent()),
-      child: WillPopScope(
-        onWillPop: () async => backButtonActions(),
-        child: SafeArea(
-          child: Scaffold(
-            appBar: AppCommonWidgets.generateAppBar(
-                context: context, appBarHeight: 140.0),
-            body: MultiBlocListener(
-              listeners: [
-                //NavigationBloc y LogoutBloc comunes en todas las paginas.
-                AppCommonWidgets.listenerNavigationBloc(),
-                AppCommonWidgets.listenerLogoutBloc()
-              ],
-              child: Container(
-                padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const ListViewProfileWidget(),
-                ),
+          ProfileBloc(getProfileController: ProfileController()),
+      child:*/
+        WillPopScope(
+      onWillPop: () async => backButtonActions(),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppCommonWidgets.generateAppBar(
+              context: context, appBarHeight: 140.0),
+          body: MultiBlocListener(
+            listeners: [
+              //NavigationBloc y LogoutBloc comunes en todas las paginas.
+              AppCommonWidgets.listenerNavigationBloc(),
+              AppCommonWidgets.listenerLogoutBloc()
+            ],
+            child: Container(
+              padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
+              child: GestureDetector(
+                onTap: () {},
+                child: const ListViewProfileWidget(),
               ),
             ),
           ),
         ),
       ),
     );
+    // );
   }
 }
 
@@ -63,12 +63,14 @@ class ListViewProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state is ProfileLoadingState) {
-          LoadingBuilder(context).showLoadingIndicator(
-              'Cargando perfil del doctor');
-        } else if(state is ProfileSuccessState){
+        if (state is ProfileInitial) {
+          context.read<ProfileBloc>().add(GetProfileEvent());
+        } else if (state is ProfileLoadingState) {
+          LoadingBuilder(context)
+              .showLoadingIndicator('Cargando perfil del doctor');
+        } else if (state is ProfileSuccessState) {
           LoadingBuilder(context).hideOpenDialog();
-        } else if(state is ProfileErrorState) {
+        } else if (state is ProfileErrorState) {
           LoadingBuilder(context).hideOpenDialog();
           showDialog(
               context: context,
@@ -78,7 +80,7 @@ class ListViewProfileWidget extends StatelessWidget {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusError),
                   descriptions:
-                  AppMessages().getMessage(context, state.messageError),
+                      AppMessages().getMessage(context, state.messageError),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusError,
@@ -108,7 +110,8 @@ class ListViewProfileWidget extends StatelessWidget {
                           ],
                           shape: BoxShape.circle,
                           image: const DecorationImage(
-                              image: AssetImage('assets/images/profile_default.png'),
+                              image: AssetImage(
+                                  'assets/images/profile_default.png'),
                               fit: BoxFit.cover)),
                     ),
                     /*Positioned(
@@ -173,9 +176,11 @@ class ListViewProfileWidget extends StatelessWidget {
                   title: 'Dirección',
                   subtitle: state.profileModel.direction ?? ''),
               const Divider(),
-              _ProfileDataWidget(title: 'M.P.P.S', subtitle: state.profileModel.mpps ?? ''),
+              _ProfileDataWidget(
+                  title: 'M.P.P.S', subtitle: state.profileModel.mpps ?? ''),
               const Divider(),
-              _ProfileDataWidget(title: 'C.M', subtitle: state.profileModel.mc ?? ''),
+              _ProfileDataWidget(
+                  title: 'C.M', subtitle: state.profileModel.mc ?? ''),
               const Divider(),
               _ProfileDataWidget(
                   title: 'Especialidad',
@@ -274,18 +279,18 @@ class ListViewProfileWidget extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(
+                        /*Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder: (_) => BlocProvider.value(
                               value: BlocProvider.of<ProfileBloc>(context),
                               child: const EditProfile(),
                             ),
                           ),
-                        );
+                        );*/
 
-                       // Navigator.of(context).push(PageRouteBuilder<void>(pageBuilder: (context, animation, secondaryAnimation) => const EditProfile()));
-                       // context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
-                       // context.read<ProfileBloc>().add(GetProfileEvent());
+                        // Navigator.of(context).push(PageRouteBuilder<void>(pageBuilder: (context, animation, secondaryAnimation) => const EditProfile()));
+                         context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
+                        // context.read<ProfileBloc>().add(GetProfileEvent());
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -305,6 +310,9 @@ class ListViewProfileWidget extends StatelessWidget {
               )
             ],
           );
+        } else if (state is ProfileInitial) {
+          BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
+          return Container();
         } else {
           return Container();
         }
@@ -339,8 +347,7 @@ class _ProfileDataWidget extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const _ProfileDataWidget(
-      {required this.title, required this.subtitle});
+  const _ProfileDataWidget({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
