@@ -25,8 +25,8 @@ class ProfileController {
       profileMap = await consultDataService.getProfile(tokenUser);
 
       final mppsAndmc = profileMap.data?.medicalLicense?.split('|');
-      final String mpps = mppsAndmc?[0] ?? '';
-      final String mc = mppsAndmc?.length == 2 ? mppsAndmc![1] :'';
+      final String mc = mppsAndmc?[0] ?? '';
+      final String mpps = mppsAndmc?.length == 2 ? mppsAndmc![1] :'';
       final int realMonth = profileMap.data!.birthday!.month! + 1;
 
       final day = profileMap.data!.birthday!.dayOfMonth! < 10
