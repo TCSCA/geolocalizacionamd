@@ -14,6 +14,7 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   List<MenuModel> listMenu = [];
+  UserModel user = UserModel('', '', 0, []);
   final LoginController loginController;
   final MenuAppController menuController;
   LoginBloc({required this.loginController, required this.menuController})
@@ -28,6 +29,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await rootBundle.load(AppConstants.profileDefaultImage);
         userLogin.photoPerfil = bytes.buffer.asUint8List();
         listMenu = await menuController.getListMenu(event.languageCode);
+        user = userLogin;
         emit(LoginSuccessState(user: userLogin, listMenu: listMenu));
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));
@@ -42,21 +44,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<ProcessLogoutEvent>((event, emit) async {
-      final DoctorCareController doctorCareController = DoctorCareController();
-
       try {
         emit(const LoginShowLoadingState());
-        /* var doctorInAttention =
-            await doctorCareController.validateDoctorInAttention();
-        if (doctorInAttention) {
-          emit(const LogoutDoctorInAttentionState(message: 'MSGAPP-009'));
-        } else { */
-        try {
-          await doctorCareController.doDisconectDoctorAmd();
-        } catch (error) {/*No importa si falla*/}
-        await loginController.doLogoutUser();
-        emit(const LogoutSuccessState());
-        //}
+        var connectedDoctor = await loginController.validateConnectedDoctor();
+        if (connectedDoctor) {
+          emit(const LogoutDoctorConnectedState(message: 'MSG-234'));
+        } else {
+          await loginController.doLogoutUser();
+          emit(const LogoutSuccessState());
+        }
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
@@ -77,6 +73,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await rootBundle.load(AppConstants.profileDefaultImage);
         userLogin.photoPerfil = bytes.buffer.asUint8List();
         listMenu = await menuController.getListMenu(event.languageCode);
+        user = userLogin;
         emit(LoginSuccessState(user: userLogin, listMenu: listMenu));
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));

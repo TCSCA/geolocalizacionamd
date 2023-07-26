@@ -5,6 +5,7 @@ import '/app/core/models/connect_doctor_model.dart';
 import '/app/api/constants/api_constants.dart';
 import '/app/api/services/save_data_service.dart';
 import '/app/errors/exceptions.dart';
+import '/app/core/models/reject_amd_model.dart';
 
 class SaveDataServiceImp implements SaveDataService {
   @override
@@ -106,7 +107,8 @@ class SaveDataServiceImp implements SaveDataService {
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-        responseActiveAmdOrder = HomeServiceMap.fromJson(decodeRespApi);
+        responseActiveAmdOrder =
+            HomeServiceMap.fromJson(decodeRespApi[ApiConstants.dataLabelApi]);
       } else {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
@@ -124,7 +126,8 @@ class SaveDataServiceImp implements SaveDataService {
   }
 
   @override
-  Future<bool> onRejectHomeService(String tokenUser, int idHomeService) async {
+  Future<bool> onRejectHomeService(
+      String tokenUser, RejectAmdModel requestReject) async {
     bool isReject = false;
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
@@ -134,8 +137,11 @@ class SaveDataServiceImp implements SaveDataService {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
-    final String bodyReject =
-        jsonEncode({'idHomeServiceAttention': idHomeService});
+    final String bodyReject = jsonEncode({
+      'idHomeServiceAttention': requestReject.idHomeServiceAttention,
+      "comment": requestReject.comment,
+      "idReasonReject": requestReject.idReasonReject
+    });
 
     try {
       responseApi = await http.post(urlApiRejectHomeService,
@@ -163,7 +169,7 @@ class SaveDataServiceImp implements SaveDataService {
 
   @override
   Future<bool> onCompleteHomeService(
-      String tokenUser, int idHomeService) async {
+      String tokenUser, RejectAmdModel requestReject) async {
     bool isComplete = false;
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
@@ -173,8 +179,10 @@ class SaveDataServiceImp implements SaveDataService {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
-    final String bodyComplete =
-        jsonEncode({'idHomeServiceAttention': idHomeService});
+    final String bodyComplete = jsonEncode({
+      'idHomeServiceAttention': requestReject.idHomeServiceAttention,
+      'idReasonReject': requestReject.idReasonReject
+    });
 
     try {
       responseApi = await http.post(urlApiCompleteHomeService,

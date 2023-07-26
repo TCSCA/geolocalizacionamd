@@ -26,6 +26,8 @@ class LoginController {
           ApiConstants.tokenLabel, responseLogin.data);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
+      await secureStorageController.writeSecureData(
+          ApiConstants.idDoctorAmd, responseLogin.user.toString());
 
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
@@ -64,8 +66,9 @@ class LoginController {
       await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
       await secureStorageController
           .deleteSecureData(ApiConstants.doctorInAttentionLabel);
+      await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
       await secureStorageController
-          .deleteSecureData(ApiConstants.idHomeServiceConfirmedLabel);
+          .deleteSecureData(ApiConstants.doctorConnectedLabel);
     }
 
     return respWebSocket;
@@ -80,6 +83,9 @@ class LoginController {
           ApiConstants.tokenLabel, responseLogin.data);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
+      await secureStorageController.writeSecureData(
+          ApiConstants.idDoctorAmd, responseLogin.user.toString());
+
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
@@ -108,5 +114,15 @@ class LoginController {
     }
 
     return response;
+  }
+
+  Future<bool> validateConnectedDoctor() async {
+    bool newBoolValue = false;
+    String connectedDoctor = await secureStorageController
+        .readSecureData(ApiConstants.doctorConnectedLabel);
+    if (connectedDoctor.isNotEmpty) {
+      newBoolValue = connectedDoctor.toLowerCase() != 'false';
+    }
+    return newBoolValue;
   }
 }

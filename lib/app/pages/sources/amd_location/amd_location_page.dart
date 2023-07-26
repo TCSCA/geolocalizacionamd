@@ -111,7 +111,24 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
             }
             if (state is DoctorServiceState) {
               LoadingBuilder(context).hideOpenDialog();
-              context.go(GeoAmdRoutes.home, extra: DoctorServiceState);
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusSuccess),
+                      descriptions:
+                          AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusSuccess,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  }).then((value) {
+                context.go(GeoAmdRoutes.home, extra: DoctorServiceState);
+              });
             }
             if (state is DoctorServiceErrorState) {
               LoadingBuilder(context).hideOpenDialog();
@@ -201,8 +218,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 labelText: context.appLocalization.labelCity,
                                 hintText: context.appLocalization.labelSelect,
                                 labelStyle: AppStyles.textStyleSelect,
-                                errorStyle: AppStyles.textFormFieldError
-                            ),
+                                errorStyle: AppStyles.textFormFieldError),
                             style: AppStyles.textStyleOptionSelect,
                             items: cityList.map((SelectModel selectiveCity) {
                               return DropdownMenuItem(
@@ -221,8 +237,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                             onChanged: (cityCode) {
                               if (cityCode != null) {
                                 cityTextController.text = cityCode;
-                                userMainBloc
-                                    .add(ChangeLocationDoctorCityEvent(cityCode));
+                                userMainBloc.add(
+                                    ChangeLocationDoctorCityEvent(cityCode));
                               }
                             },
                           ),
@@ -236,7 +252,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                       children: [
                         const SizedBox(width: 20.0),
                         Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 7.0),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.zero,
@@ -246,7 +263,40 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
                               onPressed: () {
-                                if (!ubicacionFormKey.currentState!.validate()) {
+                                context.go(GeoAmdRoutes.home);
+                              },
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    gradient: const LinearGradient(colors: [
+                                      Color(0xffF96352),
+                                      Color(0xffD84835)
+                                    ]),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 20),
+                                  child: Text(
+                                    context.appLocalization.nameButtonReturn,
+                                    textAlign: TextAlign.center,
+                                    style: AppStyles.textStyleButton,
+                                  ),
+                                ),
+                              ),
+                            )),
+                        Container(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 7.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  elevation: 5,
+                                  side: const BorderSide(
+                                      width: 2, color: Color(0xffFFFFFF)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30))),
+                              onPressed: () {
+                                if (!ubicacionFormKey.currentState!
+                                    .validate()) {
                                   return;
                                 } else {
                                   showDialog(
@@ -261,7 +311,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                                 .messageConnectDoctor,
                                             isConfirmation: true,
                                             dialogAction: () =>
-                                                BlocProvider.of<MainBloc>(context)
+                                                BlocProvider.of<MainBloc>(
+                                                        context)
                                                     .add(ConnectDoctorAmdEvent(
                                                         locationState:
                                                             stateTextController
@@ -278,38 +329,6 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                               child: Ink(
                                 decoration: BoxDecoration(
                                     gradient: const LinearGradient(colors: [
-                                      Color(0xffF96352),
-                                      Color(0xffD84835)
-                                    ]),
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 20),
-                                  child: Text(
-                                    context.appLocalization
-                                        .nameButtonConnectDoctor,
-                                    textAlign: TextAlign.center,
-                                    style: AppStyles.textStyleButton,
-                                  ),
-                                ),
-                              ),
-                            )),
-                        Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  elevation: 5,
-                                  side: const BorderSide(
-                                      width: 2, color: Color(0xffFFFFFF)),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30))),
-                              onPressed: () {
-                                context.go(GeoAmdRoutes.home);
-                              },
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    gradient: const LinearGradient(colors: [
                                       Color(0xff2B5178),
                                       Color(0xff273456)
                                     ]),
@@ -318,7 +337,8 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 15, horizontal: 20),
                                   child: Text(
-                                    context.appLocalization.nameButtonReturn,
+                                    context.appLocalization
+                                        .nameButtonConnectDoctor,
                                     textAlign: TextAlign.center,
                                     style: AppStyles.textStyleButton,
                                   ),

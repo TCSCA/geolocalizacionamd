@@ -16,7 +16,6 @@ import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 
 import 'package:local_auth_android/local_auth_android.dart';
-import 'package:local_auth_ios/local_auth_ios.dart';
 import 'package:local_auth/error_codes.dart' as authError;
 
 import 'bloc/login_bloc.dart';
@@ -33,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormFieldState> userFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> passwordFieldKey =
       GlobalKey<FormFieldState>();
-   TextEditingController userController = TextEditingController();
+  TextEditingController userController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _visiblePasswordOff = true;
 
@@ -50,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String denyFingerprint = '';
   bool isUsedFingerprint = false;
+  bool authenticated = false;
 
   @override
   void initState() {
@@ -90,29 +90,35 @@ class _LoginPageState extends State<LoginPage> {
 
                     await prefs.setBool('checkUserSave', checkUserSave);
 
-                    if (!isUsedFingerprint)
-                      await prefs.setString('password', passwordController.text);
+                    if (!isUsedFingerprint) {
+                      await prefs.setString(
+                          'password', passwordController.text);
+                    }
 
                     if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
-                      if (_canCheckBiometric)
-                        await showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return CustomDialogBox(
-                                title: AppMessages().getMessageTitle(
-                                    context, AppConstants.statusSuccess),
-                                descriptions: AppMessages().getMessage(context,
-                                    context.appLocalization.appMsg229),
-                                isConfirmation: true,
-                                dialogAction: () =>
-                                    prefs.setString('denyFingerprint', 'Y'),
-                                type: AppConstants.statusSuccess,
-                                isdialogCancel: true,
-                                dialogCancel: () =>
-                                    prefs.setString('denyFingerprint', 'N'),
-                              );
-                            });
+                      if (_canCheckBiometric) {
+                        if (context.mounted) {
+                          await showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return CustomDialogBox(
+                                  title: AppMessages().getMessageTitle(
+                                      context, AppConstants.statusSuccess),
+                                  descriptions: AppMessages().getMessage(
+                                      context,
+                                      context.appLocalization.appMsg229),
+                                  isConfirmation: true,
+                                  dialogAction: () =>
+                                      prefs.setString('denyFingerprint', 'Y'),
+                                  type: AppConstants.statusSuccess,
+                                  isdialogCancel: true,
+                                  dialogCancel: () =>
+                                      prefs.setString('denyFingerprint', 'N'),
+                                );
+                              });
+                        }
+                      }
                     }
                   }
 
@@ -126,8 +132,8 @@ class _LoginPageState extends State<LoginPage> {
                       barrierDismissible: false,
                       builder: (BuildContext context) {
                         return CustomDialogBox(
-                          title: AppMessages()
-                              .getMessageTitle(context, AppConstants.statusError),
+                          title: AppMessages().getMessageTitle(
+                              context, AppConstants.statusError),
                           descriptions:
                               AppMessages().getMessage(context, state.message),
                           isConfirmation: false,
@@ -150,11 +156,16 @@ class _LoginPageState extends State<LoginPage> {
                           descriptions:
                               AppMessages().getMessage(context, state.message),
                           isConfirmation: true,
-                          dialogAction: () => BlocProvider.of<LoginBloc>(context)
-                              .add(ProcessResetLoginEvent(
-                                  userController.text,
-                                  passwordController.text,
-                                  context.localization.languageCode)),
+                          dialogAction: () =>
+                              BlocProvider.of<LoginBloc>(context).add(
+                                  ProcessResetLoginEvent(
+                                      authenticated
+                                          ? userSave
+                                          : userController.text,
+                                      authenticated
+                                          ? prefs.getString('password')!
+                                          : passwordController.text,
+                                      context.localization.languageCode)),
                           type: AppConstants.statusWarning,
                           isdialogCancel: false,
                           dialogCancel: () {},
@@ -218,7 +229,8 @@ class _LoginPageState extends State<LoginPage> {
                             maxLength: 15,
                             decoration: InputDecoration(
                                 errorMaxLines: 2,
-                                fillColor: const Color(0xffD84835).withAlpha(50),
+                                fillColor:
+                                    const Color(0xffD84835).withAlpha(50),
                                 counterStyle: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.0,
@@ -254,12 +266,14 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color(0xffFFFFFF),
                                 fontSize: 19.0,
                                 fontFamily: 'TitlesHighlight'),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue!.isEmpty) {
                                 return 'Campo requerido';
                               }
                               if (fieldValue.length < 6) {
-                                return 'Longitud del dato menor a la minima requerida';
+                                return 'Longitud del dato menor a la mínima requerida';
                               }
                               return null;
                             }),
@@ -276,7 +290,8 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                                 suffixIcon: IconButton(
                                     onPressed: () {
-                                      _visiblePasswordOff = !_visiblePasswordOff;
+                                      _visiblePasswordOff =
+                                          !_visiblePasswordOff;
                                       setState(() {});
                                     },
                                     icon: Icon(
@@ -286,7 +301,8 @@ class _LoginPageState extends State<LoginPage> {
                                       color: Colors.white,
                                     )),
                                 errorMaxLines: 2,
-                                fillColor: const Color(0xffD84835).withAlpha(50),
+                                fillColor:
+                                    const Color(0xffD84835).withAlpha(50),
                                 counterStyle: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.0,
@@ -322,12 +338,14 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color(0xffFFFFFF),
                                 fontSize: 19.0,
                                 fontFamily: 'TitlesHighlight'),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
                               if (fieldValue!.isEmpty) {
                                 return 'Campo requerido';
                               }
                               if (fieldValue.length < 4) {
-                                return 'Longitud del dato menor a la minima requerida';
+                                return 'Longitud del dato menor a la mínima requerida';
                               }
                               return null;
                             }),
@@ -366,7 +384,8 @@ class _LoginPageState extends State<LoginPage> {
                                 }),
                             const Text(
                               'Recordar Usuario',
-                              style: TextStyle(color: Colors.white, fontSize: 16),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ],
                         ),
@@ -376,7 +395,8 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.zero,
@@ -392,8 +412,10 @@ class _LoginPageState extends State<LoginPage> {
                                   final String languageCode =
                                       context.localization.languageCode;
                                   BlocProvider.of<LoginBloc>(context).add(
-                                      ProcessLoginEvent(userController.text,
-                                          passwordController.text, languageCode));
+                                      ProcessLoginEvent(
+                                          userController.text,
+                                          passwordController.text,
+                                          languageCode));
                                 }
                               },
                               child: Ink(
@@ -516,7 +538,7 @@ class _LoginPageState extends State<LoginPage> {
   Future _getAvailableBiometric() async {
     List<BiometricType> availableBiometric = [];
 
-   /* bool? autoStart = await isAutoStartAvailable;
+    /* bool? autoStart = await isAutoStartAvailable;
 
     if(autoStart != null && autoStart) {
 
@@ -553,7 +575,6 @@ class _LoginPageState extends State<LoginPage> {
 
   ///Metodo para iniciar la autenticacion biometrica
   Future<void> _authenticate(BuildContext context) async {
-    bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
           authMessages: <AuthMessages>[
@@ -567,13 +588,6 @@ class _LoginPageState extends State<LoginPage> {
               biometricHint: '',
               biometricRequiredTitle: '',
               signInTitle: context.appLocalization.biometricAuthentication,
-            ),
-            IOSAuthMessages(
-              cancelButton: 'Cerrar',
-              goToSettingsButton: '',
-              goToSettingsDescription: '',
-              lockOut: context.appLocalization.limitBiometricAttempts,
-              localizedFallbackTitle: '',
             ),
           ],
           localizedReason: "Coloque el dedo sobre el detector",

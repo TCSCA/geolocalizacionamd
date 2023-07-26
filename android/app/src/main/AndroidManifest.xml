@@ -8,7 +8,7 @@
         android:protectionLevel="signature" />
 
    <application
-        android:label="Telemedicina24 AMD"
+        android:label="QA Telemedicina24 AMD"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

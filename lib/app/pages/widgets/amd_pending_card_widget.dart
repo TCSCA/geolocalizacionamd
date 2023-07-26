@@ -95,8 +95,8 @@ class AmdPendingCard extends StatelessWidget {
                                   isConfirmation: true,
                                   dialogAction: () =>
                                       BlocProvider.of<MainBloc>(context).add(
-                                          DisallowAmdEvent(
-                                              homeService.idHomeService)),
+                                          ShowReasonRejectionStatesEvent(
+                                              homeService)),
                                   type: AppConstants.statusWarning,
                                   isdialogCancel: false,
                                   dialogCancel: () {});

@@ -17,7 +17,7 @@
 			"descripcionEn": "Profile",
 			"icon": "profile",
 			"route": "/profile",
-			"enable": false,
+			"enable": true,
 			"order": 2,
 			"parent": 0
 		},
@@ -33,11 +33,11 @@
 		},
 		{
 			"id": 4,
-			"descripcionEs": "Historial Atención Médica",
+			"descripcionEs": "Historial de Atenciones",
 			"descripcionEn": "Medical Care History",
 			"icon": "medicalCareHome",
 			"route": "/medicalCareHistory",
-			"enable": false,
+			"enable": true,
 			"order": 4,
 			"parent": 0
 		},

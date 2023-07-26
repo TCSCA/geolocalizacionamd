@@ -13,6 +13,9 @@ import '/app/shared/loading/loading_builder.dart';
 import '/app/pages/sources/login/bloc/login_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
+import '/app/core/models/select_model.dart';
+import '/app/pages/styles/app_styles.dart';
+import '/app/shared/method/back_button_action.dart';
 
 class MainWidgets {
   PreferredSizeWidget generateAppBar({required BuildContext context}) {
@@ -74,7 +77,7 @@ class MainWidgets {
         buildWhen: (previous, current) =>
             previous != current && current is LoginSuccessState,
         builder: (context, state) {
-          final user = (state as LoginSuccessState).user;
+          final user = BlocProvider.of<LoginBloc>(context).user;
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -181,7 +184,7 @@ class MainWidgets {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusSuccess),
                   descriptions: AppMessages().getMessage(
-                      context, 'La atención fue confirmada con éxito'),
+                      context, context.appLocalization.appMsg010),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,
@@ -190,9 +193,32 @@ class MainWidgets {
                 );
               });
         }
-        /* if (state is DisallowHomeServiceSuccessState) {
+        if (state is DisallowHomeServiceSuccessState) {
           doctorAvailableSwitch = false;
-        } */
+        }
+        if (state is HomeServiceSuccessState) {
+          doctorAvailableSwitch = false;
+        }
+        if (state is ShowAmdOrderAdminFinalizedState) {
+          LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = false;
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
       },
       builder: (context, state) {
         return Container(
@@ -318,6 +344,12 @@ class MainWidgets {
   Widget amdInformationAssigned({required BuildContext context}) {
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc.add(const ShowHomeServiceAssignedEvent());
+    final GlobalKey<FormState> reasonRejectionFormKey = GlobalKey<FormState>();
+    final GlobalKey<FormFieldState> reasonFieldKey =
+        GlobalKey<FormFieldState>();
+    final TextEditingController reasonTextController = TextEditingController();
+    // ignore: unused_local_variable
+    bool doctorAvailableSwitch = userMainBloc.doctorAvailableSwitch;
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
       child: BlocConsumer<MainBloc, MainState>(
@@ -325,12 +357,29 @@ class MainWidgets {
           if (state is MainShowLoadingState) {
             LoadingBuilder(context).showLoadingIndicator(state.message);
           }
-          /* if (state is ConfirmHomeServiceSuccessState) {
-            //LoadingBuilder(context).hideOpenDialog();
-            context.go(GeoAmdRoutes.medicalCareAccepted);
-          } */
+          if (state is HomeServicePendingFinishState) {
+            //atencion pendiente por finalizar
+            doctorAvailableSwitch = false;
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusWarning),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusWarning,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
           if (state is DisallowHomeServiceSuccessState) {
             LoadingBuilder(context).hideOpenDialog();
+            doctorAvailableSwitch = false;
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -367,6 +416,206 @@ class MainWidgets {
                   );
                 });
           }
+          if (state is HomeServiceAssignedErrorState) {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
+          if (state is ReasonRejectionSuccessState) {
+            LoadingBuilder(context).hideOpenDialog();
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: () async => backButtonActions(),
+                    child: AlertDialog(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                        side: BorderSide(
+                          color: AppStyles.colorBeige,
+                          style: BorderStyle.solid,
+                          width: 4.0,
+                        ),
+                      ),
+                      content: Stack(
+                        children: <Widget>[
+                          Form(
+                            key: reasonRejectionFormKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Indique el motivo de rechazo',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppStyles.colorBluePrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: DropdownButtonFormField(
+                                        isExpanded: true,
+                                        isDense: true,
+                                        itemHeight: null,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(8.0)),
+                                        hint: const Text("Seleccione motivo"),
+                                        key: reasonFieldKey,
+                                        decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              vertical: 18),
+                                          labelText: 'Motivo:',
+                                          hintText: 'Seleccione motivo',
+                                          labelStyle: TextStyle(
+                                              fontSize: 27.0,
+                                              color: Colors.black,
+                                              fontFamily: 'TitlesHighlight'),
+                                        ),
+                                        style: const TextStyle(
+                                            fontSize: 18.0,
+                                            color: Colors.black,
+                                            fontFamily: 'TextsParagraphs'),
+                                        items: state.listReasonRejection
+                                            .map((SelectModel selectiveReason) {
+                                          return DropdownMenuItem(
+                                            value: selectiveReason.id,
+                                            child: SizedBox(
+                                              width: double.infinity,
+                                              child: Text(
+                                                selectiveReason.name,
+                                                overflow: TextOverflow.visible,
+                                                softWrap: true,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        validator: (fieldValue) {
+                                          if (fieldValue == null) {
+                                            return 'Motivo es requerido';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (reasonCode) {
+                                          if (reasonCode != null) {
+                                            reasonTextController.text =
+                                                reasonCode;
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20.0),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          elevation: 5,
+                                          side: const BorderSide(
+                                              width: 2,
+                                              color: Color(0xffFFFFFF)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30))),
+                                      onPressed: () {
+                                        if (!reasonRejectionFormKey
+                                            .currentState!
+                                            .validate()) {
+                                          return;
+                                        } else {
+                                          context.pop();
+                                          BlocProvider.of<MainBloc>(context)
+                                              .add(DisallowAmdEvent(
+                                                  state.homeServiceAssigned
+                                                      .idHomeService,
+                                                  reasonTextController.text));
+                                        }
+                                      },
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xffF96352),
+                                                  Color(0xffD84835)
+                                                ]),
+                                            borderRadius:
+                                                BorderRadius.circular(30)),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 40),
+                                          child: const Text(
+                                            'Enviar',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 19.0,
+                                                color: Color(0xffFFFFFF),
+                                                fontFamily: 'TitlesHighlight',
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          }
+          if (state is ShowAmdOrderAdminFinalizedState) {
+            LoadingBuilder(context).hideOpenDialog();
+            doctorAvailableSwitch = false;
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusWarning),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusWarning,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
         },
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */
@@ -374,6 +623,10 @@ class MainWidgets {
           if (state is HomeServiceSuccessState) {
             //LoadingBuilder(context).hideOpenDialog();
             final homeServiceAssigned = (state).homeServiceAssigned;
+            return AmdPendingCard(homeService: homeServiceAssigned);
+          } else if (state is ReasonRejectionSuccessState) {
+            //LoadingBuilder(context).hideOpenDialog();
+            final homeServiceAssigned = (state.homeServiceAssigned);
             return AmdPendingCard(homeService: homeServiceAssigned);
           } else {
             //LoadingBuilder(context).hideOpenDialog();

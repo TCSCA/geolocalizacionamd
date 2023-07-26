@@ -98,7 +98,7 @@ class AmdHistoryWidgets {
                   ),
                   Text(
                     "Finalizadas",
-                    style: TextStyle(fontSize: 17.0),
+                    style: TextStyle(fontSize: 16.0),
                   )
                 ],
               ),
@@ -114,7 +114,7 @@ class AmdHistoryWidgets {
                 ),
                 Text(
                   "Rechazadas",
-                  style: TextStyle(fontSize: 17.0),
+                  style: TextStyle(fontSize: 16.0),
                 )
               ],
             ),
