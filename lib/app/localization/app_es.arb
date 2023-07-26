@@ -63,7 +63,7 @@
     "appMsg004": "No se pudo confirmar la atención médica.",
     "appMsg005": "No se pudo rechazar la atención médica.",
     "appMsg006": "La atención fue rechazada con éxito. Es necesario que se ponga Disponible para continuar recibiendo nuevas atenciones.",
-    "appMsg007": "La transacción fue realizada con éxito. Es necesario que se ponga Disponible para continuar recibiendo nuevas atenciones.",
+    "appMsg007": "La transacción fue exitosa. Es necesario que se ponga Disponible para continuar recibiendo nuevas atenciones.",
     "appMsg008": "No tienes órdenes pendientes para atender en este momento.",
     "appMsg009": "Debes finalizar la atención antes de salir de la aplicación.",
     "appMsg010": "La atención fue confirmada con éxito.",

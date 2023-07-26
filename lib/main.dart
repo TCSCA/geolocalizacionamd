@@ -29,7 +29,8 @@ class NotificationApi {
   static void init() {
     _notification.initialize(
       const InitializationSettings(
-        android: AndroidInitializationSettings('ic_launcher_foreground'),
+        android:
+            AndroidInitializationSettings('ic_launcher_foreground'),
         iOS: DarwinInitializationSettings(),
       ),
     );

@@ -464,7 +464,7 @@ class MainWidgets {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'Indique el motivo de rechazo',
+                                        'Seleccione el motivo de rechazo y pulse Aceptar',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
@@ -574,7 +574,7 @@ class MainWidgets {
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 15, horizontal: 40),
                                           child: const Text(
-                                            'Enviar',
+                                            'Aceptar',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: 19.0,
