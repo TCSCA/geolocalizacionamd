@@ -13,6 +13,7 @@ import 'dart:io';
 part 'notifications_event.dart';
 part 'notifications_state.dart';
 
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
@@ -71,13 +72,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   void _getFCMToken() async {
     if (state.status != AuthorizationStatus.authorized) return;
-
     final tokenFirebaseRegister = await messaging.getToken(
         vapidKey: Environment().config.idAppMessagingFirebase);
 
-    if (kDebugMode) {
-      print('tokenFirebaseRegister: $tokenFirebaseRegister');
-    }
+    debugPrint('tokenFirebaseRegister: $tokenFirebaseRegister');
     await SaveDataStorage().writeDataStorage(tokenFirebaseRegister!);
   }
 
@@ -109,13 +107,6 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   void _onForegroundMessage() async {
     FirebaseMessaging.onMessage.listen(handleRemoteMessage);
-
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: true, // Required to display a heads up notification
-      badge: true,
-      sound: true,
-    );
   }
 
   void requestPermission() async {

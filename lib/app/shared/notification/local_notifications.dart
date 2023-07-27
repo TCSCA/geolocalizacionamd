@@ -1,13 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
 
 class LocalNotifications {
   static Future<void> requestPermissionLocalNotifications() async {
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestPermission();
+
+    Platform.isAndroid
+        ? await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.requestPermission()
+        : await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                IOSFlutterLocalNotificationsPlugin>()
+            ?.requestPermissions();
   }
 
   static Future<void> initializeLocalNotifications() async {
