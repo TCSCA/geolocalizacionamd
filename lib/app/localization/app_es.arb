@@ -69,6 +69,7 @@
     "appMsg010": "La atención fue confirmada con éxito.",
     "appMsg011": "Tienes una atención confirmada anteriormente. Es necesario que finalice la misma para continuar recibiendo nuevas atenciones.",
     "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?",
+    "appMsg137": "No se encontraron datos registrados",
     "appMsg229": "¿Desea que la opción huella dactilar se muestre como alternativa para iniciar sesión a futuro?",
     "appMsg234": "Usted se encuentra disponible para atender, para poder cerrar sesión debe desconectarse.",
     "changePasswordAction": "Cambiando contraseña",

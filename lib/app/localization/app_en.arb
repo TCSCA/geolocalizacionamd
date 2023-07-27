@@ -69,6 +69,7 @@
     "appMsg009": "You must end home medical care before you sign off.",
     "appMsg010": "Home Medical Care was confirmed successfully.",
     "appMsg011": "You have previously confirmed service, press the 'See Service' button to end it.",
+    "appMsg137": "No recorded data found",
     "appMsg229": "Do you want the fingerprint option to be shown as an alternative for future log-in?",
     "appMsg234": "You are available to attend, in order to close the session you must disconnect.",
     "changePasswordAction": "Changing password",

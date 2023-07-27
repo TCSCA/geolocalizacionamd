@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/app/pages/routes/geoamd_route.dart';
-import '/app/pages/widgets/common_widgets.dart';
+import 'common_widgets.dart';
 
 class AmdPendingCardEmpty extends StatelessWidget {
   final String title;
