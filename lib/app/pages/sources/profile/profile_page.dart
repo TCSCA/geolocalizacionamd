@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/core/controllers/profile_controller.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/edit_profile/edit_profile.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -136,15 +137,15 @@ class ListViewProfileWidget extends StatelessWidget {
                 height: 30,
               ),
               _ProfileDataWidget(
-                  title: 'Nombre Completo',
+                  title: context.appLocalization.labelFullName,
                   subtitle: state.profileModel.fullName ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Documento de Identidad',
-                  subtitle: state.profileModel.identificationDocument ?? ''),
+                  title: context.appLocalization.labelIdentificationDocument,
+                  subtitle: '${state.profileModel.documentType}-${state.profileModel.identificationDocument}' ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Correo Electrónico',
+                  title: context.appLocalization.labelEmail,
                   subtitle: state.profileModel.email ?? ''),
               const Divider(),
               _ProfileDataWidget(

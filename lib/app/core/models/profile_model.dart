@@ -8,6 +8,7 @@ class ProfileModel {
   String? phoneNumber;
   String? otherNumber;
   String? identificationDocument;
+  String? documentType;
   String? speciality;
   String? graduatedFrom;
   String? medicalLicense;
@@ -28,6 +29,7 @@ class ProfileModel {
     this.phoneNumber,
     this.otherNumber,
     this.identificationDocument,
+    this.documentType,
     this.speciality,
     this.graduatedFrom,
     this.medicalLicense,

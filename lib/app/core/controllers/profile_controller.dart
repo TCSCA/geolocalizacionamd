@@ -40,6 +40,7 @@ class ProfileController {
       profileModel = ProfileModel(
         fullName: profileMap.data?.fullName,
         identificationDocument: profileMap.data?.identificationDocument,
+        documentType: profileMap.data?.documentType,
         email: profileMap.data?.email,
         gender: profileMap.data?.gender,
         dayBirthday: day,
