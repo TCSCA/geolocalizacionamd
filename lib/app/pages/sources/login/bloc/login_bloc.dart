@@ -17,6 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   UserModel user = UserModel('', '', 0, []);
   final LoginController loginController;
   final MenuAppController menuController;
+  final DoctorCareController doctorCareController = DoctorCareController();
   LoginBloc({required this.loginController, required this.menuController})
       : super(LoginInitial()) {
     on<ProcessLoginEvent>((event, emit) async {
@@ -50,8 +51,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (connectedDoctor) {
           emit(const LogoutDoctorConnectedState(message: 'MSG-234'));
         } else {
-          await loginController.doLogoutUser();
-          emit(const LogoutSuccessState());
+          var doctorInAttention =
+              await doctorCareController.validateDoctorInAttention();
+          if (doctorInAttention) {
+            emit(const LogoutDoctorInAttentionState(message: 'MSGAPP-009'));
+          } else {
+            await loginController.doLogoutUser();
+            emit(const LogoutSuccessState());
+          }
         }
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));

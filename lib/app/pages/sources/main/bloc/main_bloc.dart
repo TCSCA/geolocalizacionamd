@@ -86,6 +86,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
             if (isConnect) {
               doctorAvailableSwitch = true;
+              await doctorCareController.changeDoctorConnected('true');
               emit(const DoctorServiceState(
                   doctorAvailable: true, message: 'MSGAPP-001'));
             } else {
@@ -120,6 +121,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         bool isDisconect = await doctorCareController.doDisconectDoctorAmd();
         if (isDisconect) {
           doctorAvailableSwitch = false;
+          await doctorCareController.changeDoctorConnected('false');
           emit(const DoctorServiceState(
               doctorAvailable: false,
               message: 'Ya no estarás disponible para atender'));
@@ -177,13 +179,18 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             try {
               //Desconectar para que no reciba otra atencion.
               await doctorCareController.doDisconectDoctorAmd();
+              //Cambiar el estatus de la disponibilidad del doctor.
+              await doctorCareController.changeDoctorConnected('false');
             } catch (e) {/*Nada que hacer si falla*/}
             doctorAvailableSwitch = false;
             //Almecenar AMD para mostrar en atencion
             homeServiceConfirmed = userHomeService;
             emit(const HomeServicePendingFinishState(message: "MSGAPP-011"));
           } else {
+            //Web desconecta al doctor cuando asigna AMD.
+            //Cambiar el estatus de la disponibilidad del doctor en App.
             doctorAvailableSwitch = false;
+            await doctorCareController.changeDoctorConnected('false');
             emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
           }
         }
@@ -236,6 +243,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         try {
           //Desconectar para que no reciba otra atencion.
           await doctorCareController.doDisconectDoctorAmd();
+          //Cambiar el estatus de la disponibilidad del doctor.
+          await doctorCareController.changeDoctorConnected('false');
         } catch (e) {/*Nada que hacer si falla*/}
         doctorAvailableSwitch = false;
         //Almecenar AMD para mostrar en atencion

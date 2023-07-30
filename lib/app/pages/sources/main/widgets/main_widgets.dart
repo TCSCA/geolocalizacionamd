@@ -437,7 +437,7 @@ class MainWidgets {
           if (state is ReasonRejectionSuccessState) {
             LoadingBuilder(context).hideOpenDialog();
             showDialog(
-                barrierDismissible: false,
+                barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) {
                   return WillPopScope(
@@ -487,6 +487,10 @@ class MainWidgets {
                                         hint: const Text("Seleccione motivo"),
                                         key: reasonFieldKey,
                                         decoration: const InputDecoration(
+                                          enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: AppStyles
+                                                      .colorBluePrimary)),
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',

@@ -77,9 +77,6 @@ class DoctorCareController {
       requestConnect.tokenDevice = tokenFirebase;
       respApiConnect =
           await saveDataService.onConnectDoctorAmd(requestConnect, tokenUser);
-
-      await secureStorageController.writeSecureData(
-          ApiConstants.doctorConnectedLabel, 'true');
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -98,8 +95,6 @@ class DoctorCareController {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiDisconect = await saveDataService.onDisconectDoctorAmd(tokenUser);
-      await secureStorageController.writeSecureData(
-          ApiConstants.doctorConnectedLabel, 'false');
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -300,5 +295,10 @@ class DoctorCareController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
+  }
+
+  Future<void> changeDoctorConnected(final String isConnected) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.doctorConnectedLabel, isConnected);
   }
 }
