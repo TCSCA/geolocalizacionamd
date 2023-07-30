@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/method/back_button_action.dart';
-import '/app/pages/widgets/common_widgets.dart';
-import '/app/pages/widgets/title_bar_widget.dart';
+import '../profile/widgets/common_widgets.dart';
+import '../profile/widgets/title_bar_widget.dart';
 import 'widgets/main_widgets.dart';
 
 class MainPage extends StatefulWidget {

@@ -7,7 +7,7 @@ import '/app/shared/method/back_button_action.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
-import '/app/pages/widgets/common_widgets.dart';
+import '../profile/widgets/common_widgets.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/core/models/select_model.dart';
@@ -54,7 +54,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                 children: [
                   Flexible(
                     child: Container(
-                      padding: const EdgeInsets.only(right: 20.0),
+                      padding: const EdgeInsets.only(right: 0.0),
                       decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius:
@@ -386,7 +386,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                           } else {
                             //LoadingBuilder(context).hideOpenDialog();
                             return Container(
-                              padding: const EdgeInsets.only(right: 20.0),
+                              padding: const EdgeInsets.only(right: 0.0),
                               decoration: const BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.only(
@@ -394,22 +394,24 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                               child: Center(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                  //mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Flexible(
                                         child: Image.asset(
                                       'assets/images/gps_doctor_image.png',
-                                      width: 240,
-                                      height: 240,
+                                      width: 300,
                                     )),
+                                    const SizedBox(height: 30,),
                                     const Text(
                                       'No tienes atención médica confirmada en estos momentos',
                                       style: TextStyle(
-                                          fontSize: 20.0,
+                                          //fontSize: 10.0,
                                           fontFamily: 'TitlesHighlight',
                                           fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
+                                    const SizedBox(height: 70,)
+
                                   ],
                                 ),
                               ),

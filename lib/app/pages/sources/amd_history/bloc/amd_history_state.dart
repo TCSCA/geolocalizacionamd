@@ -11,11 +11,12 @@ class AmdHistoryInitial extends AmdHistoryState {
 
 class AmdHistorySuccessDataState extends AmdHistoryState{
 
-  final List<HomeServiceModel> homeService;
+  final List<HomeServiceModel> homeServiceF;
+  final List<HomeServiceModel> homeServiceP;
 
-  const AmdHistorySuccessDataState({required this.homeService});
+  const AmdHistorySuccessDataState({required this.homeServiceP, required this.homeServiceF});
   @override
-  List<Object?> get props => [homeService];
+  List<Object?> get props => [homeServiceP, homeServiceF];
 }
 
 class AmdHistoryLoadingState extends AmdHistoryState {
