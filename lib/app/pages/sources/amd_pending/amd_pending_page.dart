@@ -7,7 +7,7 @@ import '/app/shared/method/back_button_action.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
-import '../profile/widgets/common_widgets.dart';
+import '../widgets/common_widgets.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/core/models/select_model.dart';

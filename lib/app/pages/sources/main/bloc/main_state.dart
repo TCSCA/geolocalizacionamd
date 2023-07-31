@@ -180,3 +180,16 @@ class HomeServiceAssignedErrorState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class DoctorHomeServiceAssignedState extends MainState {
+  final String message;
+  const DoctorHomeServiceAssignedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class NotHomeServiceAssignedState extends MainState {
+  const NotHomeServiceAssignedState();
+  @override
+  List<Object> get props => [];
+}

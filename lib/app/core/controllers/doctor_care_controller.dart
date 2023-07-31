@@ -301,4 +301,19 @@ class DoctorCareController {
     await secureStorageController.writeSecureData(
         ApiConstants.doctorConnectedLabel, isConnected);
   }
+
+  Future<void> changeDoctorAmdPending(final String isAmdAssigned) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.doctorAmdAssignedLabel, isAmdAssigned);
+  }
+
+  Future<bool> validateDoctorAmdAssigned() async {
+    bool newBoolValue = false;
+    String isAmdAssigned = await secureStorageController
+        .readSecureData(ApiConstants.doctorAmdAssignedLabel);
+    if (isAmdAssigned.isNotEmpty) {
+      newBoolValue = isAmdAssigned.toLowerCase() != "false";
+    }
+    return newBoolValue;
+  }
 }

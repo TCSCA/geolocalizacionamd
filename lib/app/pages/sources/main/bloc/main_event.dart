@@ -104,3 +104,9 @@ class ValidateOrderAmdProcessedAdminEvent extends MainEvent {
   @override
   List<Object> get props => [homeServiceAssigned];
 }
+
+class ValidateDoctorAmdAssignedEvent extends MainEvent {
+  const ValidateDoctorAmdAssignedEvent();
+  @override
+  List<Object> get props => [];
+}

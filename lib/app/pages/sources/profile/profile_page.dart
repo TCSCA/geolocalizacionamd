@@ -7,7 +7,7 @@ import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../messages/app_messages.dart';
-import 'widgets/common_widgets.dart';
+import '../widgets/common_widgets.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

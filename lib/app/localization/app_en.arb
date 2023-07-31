@@ -77,5 +77,6 @@
     "biometricAuthentication": "Biometric Authentication",
     "biometricNotSupported": "This device does not support biometric authentication or the functionality is not enabled.",
     "limitBiometricAttempts": "You have reached the maximum number of failed attempts allowed. Enter the password or wait a few seconds to use the biometric authentication process.",
-    "invalidFingerprint": "The fingerprint is incorrect, please try again."
+    "invalidFingerprint": "The fingerprint is incorrect, please try again.",
+    "appMsg012": "You must end home medical care before you sign off."
 }

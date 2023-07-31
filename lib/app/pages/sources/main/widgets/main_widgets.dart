@@ -6,12 +6,12 @@ import '/app/extensions/localization_ext.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
-import '../../profile/widgets/amd_pending_card_empty_widget.dart';
-import '../../profile/widgets/amd_pending_card_widget.dart';
+import '../../widgets/amd_pending_card_empty_widget.dart';
+import '../../widgets/amd_pending_card_widget.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 import '/app/pages/sources/login/bloc/login_bloc.dart';
-import '../../profile/widgets/common_widgets.dart';
+import '../../widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/core/models/select_model.dart';
 import '/app/pages/styles/app_styles.dart';
@@ -183,8 +183,8 @@ class MainWidgets {
                 return CustomDialogBox(
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusSuccess),
-                  descriptions: AppMessages().getMessage(
-                      context, context.appLocalization.appMsg010),
+                  descriptions: AppMessages()
+                      .getMessage(context, context.appLocalization.appMsg010),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,
@@ -218,6 +218,31 @@ class MainWidgets {
                   dialogCancel: () {},
                 );
               });
+        }
+        /* if (state is DoctorHomeServiceAssignedState) {
+          //LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              routeSettings: const RouteSettings(name: GeoAmdRoutes.home),
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.home);
+          });
+        } */
+        if (state is NotHomeServiceAssignedState) {
+          context.go(GeoAmdRoutes.amdLocation);
         }
       },
       builder: (context, state) {
@@ -313,23 +338,21 @@ class MainWidgets {
                       )
                     ] else ...[
                       FloatingActionButton.extended(
-                        label: const Text(
-                          'No disponible',
-                          style: TextStyle(
-                              fontFamily: 'TitlesHighlight',
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        backgroundColor: Colors.grey,
-                        icon: const Icon(
-                          Icons.power_settings_new,
-                          size: 24.0,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          context.go(GeoAmdRoutes.amdLocation);
-                        },
-                      )
+                          label: const Text(
+                            'No disponible',
+                            style: TextStyle(
+                                fontFamily: 'TitlesHighlight',
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          backgroundColor: Colors.grey,
+                          icon: const Icon(
+                            Icons.power_settings_new,
+                            size: 24.0,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => BlocProvider.of<MainBloc>(context)
+                              .add(const ValidateDoctorAmdAssignedEvent()))
                     ]
                   ],
                 )
@@ -620,6 +643,28 @@ class MainWidgets {
                   );
                 });
           }
+          if (state is DoctorHomeServiceAssignedState) {
+            //LoadingBuilder(context).hideOpenDialog();
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                routeSettings: const RouteSettings(name: GeoAmdRoutes.home),
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusWarning),
+                    descriptions:
+                        AppMessages().getMessage(context, state.message),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusWarning,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                }).then((value) {
+              context.go(GeoAmdRoutes.home);
+            });
+          }
         },
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */
@@ -631,6 +676,11 @@ class MainWidgets {
           } else if (state is ReasonRejectionSuccessState) {
             //LoadingBuilder(context).hideOpenDialog();
             final homeServiceAssigned = (state.homeServiceAssigned);
+            return AmdPendingCard(homeService: homeServiceAssigned);
+          } else if (state is DoctorHomeServiceAssignedState) {
+            //LoadingBuilder(context).hideOpenDialog();
+            final homeServiceAssigned =
+                BlocProvider.of<MainBloc>(context).homeServicePending;
             return AmdPendingCard(homeService: homeServiceAssigned);
           } else {
             //LoadingBuilder(context).hideOpenDialog();

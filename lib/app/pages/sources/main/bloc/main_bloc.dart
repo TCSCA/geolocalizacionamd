@@ -17,7 +17,7 @@ part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
   bool doctorAvailableSwitch = false;
-  late HomeServiceModel homeServiceConfirmed;
+  late HomeServiceModel homeServiceConfirmed, homeServicePending;
   final HandleLocationPermissions handleLocationPermissions =
       HandleLocationPermissions();
   liblocation.Location location = liblocation.Location();
@@ -191,6 +191,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             //Cambiar el estatus de la disponibilidad del doctor en App.
             doctorAvailableSwitch = false;
             await doctorCareController.changeDoctorConnected('false');
+            //Cambiar el estatus de AMD pendiente para el doctor.
+            await doctorCareController.changeDoctorAmdPending('true');
+            homeServicePending = userHomeService;
             emit(HomeServiceSuccessState(homeServiceAssigned: userHomeService));
           }
         }
@@ -240,6 +243,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         userHomeService = await doctorCareController
             .doConfirmHomeService(event.idHomeService);
         await doctorCareController.changeDoctorInAttention('true');
+        //Cambiar el estatus de AMD pendiente para el doctor.
+        await doctorCareController.changeDoctorAmdPending('false');
         try {
           //Desconectar para que no reciba otra atencion.
           await doctorCareController.doDisconectDoctorAmd();
@@ -285,6 +290,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
         if (userHomeService) {
           await doctorCareController.changeDoctorInAttention('false');
+          //Cambiar el estatus de AMD pendiente para el doctor.
+          await doctorCareController.changeDoctorAmdPending('false');
           doctorAvailableSwitch = false;
           emit(
             const DisallowHomeServiceSuccessState(message: 'MSGAPP-006'),
@@ -398,6 +405,32 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         await doctorCareController.changeDoctorInAttention('false');
         doctorAvailableSwitch = false;
         emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<ValidateDoctorAmdAssignedEvent>((event, emit) async {
+      bool doctorAmdAssigned, doctorInAttention;
+      try {
+        doctorAmdAssigned =
+            await doctorCareController.validateDoctorAmdAssigned();
+        if (doctorAmdAssigned) {
+          emit(const DoctorHomeServiceAssignedState(message: 'MSG-230'));
+        } else {
+          doctorInAttention =
+              await doctorCareController.validateDoctorInAttention();
+          if (doctorInAttention) {
+            emit(const DoctorHomeServiceAssignedState(message: 'MSGAPP-012'));
+          } else {
+            emit(const NotHomeServiceAssignedState());
+          }
+        }
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
             message: AppConstants.codeGeneralErrorMessage));
