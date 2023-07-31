@@ -15,7 +15,6 @@ import '../../widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/core/models/select_model.dart';
 import '/app/pages/styles/app_styles.dart';
-import '/app/shared/method/back_button_action.dart';
 
 class MainWidgets {
   PreferredSizeWidget generateAppBar({required BuildContext context}) {
