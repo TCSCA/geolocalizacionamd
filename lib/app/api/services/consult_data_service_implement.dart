@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
@@ -210,5 +211,40 @@ class ConsultDataServiceImp implements ConsultDataService {
       throw ErrorGeneralException();
     }
     return homeServiceList;
+  }
+
+  @override
+  Future<GenderMap> getAllGender() async {
+
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    GenderMap genderMap;
+
+    final Uri urlGetAllGender =
+    Uri.parse('https://desa.your24sevendoc.com/api/allGender');
+
+    final Map<String, String> header = {
+      /*ApiConstants.headerToken: token,*/
+      'BISCOMM_KEY': 'abcd123456',
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    try {
+
+      responseApi = await http.get(urlGetAllGender,
+          headers: header);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      genderMap = GenderMap.fromJson(decodeRespApi);
+
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return genderMap;
   }
 }

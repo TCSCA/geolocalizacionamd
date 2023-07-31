@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/all_gender_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/build_textfield_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
-
-import '../../../core/controllers/profile_controller.dart';
 import '../../../shared/method/back_button_action.dart';
+import '../../constants/app_constants.dart';
+import '../../styles/app_styles.dart';
 import '../../widgets/common_widgets.dart';
+import '../main/bloc/main_bloc.dart';
 
 class EditProfile extends StatelessWidget {
   EditProfile({super.key});
@@ -33,6 +35,10 @@ class EditProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
+
+    userMainBloc
+        .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
 
     setDataInfo(context);
 
@@ -76,14 +82,17 @@ class EditProfile extends StatelessWidget {
                   '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}');
           phoneNumberCtrl =
               TextEditingController(text: state.profileModel.phoneNumber);
-          otherNumberCtrl = TextEditingController(text: state.profileModel.otherNumber);
+          otherNumberCtrl =
+              TextEditingController(text: state.profileModel.otherNumber);
           cityCtrl = TextEditingController(text: state.profileModel.city);
           stateCtrl = TextEditingController(text: state.profileModel.state);
           countryCtrl = TextEditingController(text: state.profileModel.country);
-          directionCtrl = TextEditingController(text: state.profileModel.direction);
+          directionCtrl =
+              TextEditingController(text: state.profileModel.direction);
           cmppsCtrl = TextEditingController(text: state.profileModel.mpps);
           cmCtrl = TextEditingController(text: state.profileModel.mc);
-          specialityCtrl = TextEditingController(text: state.profileModel.speciality);
+          specialityCtrl =
+              TextEditingController(text: state.profileModel.speciality);
         }
       },
       builder: (context, state) {
@@ -108,20 +117,14 @@ class EditProfile extends StatelessWidget {
                 isReadOnly: false,
                 textController: emailCtrl,
               ),
-              BuildTextFieldWidget(
+              /*BuildTextFieldWidget(
                 labelText: context.appLocalization.labelGender,
                 placeHolder: state.profileModel.gender ?? '',
                 isReadOnly: false,
                 textController: genderCtrl,
-              ),
+              )*/
+              const AllGenderWidget(),
               _inputBdate(context),
-              /*BuildTextFieldWidget(
-                labelText: context.appLocalization.labelDateOfBirth,
-                placeHolder:
-                    '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}',
-                isReadOnly: false,
-                textController: birthdayCtrl,
-              ),*/
               BuildTextFieldWidget(
                 labelText: context.appLocalization.labelPhone,
                 placeHolder: state.profileModel.phoneNumber ?? '',
@@ -231,24 +234,24 @@ class EditProfile extends StatelessWidget {
     );
   }
 
-
   setDataInfo(BuildContext context) {
     fullNameCtrl = TextEditingController(
-      text: context.select((ProfileBloc profileBloc) => profileBloc.profileModel?.fullName)
-    );
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.fullName));
 
     identificationDocumentCtrl = TextEditingController(
         text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.identificationDocument));
+            profileBloc.profileModel?.identificationDocument));
     emailCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.email));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.email));
 
     genderCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.gender));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.gender));
 
-    birthdayCtrl = TextEditingController(text: context.select((ProfileBloc profileBloc) {
+    birthdayCtrl =
+        TextEditingController(text: context.select((ProfileBloc profileBloc) {
       final day = profileBloc.profileModel?.dayBirthday;
       final month = profileBloc.profileModel?.monthBirthday;
       final year = profileBloc.profileModel?.yearBirthday;
@@ -257,27 +260,27 @@ class EditProfile extends StatelessWidget {
 
     phoneNumberCtrl = TextEditingController(
         text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.phoneNumber));
+            profileBloc.profileModel?.phoneNumber));
 
     otherNumberCtrl = TextEditingController(
         text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.otherNumber));
+            profileBloc.profileModel?.otherNumber));
 
     countryCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.country));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.country));
 
     stateCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.state));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.state));
 
     cityCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.city));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.city));
 
     directionCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.direction));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.direction));
 
     selectedDate = DateTime.parse(context.select((ProfileBloc profileBloc) {
       final day = profileBloc.profileModel?.dayBirthday;
@@ -287,101 +290,101 @@ class EditProfile extends StatelessWidget {
     }));
 
     cmppsCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.mpps));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.mpps));
 
     cmCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.mc));
+        text: context
+            .select((ProfileBloc profileBloc) => profileBloc.profileModel?.mc));
 
     specialityCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-        profileBloc.profileModel?.speciality));
+        text: context.select(
+            (ProfileBloc profileBloc) => profileBloc.profileModel?.speciality));
   }
 
-  Widget _inputBdate(BuildContext context/*, EdgeInsets style*/) {
+  Widget _inputBdate(BuildContext context /*, EdgeInsets style*/) {
     /*return BlocBuilder<EditProfileBloc, EditProfileState>(
       builder: (context, state) {*/
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${context.appLocalization.labelDateOfBirth}(*)',
-                style:
-                const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
-              ),
-              TextFormField(
-                controller: birthdayCtrl,
-                autovalidateMode: AutovalidateMode.always,
-               // key: _bdKey,
-                keyboardType: TextInputType.visiblePassword,
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-                validator: (value) {
-                  return null;
-                 /// return bdValidator(date);
-                },
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 18.0),
-                  //hintStyle: fontTextBlack,
-                  errorMaxLines: 2,
-                  //hintText: date,
-                  counterStyle: const TextStyle(color: Colors.black),
-                  focusedBorder: const UnderlineInputBorder(
-                    //borderSide: BorderSide(color: secondaryColor, width: 2),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${context.appLocalization.labelDateOfBirth}(*)',
+            style: const TextStyle(
+                fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          TextFormField(
+            controller: birthdayCtrl,
+            autovalidateMode: AutovalidateMode.always,
+            // key: _bdKey,
+            keyboardType: TextInputType.visiblePassword,
+            style: const TextStyle(fontSize: 16, color: Colors.black),
+            validator: (value) {
+              return null;
+
+              /// return bdValidator(date);
+            },
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(vertical: 18.0),
+              //hintStyle: fontTextBlack,
+              errorMaxLines: 2,
+              //hintText: date,
+              counterStyle: const TextStyle(color: Colors.black),
+              focusedBorder: const UnderlineInputBorder(
+                  //borderSide: BorderSide(color: secondaryColor, width: 2),
                   ),
 
-                  errorStyle:
+              errorStyle:
                   const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
-                  /*errorBorder: const UnderlineInputBorder(
+              /*errorBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: secondaryColor)),*/
-                  suffixIcon: Icon(
-                    Icons.calendar_today,
-                    color: Colors.black.withOpacity(0.5),
-                  ),
-                  /*focusedErrorBorder: const UnderlineInputBorder(
+              suffixIcon: Icon(
+                Icons.calendar_today,
+                color: Colors.black.withOpacity(0.5),
+              ),
+              /*focusedErrorBorder: const UnderlineInputBorder(
                       borderSide:
                       BorderSide(color: secondaryColor, width: 2.0)),*/
-                ),
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  await _selectDate(context);
-                  //_dateValid = _bdKey.currentState!.validate();
-                 // _saveButtonEnable = _isFormValid();
-                  String dateDay = selectedDate!.day.toString();
-                  String dateMonth = selectedDate!.month.toString();
+            ),
+            onTap: () async {
+              FocusScope.of(context).requestFocus(FocusNode());
+              await _selectDate(context);
+              //_dateValid = _bdKey.currentState!.validate();
+              // _saveButtonEnable = _isFormValid();
+              String dateDay = selectedDate!.day.toString();
+              String dateMonth = selectedDate!.month.toString();
 
-                  if (int.parse(selectedDate!.month.toString()) < 10) {
-                    dateMonth = '0${int.parse(selectedDate!.month.toString())}';
-                  }
-                  if (int.parse(selectedDate!.day.toString()) < 10) {
-                    dateDay = '0${int.parse(selectedDate!.day.toString())}';
-                  }
-                  birthdayCtrl = TextEditingController(text: '$dateDay-$dateMonth-${selectedDate!.year}');
-                  //date = '$dateDay/$dateMonth/${selectedDate!.year}';
+              if (int.parse(selectedDate!.month.toString()) < 10) {
+                dateMonth = '0${int.parse(selectedDate!.month.toString())}';
+              }
+              if (int.parse(selectedDate!.day.toString()) < 10) {
+                dateDay = '0${int.parse(selectedDate!.day.toString())}';
+              }
+              birthdayCtrl = TextEditingController(
+                  text: '$dateDay-$dateMonth-${selectedDate!.year}');
+              //date = '$dateDay/$dateMonth/${selectedDate!.year}';
 
-                  /*context.read<EditProfileBloc>().add(EditDateOfBird(
+              /*context.read<EditProfileBloc>().add(EditDateOfBird(
                       dateOfbird: '${selectedDate.year}-$dateMonth-$dateDay'));*/
 
-                 // dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';
-                },
-                onChanged: (value) {
-                 // setState(() {
-                   // date;
-                   // _dateValid = _bdKey.currentState!.validate();
-                   // _saveButtonEnable = _isFormValid();
-                  //});
-                },
-              ),
-            ],
+              // dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';
+            },
+            onChanged: (value) {
+              // setState(() {
+              // date;
+              // _dateValid = _bdKey.currentState!.validate();
+              // _saveButtonEnable = _isFormValid();
+              //});
+            },
           ),
-     //   );
-    //  },
+        ],
+      ),
+      //   );
+      //  },
     );
   }
-
-
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -401,17 +404,107 @@ class EditProfile extends StatelessWidget {
 
       if (value == null) {
         DateTime dt = DateTime.parse(selectedDate.toString());
-       /// setState(() {
-          selectedDate = dt;
+
+        /// setState(() {
+        selectedDate = dt;
         //});
       }
       if (value != null && value != selectedDate) {
         //setState(() {
-          selectedDate = value;
-       // });
+        selectedDate = value;
+        // });
       }
       return null;
     });
   }
 
+  Widget _stateList() {
+    return BlocConsumer<MainBloc, MainState>(
+  listener: (context, state) {
+    // TODO: implement listener
+  },
+  builder: (context, state) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField(
+                hint: Text(context.appLocalization.labelSelect),
+                //key: estadoFieldKey,
+                //value: selectedState,
+                decoration: InputDecoration(
+                    hintText: context.appLocalization.labelSelect,
+                    labelText: context.appLocalization.labelState,
+                    labelStyle: AppStyles.textStyleSelect,
+                    errorStyle: AppStyles.textFormFieldError),
+                style: AppStyles.textStyleOptionSelect,
+                items: stateList.map((SelectModel selectiveState) {
+                  return DropdownMenuItem(
+                    value: selectiveState.id,
+                    child: Text(selectiveState.name),
+                  );
+                }).toList(),
+                autovalidateMode:
+                AutovalidateMode.onUserInteraction,
+                validator: (fieldValue) {
+                  if (fieldValue == null) {
+                    return context.appLocalization.fieldRequired;
+                  }
+                  return null;
+                },
+                onChanged: (stateCode) {
+                  if (stateCode != null) {
+                    stateTextController.text = stateCode;
+                    userMainBloc.add(
+                        ShowLocationDoctorCitiesEvent(stateCode));
+                  }
+                },
+              ),
+            )
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: DropdownButtonFormField(
+                hint: Text(context.appLocalization.labelSelect),
+                key: ciudadFieldKey,
+                value: selectedCity,
+                decoration: InputDecoration(
+                    labelText: context.appLocalization.labelCity,
+                    hintText: context.appLocalization.labelSelect,
+                    labelStyle: AppStyles.textStyleSelect,
+                    errorStyle: AppStyles.textFormFieldError),
+                style: AppStyles.textStyleOptionSelect,
+                items: cityList.map((SelectModel selectiveCity) {
+                  return DropdownMenuItem(
+                    value: selectiveCity.id,
+                    child: Text(selectiveCity.name),
+                  );
+                }).toList(),
+                autovalidateMode:
+                AutovalidateMode.onUserInteraction,
+                validator: (fieldValue) {
+                  if (fieldValue == null) {
+                    return context.appLocalization.fieldRequired;
+                  }
+                  return null;
+                },
+                onChanged: (cityCode) {
+                  if (cityCode != null) {
+                    cityTextController.text = cityCode;
+                    userMainBloc.add(
+                        ChangeLocationDoctorCityEvent(cityCode));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  },
+);
+  }
 }
