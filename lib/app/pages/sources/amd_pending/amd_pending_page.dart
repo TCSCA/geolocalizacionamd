@@ -68,9 +68,9 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                           if (state is ConfirmHomeServiceSuccessState) {
                             LoadingBuilder(context).hideOpenDialog();
                           }
-                          if (state is HomeServiceInAttentionState) {
+                          /* if (state is HomeServiceInAttentionState) {
                             LoadingBuilder(context).hideOpenDialog();
-                          }
+                          } */
                           if (state is ReasonCompleteSuccessState) {
                             LoadingBuilder(context).hideOpenDialog();
                             showDialog(
@@ -78,7 +78,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return WillPopScope(
-                                    onWillPop: () async => backButtonActions(),
+                                    onWillPop: () async => false,
                                     child: AlertDialog(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
@@ -129,10 +129,18 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                                 Radius.circular(
                                                                     8.0)),
                                                         hint: const Text(
-                                                            "Seleccione motivo"),
+                                                            "Seleccione una opción"),
                                                         key: reasonFieldKey,
                                                         decoration:
                                                             const InputDecoration(
+                                                          focusedBorder: UnderlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  color: AppStyles
+                                                                      .colorBluePrimary)),
+                                                          enabledBorder: UnderlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  color: AppStyles
+                                                                      .colorBluePrimary)),
                                                           contentPadding:
                                                               EdgeInsets
                                                                   .symmetric(
@@ -140,7 +148,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                                           18),
                                                           labelText: 'Motivo:',
                                                           hintText:
-                                                              'Seleccione motivo',
+                                                              'Seleccione una opción',
                                                           labelStyle: TextStyle(
                                                               fontSize: 27.0,
                                                               color:
@@ -182,7 +190,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                             (fieldValue) {
                                                           if (fieldValue ==
                                                               null) {
-                                                            return 'Campo requerido';
+                                                            return 'Campo requerido.';
                                                           }
                                                           return null;
                                                         },
@@ -260,7 +268,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                                   horizontal:
                                                                       40),
                                                           child: const Text(
-                                                            'Enviar',
+                                                            'Aceptar',
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style: TextStyle(
@@ -605,7 +613,6 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(width: 20.0),
                 Flexible(
                   child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 7.0),
@@ -631,7 +638,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                               borderRadius: BorderRadius.circular(30)),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 15),
+                                vertical: 15, horizontal: 21),
                             child: const Text(
                               'Finalizar AMD',
                               textAlign: TextAlign.center,

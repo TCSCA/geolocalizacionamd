@@ -193,3 +193,10 @@ class NotHomeServiceAssignedState extends MainState {
   @override
   List<Object> get props => [];
 }
+
+class DoctorHomeServiceAttentionState extends MainState {
+  final String message;
+  const DoctorHomeServiceAttentionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

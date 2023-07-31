@@ -219,7 +219,7 @@ class MainWidgets {
                 );
               });
         }
-        /* if (state is DoctorHomeServiceAssignedState) {
+        if (state is DoctorHomeServiceAssignedState) {
           //LoadingBuilder(context).hideOpenDialog();
           showDialog(
               context: context,
@@ -240,7 +240,28 @@ class MainWidgets {
               }).then((value) {
             context.go(GeoAmdRoutes.home);
           });
-        } */
+        }
+        if (state is DoctorHomeServiceAttentionState) {
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            AppCommonWidgets.pageCurrentChanged(
+                context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+          });
+        }
         if (state is NotHomeServiceAssignedState) {
           context.go(GeoAmdRoutes.amdLocation);
         }
@@ -460,11 +481,11 @@ class MainWidgets {
           if (state is ReasonRejectionSuccessState) {
             LoadingBuilder(context).hideOpenDialog();
             showDialog(
-                barrierDismissible: true,
+                barrierDismissible: false,
                 context: context,
                 builder: (BuildContext context) {
                   return WillPopScope(
-                    onWillPop: () async => backButtonActions(),
+                    onWillPop: () async => false,
                     child: AlertDialog(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
@@ -507,17 +528,23 @@ class MainWidgets {
                                         itemHeight: null,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(8.0)),
-                                        hint: const Text("Seleccione motivo"),
+                                        hint:
+                                            const Text("Seleccione una opción"),
                                         key: reasonFieldKey,
                                         decoration: const InputDecoration(
+                                          focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: AppStyles
+                                                      .colorBluePrimary)),
                                           enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
+                                          
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',
-                                          hintText: 'Seleccione motivo',
+                                          hintText: 'Seleccione una opción',
                                           labelStyle: TextStyle(
                                               fontSize: 27.0,
                                               color: Colors.black,
@@ -545,7 +572,7 @@ class MainWidgets {
                                             AutovalidateMode.onUserInteraction,
                                         validator: (fieldValue) {
                                           if (fieldValue == null) {
-                                            return 'Motivo es requerido';
+                                            return 'Campo requerido.';
                                           }
                                           return null;
                                         },
@@ -642,28 +669,6 @@ class MainWidgets {
                     dialogCancel: () {},
                   );
                 });
-          }
-          if (state is DoctorHomeServiceAssignedState) {
-            //LoadingBuilder(context).hideOpenDialog();
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                routeSettings: const RouteSettings(name: GeoAmdRoutes.home),
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusWarning),
-                    descriptions:
-                        AppMessages().getMessage(context, state.message),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusWarning,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                }).then((value) {
-              context.go(GeoAmdRoutes.home);
-            });
           }
         },
         /* buildWhen: (previous, current) =>

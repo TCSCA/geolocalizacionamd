@@ -212,8 +212,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceInAttentionEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        emit(const ShowLoadingInAttentionState(
-            message: 'Procesando su solicitudd'));
+        /* emit(const ShowLoadingInAttentionState(
+            message: 'Procesando su solicitudd')); */
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
         //await Future.delayed(const Duration(seconds: 2));
@@ -422,7 +422,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           doctorInAttention =
               await doctorCareController.validateDoctorInAttention();
           if (doctorInAttention) {
-            emit(const DoctorHomeServiceAssignedState(message: 'MSGAPP-012'));
+            emit(const DoctorHomeServiceAttentionState(message: 'MSGAPP-012'));
           } else {
             emit(const NotHomeServiceAssignedState());
           }

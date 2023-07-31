@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '/app/pages/styles/app_styles.dart';
 
 class ExpansionTitleWidget extends StatelessWidget {
   String? orderNumber;
@@ -48,8 +49,12 @@ class ExpansionTitleWidget extends StatelessWidget {
     return Column(
       children: <Widget>[
         ExpansionTile(
+          iconColor: AppStyles.colorBluePrimary,
+          collapsedIconColor: AppStyles.colorBlack,
+          textColor: AppStyles.colorBluePrimary,
+          collapsedTextColor: AppStyles.colorBlack,
           leading: CircleAvatar(
-              //backgroundColor: Colors.white,
+              backgroundColor: AppStyles.colorBluePrimary,
               radius: 25.0,
               child: Image.asset(
                 "assets/images/gps_doctor_image.png",
