@@ -28,7 +28,7 @@ class BuildTextFieldWidget extends StatelessWidget {
             labelStyle: const TextStyle(
                 fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
             floatingLabelBehavior: FloatingLabelBehavior.always,
-            hintText: placeHolder,
+            //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
       ),
     );
