@@ -5,6 +5,7 @@ import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/all_gender_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/build_textfield_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import '../../../core/models/select_model.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../styles/app_styles.dart';
@@ -13,6 +14,10 @@ import '../main/bloc/main_bloc.dart';
 
 class EditProfile extends StatelessWidget {
   EditProfile({super.key});
+
+  final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormFieldState> stateFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> cityFieldKey = GlobalKey<FormFieldState>();
 
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController identificationDocumentCtrl = TextEditingController();
@@ -30,13 +35,21 @@ class EditProfile extends StatelessWidget {
   TextEditingController specialityCtrl = TextEditingController();
   TextEditingController photoCtrl = TextEditingController();
   TextEditingController firmaCtrl = TextEditingController();
-
   DateTime? selectedDate;
+
+  List<SelectModel> stateList = [];
+  List<SelectModel> cityList = [];
+
+  String? selectedCity;
+  String? selectedState;
+
+  late MainBloc userMainBloc;
+
+
 
   @override
   Widget build(BuildContext context) {
-    MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-
+    userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc
         .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
 
@@ -99,6 +112,7 @@ class EditProfile extends StatelessWidget {
         if (state is ProfileSuccessState) {
           return ListView(
             children: [
+
               BuildTextFieldWidget(
                 labelText: context.appLocalization.labelFullName,
                 placeHolder: state.profileModel.fullName ?? '',
@@ -149,6 +163,7 @@ class EditProfile extends StatelessWidget {
                 isReadOnly: false,
                 textController: stateCtrl,
               ),
+              //_stateList(),
               BuildTextFieldWidget(
                 labelText: context.appLocalization.labelCity,
                 placeHolder: state.profileModel.country ?? '',
@@ -421,15 +436,25 @@ class EditProfile extends StatelessWidget {
   Widget _stateList() {
     return BlocConsumer<MainBloc, MainState>(
   listener: (context, state) {
-    // TODO: implement listener
+    if (state is LocationStatesSuccessState) {
+      ///LoadingBuilder(context).hideOpenDialog();
+      stateList = state.listStates;
+      //selectedState = null;
+    }
+    if (state is LocationCitiesSuccessState) {
+     /// LoadingBuilder(context).hideOpenDialog();
+      cityList = state.listCities;
+      selectedState = state.selectedState;
+      selectedCity = null;
+    }
   },
   builder: (context, state) {
     return Column(
       children: [
         Row(
           children: [
-            Expanded(
-              child: DropdownButtonFormField(
+            /*Expanded(
+              child:*/ DropdownButtonFormField(
                 hint: Text(context.appLocalization.labelSelect),
                 //key: estadoFieldKey,
                 //value: selectedState,
@@ -455,21 +480,21 @@ class EditProfile extends StatelessWidget {
                 },
                 onChanged: (stateCode) {
                   if (stateCode != null) {
-                    stateTextController.text = stateCode;
+                    stateCtrl.text = stateCode;
                     userMainBloc.add(
                         ShowLocationDoctorCitiesEvent(stateCode));
                   }
                 },
               ),
-            )
+          //  )
           ],
         ),
         Row(
           children: <Widget>[
-            Expanded(
-              child: DropdownButtonFormField(
+            /*Expanded(
+              child:*/ DropdownButtonFormField(
                 hint: Text(context.appLocalization.labelSelect),
-                key: ciudadFieldKey,
+                key: cityFieldKey,
                 value: selectedCity,
                 decoration: InputDecoration(
                     labelText: context.appLocalization.labelCity,
@@ -493,13 +518,13 @@ class EditProfile extends StatelessWidget {
                 },
                 onChanged: (cityCode) {
                   if (cityCode != null) {
-                    cityTextController.text = cityCode;
+                    cityCtrl.text = cityCode;
                     userMainBloc.add(
                         ChangeLocationDoctorCityEvent(cityCode));
                   }
                 },
               ),
-            ),
+           // ),
           ],
         ),
       ],
