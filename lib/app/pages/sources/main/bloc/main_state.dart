@@ -200,3 +200,7 @@ class DoctorHomeServiceAttentionState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class DisableButtonState extends MainState {
+  const DisableButtonState();
+}

@@ -64,6 +64,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ConnectDoctorAmdEvent>((event, emit) async {
       //doctorAvailableSwitch = false;
       try {
+        emit(const DisableButtonState());
         bool isService = await handleLocationPermissions.checkLocationService();
         if (isService) {
           bool isPermission =

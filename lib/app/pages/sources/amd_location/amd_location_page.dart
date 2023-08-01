@@ -30,6 +30,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
   String? selectedCity;
   @override
   Widget build(BuildContext context) {
+    bool activateButton = true;
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc
         .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
@@ -132,6 +133,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
             }
             if (state is DoctorServiceErrorState) {
               LoadingBuilder(context).hideOpenDialog();
+              activateButton = true;
               showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -148,6 +150,9 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                       dialogCancel: () {},
                     );
                   });
+            }
+            if (state is DisableButtonState) {
+              activateButton = false;
             }
           },
           builder: (context, state) {
@@ -247,10 +252,9 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                     ),
                     const SizedBox(height: 30.0),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(width: 20.0),
                         Container(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 7.0),
@@ -262,15 +266,20 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                       width: 2, color: Color(0xffFFFFFF)),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
-                              onPressed: () {
-                                context.go(GeoAmdRoutes.home);
-                              },
+                              onPressed: activateButton
+                                  ? () => context.go(GeoAmdRoutes.home)
+                                  : null,
                               child: Ink(
                                 decoration: BoxDecoration(
-                                    gradient: const LinearGradient(colors: [
+                                    gradient: activateButton
+                                        ? const LinearGradient(colors: [
                                       Color(0xffF96352),
                                       Color(0xffD84835)
-                                    ]),
+                                          ])
+                                        : const LinearGradient(colors: [
+                                            AppStyles.colorGray,
+                                            AppStyles.colorGray
+                                          ]),
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -294,25 +303,25 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                       width: 2, color: Color(0xffFFFFFF)),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
-                              onPressed: () {
+                              onPressed: activateButton
+                                  ? () {
                                 if (!ubicacionFormKey.currentState!
                                     .validate()) {
                                   return;
                                 } else {
                                   showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (BuildContext context) {
-                                        return CustomDialogBox(
-                                            title: context
-                                                .appLocalization.titleWarning,
-                                            descriptions: context
-                                                .appLocalization
-                                                .messageConnectDoctor,
-                                            isConfirmation: true,
-                                            dialogAction: () =>
-                                                BlocProvider.of<MainBloc>(
-                                                        context)
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (BuildContext context) {
+                                              return CustomDialogBox(
+                                                  title: context.appLocalization
+                                                      .titleWarning,
+                                                  descriptions: context
+                                                      .appLocalization
+                                                      .messageConnectDoctor,
+                                                  isConfirmation: true,
+                                                  dialogAction: () => BlocProvider
+                                                          .of<MainBloc>(context)
                                                     .add(ConnectDoctorAmdEvent(
                                                         locationState:
                                                             stateTextController
@@ -320,18 +329,25 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                                         locationCity:
                                                             cityTextController
                                                                 .text)),
-                                            type: AppConstants.statusWarning,
-                                            isdialogCancel: true,
-                                            dialogCancel: () {});
-                                      });
+                                                  type: AppConstants
+                                                      .statusWarning,
+                                                  isdialogCancel: true,
+                                                  dialogCancel: () {});
+                                            });
                                 }
-                              },
+                                    }
+                                  : null,
                               child: Ink(
                                 decoration: BoxDecoration(
-                                    gradient: const LinearGradient(colors: [
+                                    gradient: activateButton
+                                        ? const LinearGradient(colors: [
                                       Color(0xff2B5178),
                                       Color(0xff273456)
-                                    ]),
+                                          ])
+                                        : const LinearGradient(colors: [
+                                            AppStyles.colorGray,
+                                            AppStyles.colorGray
+                                          ]),
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
