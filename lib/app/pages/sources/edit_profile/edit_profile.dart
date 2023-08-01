@@ -451,7 +451,7 @@ class EditProfile extends StatelessWidget {
   builder: (context, state) {
     return Column(
       children: [
-        Row(
+        ListView(
           children: [
             /*Expanded(
               child:*/ DropdownButtonFormField(
