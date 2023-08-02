@@ -12,7 +12,9 @@ class ProfileModel {
   String? speciality;
   String? graduatedFrom;
   String? medicalLicense;
+  int? idCity;
   String? city;
+  int? idState;
   String? state;
   String? country;
   String? direction;
@@ -33,7 +35,9 @@ class ProfileModel {
     this.speciality,
     this.graduatedFrom,
     this.medicalLicense,
+    this.idCity,
     this.city,
+    this.idState,
     this.state,
     this.country,
     this.direction,

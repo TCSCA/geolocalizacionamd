@@ -1,12 +1,7 @@
-// To parse this JSON data, do
-//
-//     final profileMap = profileMapFromJson(jsonString);
 
 import 'dart:convert';
 
 ProfileMap profileMapFromJson(String str) => ProfileMap.fromJson(json.decode(str));
-
-String profileMapToJson(ProfileMap data) => json.encode(data.toJson());
 
 class ProfileMap {
   String? status;
@@ -19,28 +14,12 @@ class ProfileMap {
     this.properties,
   });
 
-  ProfileMap copyWith({
-    String? status,
-    Data? data,
-    Properties? properties,
-  }) =>
-      ProfileMap(
-        status: status ?? this.status,
-        data: data ?? this.data,
-        properties: properties ?? this.properties,
-      );
-
   factory ProfileMap.fromJson(Map<String, dynamic> json) => ProfileMap(
     status: json["status"],
     data: json["data"] == null ? null : Data.fromJson(json["data"]),
     properties: json["properties"] == null ? null : Properties.fromJson(json["properties"]),
   );
 
-  Map<String, dynamic> toJson() => {
-    "status": status,
-    "data": data?.toJson(),
-    "properties": properties?.toJson(),
-  };
 }
 
 class Data {
@@ -62,6 +41,7 @@ class Data {
   String? longitude;
   String? firekey;
   int? idCity;
+  int? idstate;
   String? city;
   String? state;
   String? country;
@@ -87,59 +67,11 @@ class Data {
     this.firekey,
     this.idCity,
     this.city,
+    this.idstate,
     this.state,
     this.country,
     this.direction,
   });
-
-  Data copyWith({
-    int? idAffiliate,
-    String? fullName,
-    Birthday? birthday,
-    String? email,
-    int? idGender,
-    String? gender,
-    String? phoneNumber,
-    String? otherNumber,
-    int? idDocumentType,
-    String? documentType,
-    String? identificationDocument,
-    String? speciality,
-    String? graduatedFrom,
-    String? medicalLicense,
-    String? latitude,
-    String? longitude,
-    String? firekey,
-    int? idCity,
-    String? city,
-    String? state,
-    String? country,
-    String? direction,
-  }) =>
-      Data(
-        idAffiliate: idAffiliate ?? this.idAffiliate,
-        fullName: fullName ?? this.fullName,
-        birthday: birthday ?? this.birthday,
-        email: email ?? this.email,
-        idGender: idGender ?? this.idGender,
-        gender: gender ?? this.gender,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        otherNumber: otherNumber ?? this.otherNumber,
-        idDocumentType: idDocumentType ?? this.idDocumentType,
-        documentType: documentType ?? this.documentType,
-        identificationDocument: identificationDocument ?? this.identificationDocument,
-        speciality: speciality ?? this.speciality,
-        graduatedFrom: graduatedFrom ?? this.graduatedFrom,
-        medicalLicense: medicalLicense ?? this.medicalLicense,
-        latitude: latitude ?? this.latitude,
-        longitude: longitude ?? this.longitude,
-        firekey: firekey ?? this.firekey,
-        idCity: idCity ?? this.idCity,
-        city: city ?? this.city,
-        state: state ?? this.state,
-        country: country ?? this.country,
-        direction: direction ?? this.direction,
-      );
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     idAffiliate: json["idAffiliate"],
@@ -161,35 +93,12 @@ class Data {
     firekey: json["firekey"],
     idCity: json["idCity"],
     city: json["city"],
+    idstate: json["idState"],
     state: json["state"],
     country: json["country"],
     direction: json["direction"],
   );
 
-  Map<String, dynamic> toJson() => {
-    "idAffiliate": idAffiliate,
-    "fullName": fullName,
-    "birthday": birthday?.toJson(),
-    "email": email,
-    "idGender": idGender,
-    "gender": gender,
-    "phoneNumber": phoneNumber,
-    "otherNumber": otherNumber,
-    "idDocumentType": idDocumentType,
-    "documentType": documentType,
-    "identificationDocument": identificationDocument,
-    "speciality": speciality,
-    "graduatedFrom": graduatedFrom,
-    "medicalLicense": medicalLicense,
-    "latitude": latitude,
-    "longitude": longitude,
-    "firekey": firekey,
-    "idCity": idCity,
-    "city": city,
-    "state": state,
-    "country": country,
-    "direction": direction,
-  };
 }
 
 class Birthday {
@@ -209,22 +118,6 @@ class Birthday {
     this.second,
   });
 
-  Birthday copyWith({
-    int? year,
-    int? month,
-    int? dayOfMonth,
-    int? hourOfDay,
-    int? minute,
-    int? second,
-  }) =>
-      Birthday(
-        year: year ?? this.year,
-        month: month ?? this.month,
-        dayOfMonth: dayOfMonth ?? this.dayOfMonth,
-        hourOfDay: hourOfDay ?? this.hourOfDay,
-        minute: minute ?? this.minute,
-        second: second ?? this.second,
-      );
 
   factory Birthday.fromJson(Map<String, dynamic> json) => Birthday(
     year: json["year"],
@@ -234,15 +127,6 @@ class Birthday {
     minute: json["minute"],
     second: json["second"],
   );
-
-  Map<String, dynamic> toJson() => {
-    "year": year,
-    "month": month,
-    "dayOfMonth": dayOfMonth,
-    "hourOfDay": hourOfDay,
-    "minute": minute,
-    "second": second,
-  };
 }
 
 class Properties {
@@ -263,7 +147,4 @@ class Properties {
     timeInSeconds: json["timeInSeconds"]?.toDouble(),
   );
 
-  Map<String, dynamic> toJson() => {
-    "timeInSeconds": timeInSeconds,
-  };
 }

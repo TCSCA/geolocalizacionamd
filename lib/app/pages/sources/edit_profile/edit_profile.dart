@@ -81,6 +81,9 @@ class _EditProfileState extends State<EditProfile> {
         TextEditingController(text: state.profileModel?.speciality);
     selectedDate = DateTime.parse(
         '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}${state.profileModel?.dayBirthday}');
+
+    selectedState = state.profileModel?.idState.toString();
+    selectedCity = state.profileModel?.idCity.toString();
 /*    photoCtrl = TextEditingController(text: state.profileModel?.);
     firmaCtrl = TextEditingController(text: state.profileModel?.);*/
     // setDataInfo(context);
@@ -124,27 +127,7 @@ class _EditProfileState extends State<EditProfile> {
       buildWhen: (previous, current) => current is! ProfileSuccessState,
       listener: (context, state) {
         if (state is ProfileSuccessState) {
-          identificationDocumentCtrl = TextEditingController(
-              text: state.profileModel.identificationDocument);
-          emailCtrl = TextEditingController(
-              text: state.profileModel.identificationDocument);
-          genderCtrl = TextEditingController(text: state.profileModel.gender);
-          birthdayCtrl = TextEditingController(
-              text:
-                  '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}');
-          phoneNumberCtrl =
-              TextEditingController(text: state.profileModel.phoneNumber);
-          otherNumberCtrl =
-              TextEditingController(text: state.profileModel.otherNumber);
-          cityCtrl = TextEditingController(text: state.profileModel.city);
-          stateCtrl = TextEditingController(text: state.profileModel.state);
-          countryCtrl = TextEditingController(text: state.profileModel.country);
-          directionCtrl =
-              TextEditingController(text: state.profileModel.direction);
-          cmppsCtrl = TextEditingController(text: state.profileModel.mpps);
-          cmCtrl = TextEditingController(text: state.profileModel.mc);
-          specialityCtrl =
-              TextEditingController(text: state.profileModel.speciality);
+
         }
       },
       builder: (context, state) {
@@ -156,7 +139,7 @@ class _EditProfileState extends State<EditProfile> {
                   stateList = state.listStates;
                 });
 
-                selectedState = null;
+              //  selectedState = null;
               }
               if (state is LocationCitiesSuccessState) {
                 setState(() {
