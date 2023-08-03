@@ -38,8 +38,8 @@ class AllGenderWidget extends StatelessWidget {
                   },
                   items: state.genderMap.data.map((item) {
                     return DropdownMenuItem(
-                      child: Text(item.descriptionEs),
                       value: item.idGender,
+                      child: Text(item.descriptionEs),
                     );
                   }).toList(),
                   onChanged: (newVal) {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/controllers/profile_controller.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/sources/edit_profile/edit_profile.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
@@ -24,34 +22,36 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    return /*BlocProvider(
-      create: (context) =>
-          ProfileBloc(getProfileController: ProfileController()),
-      child:*/
-        WillPopScope(
-      onWillPop: () async => backButtonActions(),
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppCommonWidgets.generateAppBar(
-              context: context, appBarHeight: 140.0),
-          body: MultiBlocListener(
-            listeners: [
-              //NavigationBloc y LogoutBloc comunes en todas las paginas.
-              AppCommonWidgets.listenerNavigationBloc(),
-              AppCommonWidgets.listenerLogoutBloc()
-            ],
-            child: Container(
-              padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
-              child: GestureDetector(
-                onTap: () {},
-                child: const ListViewProfileWidget(),
+    return WillPopScope(
+        onWillPop: () async => backButtonActions(),
+        child: SafeArea(
+          child: Scaffold(
+            appBar: AppCommonWidgets.generateAppBar(
+                context: context, appBarHeight: 140.0),
+            body: MultiBlocListener(
+              listeners: [
+                //NavigationBloc y LogoutBloc comunes en todas las paginas.
+                AppCommonWidgets.listenerNavigationBloc(),
+                AppCommonWidgets.listenerLogoutBloc()
+              ],
+              child: Container(
+                padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: const ListViewProfileWidget(),
+                ),
               ),
             ),
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: const Color(0xff2B5178),
+              heroTag: 'button-edit-profile',
+              child: const Icon(Icons.edit),
+              onPressed: () {
+                context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
+              },),
           ),
         ),
-      ),
-    );
-    // );
+      );
   }
 }
 
@@ -81,7 +81,7 @@ class ListViewProfileWidget extends StatelessWidget {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusError),
                   descriptions:
-                      AppMessages().getMessage(context, state.messageError),
+                  AppMessages().getMessage(context, state.messageError),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusError,
@@ -115,21 +115,6 @@ class ListViewProfileWidget extends StatelessWidget {
                                   'assets/images/profile_default.png'),
                               fit: BoxFit.cover)),
                     ),
-                    /*Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(width: 4, color: Colors.white),
-                              color: Colors.blue),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ))*/
                   ],
                 ),
               ),
@@ -142,7 +127,8 @@ class ListViewProfileWidget extends StatelessWidget {
               const Divider(),
               _ProfileDataWidget(
                   title: context.appLocalization.labelIdentificationDocument,
-                  subtitle: '${state.profileModel.documentType}-${state.profileModel.identificationDocument}' ?? ''),
+                  subtitle: '${state.profileModel.documentType}-${state
+                      .profileModel.identificationDocument}' ?? ''),
               const Divider(),
               _ProfileDataWidget(
                   title: context.appLocalization.labelEmail,
@@ -154,7 +140,8 @@ class ListViewProfileWidget extends StatelessWidget {
               _ProfileDataWidget(
                   title: 'Fecha de Nacimiento',
                   subtitle:
-                      '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}'),
+                  '${state.profileModel.dayBirthday}-${state.profileModel
+                      .monthBirthday}-${state.profileModel.yearBirthday}'),
               const Divider(),
               _ProfileDataWidget(
                   title: 'Número de Teléfono',
@@ -189,76 +176,10 @@ class ListViewProfileWidget extends StatelessWidget {
               const Divider(
                 height: 10,
               ),
-              /* buildTextField(
-                labelText: 'Documento de Identidad',
-                placeHolder: state.profileModel.identificationDocument ?? '',
-                isReadOnly: true,
-              ),
-              buildTextField(
-                labelText: 'Correo Electrónico',
-                placeHolder: state.profileModel.email ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'Género',
-                placeHolder: state.profileModel.gender ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'Fecha de Nacimiento',
-                placeHolder:
-                    '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'Numero de Teléfono',
-                placeHolder: state.profileModel.phoneNumber ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'Otro teléfono',
-                placeHolder: state.profileModel.otherNumber ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'País',
-                placeHolder: state.profileModel.city ?? '',
-                isReadOnly: true,
-              ),
-              buildTextField(
-                labelText: 'Estado',
-                placeHolder: state.profileModel.state ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'Ciudad',
-                placeHolder: state.profileModel.country ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'Dirección',
-                placeHolder: state.profileModel.direction ?? '',
-                isReadOnly: false,
-              ),
-              buildTextField(
-                labelText: 'M.P.P.S',
-                placeHolder: '0000000000',
-                isReadOnly: true,
-              ),
-              buildTextField(
-                labelText: 'C.M',
-                placeHolder: '0000000000',
-                isReadOnly: true,
-              ),
-              buildTextField(
-                labelText: 'Especialidad',
-                placeHolder: state.profileModel.speciality ?? '',
-                isReadOnly: true,
-              ),*/
               const SizedBox(
                 height: 10,
               ),
-              Padding(
+             /* Padding(
                 padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,18 +201,8 @@ class ListViewProfileWidget extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        /*Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: BlocProvider.of<ProfileBloc>(context),
-                              child: const EditProfile(),
-                            ),
-                          ),
-                        );*/
-
-                        // Navigator.of(context).push(PageRouteBuilder<void>(pageBuilder: (context, animation, secondaryAnimation) => const EditProfile()));
-                         context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
-                        // context.read<ProfileBloc>().add(GetProfileEvent());
+                        context.go(
+                            GeoAmdRoutes.editProfile, extra: NavigationBloc());
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -308,7 +219,7 @@ class ListViewProfileWidget extends StatelessWidget {
                     )
                   ],
                 ),
-              )
+              )*/
             ],
           );
         } else if (state is ProfileInitial) {
@@ -321,10 +232,9 @@ class ListViewProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(
-      {required String labelText,
-      required String placeHolder,
-      required bool isReadOnly}) {
+  Widget buildTextField({required String labelText,
+    required String placeHolder,
+    required bool isReadOnly}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextField(

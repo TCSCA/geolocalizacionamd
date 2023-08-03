@@ -41,6 +41,7 @@ class ProfileController {
           identificationDocument: profileMap.data?.identificationDocument,
           documentType: profileMap.data?.documentType,
           email: profileMap.data?.email,
+          idGender: profileMap.data?.idGender,
           gender: profileMap.data?.gender,
           dayBirthday: day,
           monthBirthday: month,

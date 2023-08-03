@@ -4,6 +4,7 @@ class ProfileModel {
   String? monthBirthday;
   String? yearBirthday;
   String? email;
+  int? idGender;
   String? gender;
   String? phoneNumber;
   String? otherNumber;
@@ -26,6 +27,7 @@ class ProfileModel {
     this.dayBirthday,
     this.monthBirthday,
     this.yearBirthday,
+    this.idGender,
     this.email,
     this.gender,
     this.phoneNumber,

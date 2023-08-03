@@ -5,8 +5,10 @@ import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/all_gender_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/build_textfield_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/format_data.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import '../../../core/controllers/profile_controller.dart';
 import '../../../core/models/select_model.dart';
+import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../styles/app_styles.dart';
@@ -51,6 +53,12 @@ class _EditProfileState extends State<EditProfile> {
 
   String? selectedCity;
   String? selectedState;
+  String? selectedGender;
+
+  final maskPhoneNumber = MaskTextInputFormatter(
+      mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
+  final maskPhoneNumber2 = MaskTextInputFormatter(
+      mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
 
   late MainBloc userMainBloc;
 
@@ -67,16 +75,18 @@ class _EditProfileState extends State<EditProfile> {
     birthdayCtrl = TextEditingController(
         text:
             '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
-    phoneNumberCtrl =
-        TextEditingController(text: state.profileModel?.phoneNumber);
-    otherNumberCtrl =
-        TextEditingController(text: state.profileModel?.otherNumber);
+    phoneNumberCtrl = TextEditingController(
+        text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
+    otherNumberCtrl = TextEditingController(
+        text: maskPhoneNumber2
+            .maskText(state.profileModel?.otherNumber ??  ''));
     cityCtrl = TextEditingController(text: state.profileModel?.city);
     stateCtrl = TextEditingController(text: state.profileModel?.state);
     countryCtrl = TextEditingController(text: state.profileModel?.country);
     directionCtrl = TextEditingController(text: state.profileModel?.direction);
     cmppsCtrl = TextEditingController(text: state.profileModel?.mpps);
     cmCtrl = TextEditingController(text: state.profileModel?.mc);
+
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
     selectedDate = DateTime.parse(
@@ -84,9 +94,10 @@ class _EditProfileState extends State<EditProfile> {
 
     selectedState = state.profileModel?.idState.toString();
     selectedCity = state.profileModel?.idCity.toString();
-/*    photoCtrl = TextEditingController(text: state.profileModel?.);
-    firmaCtrl = TextEditingController(text: state.profileModel?.);*/
-    // setDataInfo(context);
+    selectedGender = state.profileModel?.idGender.toString();
+
+    BlocProvider.of<MainBloc>(context)
+        .add(ShowLocationDoctorCitiesEvent(selectedState!));
   }
 
   @override
@@ -126,9 +137,7 @@ class _EditProfileState extends State<EditProfile> {
       listenWhen: (previous, current) => current is ProfileSuccessState,
       buildWhen: (previous, current) => current is! ProfileSuccessState,
       listener: (context, state) {
-        if (state is ProfileSuccessState) {
-
-        }
+        if (state is ProfileSuccessState) {}
       },
       builder: (context, state) {
         if (state is ProfileSuccessState) {
@@ -139,7 +148,7 @@ class _EditProfileState extends State<EditProfile> {
                   stateList = state.listStates;
                 });
 
-              //  selectedState = null;
+                //  selectedState = null;
               }
               if (state is LocationCitiesSuccessState) {
                 setState(() {
@@ -147,8 +156,8 @@ class _EditProfileState extends State<EditProfile> {
                 });
 
                 selectedState = state.selectedState;
-                selectedCity = null;
-              } // TODO: implement listener
+                // selectedCity = null;
+              }
             },
             child: Form(
               child: ListView(
@@ -171,39 +180,35 @@ class _EditProfileState extends State<EditProfile> {
                     isReadOnly: false,
                     textController: emailCtrl,
                   ),
-                  /*BuildTextFieldWidget(
-                  labelText: context.appLocalization.labelGender,
-                  placeHolder: state.profileModel.gender ?? '',
-                  isReadOnly: false,
-                  textController: genderCtrl,
-                )*/
-                  const AllGenderWidget(),
+                  BlocProvider(
+                    create: (context) =>
+                        GenderBloc(profileController: ProfileController())
+                          ..add(ConsultAllGenderEvent()),
+                    child: allGenderList(),
+                  ),
+                  //const AllGenderWidget(),
                   _inputBdate(context),
-                  BuildTextFieldWidget(
+                  _phoneNumberWidget()
+                  /*BuildTextFieldWidget(
                     labelText: context.appLocalization.labelPhone,
                     placeHolder: state.profileModel.phoneNumber ?? '',
                     isReadOnly: false,
                     textController: phoneNumberCtrl,
-                  ),
-                  BuildTextFieldWidget(
+                  )*/
+                  ,
+                  /* BuildTextFieldWidget(
                     labelText: context.appLocalization.labelOtherPhone,
                     placeHolder: state.profileModel.otherNumber ?? '',
                     isReadOnly: false,
                     textController: otherNumberCtrl,
-                  ),
+                  )*/
+                  _otherPhoneWidget(),
                   BuildTextFieldWidget(
                     labelText: context.appLocalization.labelCountry,
                     placeHolder: state.profileModel.city ?? '',
                     isReadOnly: true,
                     textController: countryCtrl,
                   ),
-                  /*BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelState,
-                    placeHolder: state.profileModel.state ?? '',
-                    isReadOnly: false,
-                    textController: stateCtrl,
-                  ),*/
-                  //_stateList(),
                   Padding(
                     padding: const EdgeInsets.only(
                         bottom: 30.0, right: 20, left: 20),
@@ -231,6 +236,7 @@ class _EditProfileState extends State<EditProfile> {
                         return null;
                       },
                       onChanged: (stateCode) {
+                        selectedCity = null;
                         if (stateCode != null) {
                           stateCtrl.text = stateCode;
                           userMainBloc
@@ -274,12 +280,6 @@ class _EditProfileState extends State<EditProfile> {
                       },
                     ),
                   ),
-                  /*BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelCity,
-                    placeHolder: state.profileModel.country ?? '',
-                    isReadOnly: false,
-                    textController: cityCtrl,
-                  ),*/
                   BuildTextFieldWidget(
                     labelText: context.appLocalization.labelDirection,
                     placeHolder: state.profileModel.direction ?? '',
@@ -361,6 +361,97 @@ class _EditProfileState extends State<EditProfile> {
           return Container();
         }
       },
+    );
+  }
+
+  Widget allGenderList() {
+    return BlocBuilder<GenderBloc, GenderState>(
+      builder: (context, state) {
+        if (state is GenderDataSuccessState) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.appLocalization.labelGender,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                DropdownButtonFormField(
+                  autovalidateMode: AutovalidateMode.always,
+                  isExpanded: true,
+                  dropdownColor: Colors.white,
+                  // style: fontTextBlack,
+                  // key: _genderKey,
+                  validator: (value) {
+                    // return genderValidator(value.toString());
+                  },
+                  items: state.genderMap.data.map((item) {
+                    return DropdownMenuItem(
+                      value: item.idGender,
+                      child: Text(item.descriptionEs),
+                    );
+                  }).toList(),
+                  onChanged: (newVal) {
+                    /*_genderKey.currentState!.validate();
+                    _mySelectionGender = newVal.toString();*/
+                  },
+                  onTap: () {
+                    /* _genderValid = _genderKey.currentState!.validate();
+                    _saveButtonEnable = _isFormValid();*/
+                  },
+                  value: null,
+                )
+              ],
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget _phoneNumberWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        controller: phoneNumberCtrl,
+        inputFormatters: [maskPhoneNumber],
+        //readOnly: isReadOnly,
+        minLines: 1,
+        maxLines: 5,
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelPhone,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _otherPhoneWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        controller: otherNumberCtrl,
+        inputFormatters: [maskPhoneNumber2],
+        //readOnly: isReadOnly,
+        minLines: 1,
+        maxLines: 5,
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelPhone,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
     );
   }
 
