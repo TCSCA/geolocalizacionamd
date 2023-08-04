@@ -15,6 +15,7 @@ import '/app/pages/styles/app_styles.dart';
 import '/app/core/models/home_service_model.dart';
 import '/app/shared/dialog/custom_dialog_sino.dart';
 import '/app/shared/loading/loading_builder.dart';
+import '/app/pages/routes/geoamd_route.dart';
 
 class AmdPendingPage extends StatefulWidget {
   const AmdPendingPage({super.key});
@@ -391,6 +392,9 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                           } else if (state is AmdOrderAdminSuccessState) {
                             return showDataAmd(
                                 state.homeServiceAssigned, context);
+                          } else if (state is ShowHomeServiceInAttentionState) {
+                            return showDataAmd(
+                                state.homeServiceConfirmed, context);
                           } else {
                             //LoadingBuilder(context).hideOpenDialog();
                             return Container(
@@ -409,17 +413,20 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                       'assets/images/gps_doctor_image.png',
                                       width: 300,
                                     )),
-                                    const SizedBox(height: 30,),
+                                    const SizedBox(
+                                      height: 30,
+                                    ),
                                     const Text(
                                       'No tienes atención médica confirmada en estos momentos',
                                       style: TextStyle(
-                                          //fontSize: 10.0,
+                                          fontSize: 16.0,
                                           fontFamily: 'TitlesHighlight',
                                           fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
-                                    const SizedBox(height: 70,)
-
+                                    const SizedBox(
+                                      height: 70,
+                                    )
                                   ],
                                 ),
                               ),
@@ -665,6 +672,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                 borderRadius: BorderRadius.circular(30))),
                         onPressed: () {
                           _launchURL(url: homeServiceConfirmed.linkAmd);
+                          context.go(GeoAmdRoutes.home);
                         },
                         child: Ink(
                           decoration: BoxDecoration(

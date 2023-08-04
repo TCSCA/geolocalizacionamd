@@ -669,6 +669,12 @@ class MainWidgets {
                   );
                 });
           }
+          if (state is AmdConfirmedAdminSuccessState) {
+            LoadingBuilder(context).hideOpenDialog();
+            //Viene del boton Ver atencion y se redicciona a pagina En Atencion
+            AppCommonWidgets.pageCurrentChanged(
+                context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+          }
         },
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */

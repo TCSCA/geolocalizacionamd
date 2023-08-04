@@ -204,3 +204,16 @@ class DoctorHomeServiceAttentionState extends MainState {
 class DisableButtonState extends MainState {
   const DisableButtonState();
 }
+
+class ShowHomeServiceInAttentionState extends MainState {
+  final HomeServiceModel homeServiceConfirmed;
+  const ShowHomeServiceInAttentionState({required this.homeServiceConfirmed});
+  @override
+  List<Object> get props => [homeServiceConfirmed];
+}
+
+class AmdConfirmedAdminSuccessState extends MainState {
+  const AmdConfirmedAdminSuccessState();
+  @override
+  List<Object> get props => [];
+}

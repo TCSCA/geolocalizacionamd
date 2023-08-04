@@ -53,4 +53,5 @@ class ApiConstants {
   static const String amdPendingAdminFinalizedCodeApi = 'MSG-226';
   static const String amdconfirmedAdminFinalizedCodeApi = 'MSG-232';
   static const String doctorAmdAssignedLabel = 'doctorAmdAssigned';
+  static const String idAmdconfirmedLabel = 'idAmdconfirmed';
 }

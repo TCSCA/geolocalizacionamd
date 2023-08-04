@@ -71,6 +71,8 @@ class LoginController {
           .deleteSecureData(ApiConstants.doctorConnectedLabel);
       await secureStorageController
           .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
+      await secureStorageController
+          .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
     }
 
     return respWebSocket;

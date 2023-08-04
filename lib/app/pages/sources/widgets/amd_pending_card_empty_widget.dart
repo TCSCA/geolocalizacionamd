@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import 'common_widgets.dart';
 
@@ -46,10 +48,8 @@ class AmdPendingCardEmpty extends StatelessWidget {
                         children: [
                           OutlinedButton(
                               onPressed: () {
-                                AppCommonWidgets.pageCurrentChanged(
-                                    context: context,
-                                    routeParam:
-                                        GeoAmdRoutes.medicalCareAccepted);
+                                BlocProvider.of<MainBloc>(context).add(
+                                    const ValidateConfirmedAmdProcessedAdminEvent());
                               },
                               style: OutlinedButton.styleFrom(
                                   padding: EdgeInsets.zero,

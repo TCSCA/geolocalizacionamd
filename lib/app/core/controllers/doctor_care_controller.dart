@@ -316,4 +316,19 @@ class DoctorCareController {
     }
     return newBoolValue;
   }
+
+  Future<String> getAmdConfirmed() async {
+    String amdConfirmed = '';
+    amdConfirmed = await secureStorageController
+        .readSecureData(ApiConstants.idAmdconfirmedLabel);
+    if (amdConfirmed.isEmpty) {
+      amdConfirmed = '0';
+    }
+    return amdConfirmed;
+  }
+
+  Future<void> changeIdAmdConfirmed(final String idAmdconfirmed) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.idAmdconfirmedLabel, idAmdconfirmed);
+  }
 }

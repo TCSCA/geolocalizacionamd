@@ -186,6 +186,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             doctorAvailableSwitch = false;
             //Almecenar AMD para mostrar en atencion
             homeServiceConfirmed = userHomeService;
+            await doctorCareController.changeIdAmdConfirmed(
+                homeServiceConfirmed.idHomeService.toString());
             emit(const HomeServicePendingFinishState(message: "MSGAPP-011"));
           } else {
             //Web desconecta al doctor cuando asigna AMD.
@@ -219,7 +221,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             await doctorCareController.validateDoctorInAttention();
         //await Future.delayed(const Duration(seconds: 2));
         if (doctorInAttention) {
-          emit(ConfirmHomeServiceSuccessState(
+          emit(ShowHomeServiceInAttentionState(
               homeServiceConfirmed: homeServiceConfirmed));
         } else {
           emit(const HomeServiceInAttentionState(
@@ -255,6 +257,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         doctorAvailableSwitch = false;
         //Almecenar AMD para mostrar en atencion
         homeServiceConfirmed = userHomeService;
+        await doctorCareController.changeIdAmdConfirmed(
+            homeServiceConfirmed.idHomeService.toString());
         emit(ConfirmHomeServiceSuccessState(
             homeServiceConfirmed: userHomeService));
       } on ErrorAppException catch (exapp) {
@@ -432,6 +436,30 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceErrorState(message: exgen.message));
+      } catch (unknowerror) {
+        emit(const HomeServiceErrorState(
+            message: AppConstants.codeGeneralErrorMessage));
+      }
+    });
+
+    on<ValidateConfirmedAmdProcessedAdminEvent>((event, emit) async {
+      try {
+        emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+        var idAmdConfirmed = await doctorCareController.getAmdConfirmed();
+        if (idAmdConfirmed != '0') {
+          await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(
+              int.parse(idAmdConfirmed));
+        }
+        emit(const AmdConfirmedAdminSuccessState());
+      } on ErrorAppException catch (exapp) {
+        emit(HomeServiceErrorState(message: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(HomeServiceErrorState(message: exgen.message));
+      } on AmdOrderAdminFinalizedException catch (exadmin) {
+        await doctorCareController.changeIdAmdConfirmed('0');
+        await doctorCareController.changeDoctorInAttention('false');
+        doctorAvailableSwitch = false;
+        emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
             message: AppConstants.codeGeneralErrorMessage));
