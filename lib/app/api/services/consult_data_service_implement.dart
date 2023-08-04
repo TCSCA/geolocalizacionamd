@@ -221,7 +221,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     GenderMap genderMap;
 
     final Uri urlGetAllGender =
-    Uri.parse('https://desa.your24sevendoc.com/api/allGender');
+    Uri.parse(ApiConstants.urlApiGetAllGender);
 
     final Map<String, String> header = {
       /*ApiConstants.headerToken: token,*/

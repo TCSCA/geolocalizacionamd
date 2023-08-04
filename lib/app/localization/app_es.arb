@@ -50,6 +50,7 @@
     "fieldRequired": "Campo requerido.",
     "nameButtonCancel": "Cancelar",
     "nameButtonAccept": "Aceptar",
+    "invalidData": "Dato inválido",
     "invalidLengthField": "Longitud del dato menor a la mínima requerida.",
     "messageLogout": "¿Estás seguro de que quieres cerrar sesión?",
     "messagePatientCare": "Nuestros pacientes deben recibir un trato digno y respetuoso en cualquier momento y bajo cualquier circunstancia.",

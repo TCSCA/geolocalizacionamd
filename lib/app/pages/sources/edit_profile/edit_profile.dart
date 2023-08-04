@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/all_gender_widget.dart';
-import 'package:geolocalizacionamd/app/pages/sources/edit_profile/widgets/build_textfield_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../core/controllers/profile_controller.dart';
@@ -12,11 +10,12 @@ import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../styles/app_styles.dart';
+import '../../validations/profile_validations.dart';
 import '../../widgets/common_widgets.dart';
 import '../main/bloc/main_bloc.dart';
 
 class EditProfile extends StatefulWidget {
-  EditProfile({super.key});
+  const EditProfile({super.key});
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -25,9 +24,25 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
 
-  final GlobalKey<FormFieldState> stateFieldKey = GlobalKey<FormFieldState>();
-
+  final GlobalKey<FormFieldState> fullNameFieldKey =
+  GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> emailFielKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> genderFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> birthdayFieldKey =
+  GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> phoneNumberFieldKey =
+  GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> otherNumberFieldKey =
+  GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cityFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> stateFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> countryFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> directionFieldKey =
+  GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> mppsFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> cmFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> specialityFieldKey =
+  GlobalKey<FormFieldState>();
 
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController identificationDocumentCtrl = TextEditingController();
@@ -53,7 +68,7 @@ class _EditProfileState extends State<EditProfile> {
 
   String? selectedCity;
   String? selectedState;
-  String? selectedGender;
+  int? selectedGender;
 
   final maskPhoneNumber = MaskTextInputFormatter(
       mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
@@ -74,12 +89,12 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
+        '${state.profileModel?.dayBirthday}-${state.profileModel
+            ?.monthBirthday}-${state.profileModel?.yearBirthday}');
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
     otherNumberCtrl = TextEditingController(
-        text: maskPhoneNumber2
-            .maskText(state.profileModel?.otherNumber ??  ''));
+        text: maskPhoneNumber2.maskText(state.profileModel?.otherNumber ?? ''));
     cityCtrl = TextEditingController(text: state.profileModel?.city);
     stateCtrl = TextEditingController(text: state.profileModel?.state);
     countryCtrl = TextEditingController(text: state.profileModel?.country);
@@ -90,11 +105,12 @@ class _EditProfileState extends State<EditProfile> {
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
     selectedDate = DateTime.parse(
-        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}${state.profileModel?.dayBirthday}');
+        '${state.profileModel?.yearBirthday}-${state.profileModel
+            ?.monthBirthday}${state.profileModel?.dayBirthday}');
 
     selectedState = state.profileModel?.idState.toString();
     selectedCity = state.profileModel?.idCity.toString();
-    selectedGender = state.profileModel?.idGender.toString();
+    selectedGender = state.profileModel!.idGender;
 
     BlocProvider.of<MainBloc>(context)
         .add(ShowLocationDoctorCitiesEvent(selectedState!));
@@ -103,32 +119,37 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc
-        .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
+    userMainBloc.add(
+        const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
 
     return /*BlocProvider.value(
       value: BlocProvider.of<ProfileBloc>(context),
       child:*/
-        WillPopScope(
-      onWillPop: () async => backButtonActions(),
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppCommonWidgets.generateAppBar(
-              context: context, appBarHeight: 140.0),
-          body: MultiBlocListener(
-            listeners: [
-              //NavigationBloc y LogoutBloc comunes en todas las paginas.
-              AppCommonWidgets.listenerNavigationBloc(),
-              AppCommonWidgets.listenerLogoutBloc()
-            ],
-            child: Container(
-              padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
-              child: buildListView(),
+      WillPopScope(
+        onWillPop: () async => backButtonActions(),
+        child: SafeArea(
+          child: Scaffold(
+            appBar: AppCommonWidgets.generateAppBar(
+                context: context, appBarHeight: 140.0),
+            body: BlocProvider(
+              create: (context) =>
+              GenderBloc(profileController: ProfileController())
+                ..add(ConsultAllGenderEvent()),
+              child: MultiBlocListener(
+                listeners: [
+                  //NavigationBloc y LogoutBloc comunes en todas las paginas.
+                  AppCommonWidgets.listenerNavigationBloc(),
+                  AppCommonWidgets.listenerLogoutBloc()
+                ],
+                child: Container(
+                  padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
+                  child: buildListView(),
+                ),
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
     //  );
   }
 
@@ -162,154 +183,25 @@ class _EditProfileState extends State<EditProfile> {
             child: Form(
               child: ListView(
                 children: [
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelFullName,
-                    placeHolder: state.profileModel.fullName ?? '',
-                    isReadOnly: false,
-                    textController: fullNameCtrl,
-                  ),
-                  /*BuildTextFieldWidget(
-                  labelText: context.appLocalization.labelIdentificationDocument,
-                  placeHolder: state.profileModel.identificationDocument ?? '',
-                  isReadOnly: false,
-                  textController: identificationDocumentCtrl,
-                ),*/
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelEmail,
-                    placeHolder: state.profileModel.email ?? '',
-                    isReadOnly: false,
-                    textController: emailCtrl,
-                  ),
-                  BlocProvider(
-                    create: (context) =>
-                        GenderBloc(profileController: ProfileController())
-                          ..add(ConsultAllGenderEvent()),
-                    child: allGenderList(),
-                  ),
-                  //const AllGenderWidget(),
+                  _fullNameWidget(),
+                  _emailWidget(),
+                   allGenderList(),
                   _inputBdate(context),
-                  _phoneNumberWidget()
-                  /*BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelPhone,
-                    placeHolder: state.profileModel.phoneNumber ?? '',
-                    isReadOnly: false,
-                    textController: phoneNumberCtrl,
-                  )*/
-                  ,
-                  /* BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelOtherPhone,
-                    placeHolder: state.profileModel.otherNumber ?? '',
-                    isReadOnly: false,
-                    textController: otherNumberCtrl,
-                  )*/
+                  _phoneNumberWidget(),
                   _otherPhoneWidget(),
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelCountry,
-                    placeHolder: state.profileModel.city ?? '',
-                    isReadOnly: true,
-                    textController: countryCtrl,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 30.0, right: 20, left: 20),
-                    child: DropdownButtonFormField(
-                      hint: Text(context.appLocalization.labelSelect),
-                      key: stateFieldKey,
-                      value: selectedState,
-                      decoration: InputDecoration(
-                          hintText: context.appLocalization.labelSelect,
-                          labelText: context.appLocalization.labelState,
-                          labelStyle: AppStyles.textStyleSelect,
-                          errorStyle: AppStyles.textFormFieldError),
-                      style: AppStyles.textStyleOptionSelect,
-                      items: stateList.map((SelectModel selectiveState) {
-                        return DropdownMenuItem(
-                          value: selectiveState.id,
-                          child: Text(selectiveState.name),
-                        );
-                      }).toList(),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (fieldValue) {
-                        if (fieldValue == null) {
-                          return context.appLocalization.fieldRequired;
-                        }
-                        return null;
-                      },
-                      onChanged: (stateCode) {
-                        selectedCity = null;
-                        if (stateCode != null) {
-                          stateCtrl.text = stateCode;
-                          userMainBloc
-                              .add(ShowLocationDoctorCitiesEvent(stateCode));
-                        }
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 30.0, right: 20, left: 20),
-                    child: DropdownButtonFormField(
-                      hint: Text(context.appLocalization.labelSelect),
-                      key: cityFieldKey,
-                      value: selectedCity,
-                      decoration: InputDecoration(
-                          labelText: context.appLocalization.labelCity,
-                          hintText: context.appLocalization.labelSelect,
-                          labelStyle: AppStyles.textStyleSelect,
-                          errorStyle: AppStyles.textFormFieldError),
-                      style: AppStyles.textStyleOptionSelect,
-                      items: cityList.map((SelectModel selectiveCity) {
-                        return DropdownMenuItem(
-                          value: selectiveCity.id,
-                          child: Text(selectiveCity.name),
-                        );
-                      }).toList(),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (fieldValue) {
-                        if (fieldValue == null) {
-                          return context.appLocalization.fieldRequired;
-                        }
-                        return null;
-                      },
-                      onChanged: (cityCode) {
-                        if (cityCode != null) {
-                          cityCtrl.text = cityCode;
-                          userMainBloc
-                              .add(ChangeLocationDoctorCityEvent(cityCode));
-                        }
-                      },
-                    ),
-                  ),
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelDirection,
-                    placeHolder: state.profileModel.direction ?? '',
-                    isReadOnly: false,
-                    textController: directionCtrl,
-                  ),
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelMPPS,
-                    placeHolder: '0000000000',
-                    isReadOnly: true,
-                    textController: cmppsCtrl,
-                  ),
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelCM,
-                    placeHolder: '0000000000',
-                    isReadOnly: true,
-                    textController: cmCtrl,
-                  ),
-                  BuildTextFieldWidget(
-                    labelText: context.appLocalization.labelSpeciality,
-                    placeHolder: state.profileModel.speciality ?? '',
-                    isReadOnly: true,
-                    textController: specialityCtrl,
-                  ),
+                  _countryWidget(),
+                  _stateListWidget(context),
+                  _cityListWidget(context),
+                  _directionWidget(),
+                  _mppsWidget(),
+                  _cmWidget(),
+                  _specialityWidget(),
                   const SizedBox(
                     height: 10,
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                    const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -318,7 +210,7 @@ class _EditProfileState extends State<EditProfile> {
                           onPressed: () {},
                           style: OutlinedButton.styleFrom(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
+                              const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -330,16 +222,13 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            if (kDebugMode) {
-                              print(identificationDocumentCtrl);
-                            }
-                            // context.read<ProfileBloc>().add(GetProfileEvent());
-                          },
+                          onPressed: editFormKey.currentState.validate() ? () {
+                            print(cmppsCtrl);
+                          } : null,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
+                              const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -364,6 +253,83 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  Padding _cityListWidget(BuildContext context) {
+    return Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: 30.0, right: 20, left: 20),
+                  child: DropdownButtonFormField(
+                    hint: Text(context.appLocalization.labelSelect),
+                    key: cityFieldKey,
+                    value: selectedCity,
+                    decoration: InputDecoration(
+                        labelText: context.appLocalization.labelCity,
+                        hintText: context.appLocalization.labelSelect,
+                        labelStyle: AppStyles.textStyleSelect,
+                        errorStyle: AppStyles.textFormFieldError),
+                    style: AppStyles.textStyleOptionSelect,
+                    items: cityList.map((SelectModel selectiveCity) {
+                      return DropdownMenuItem(
+                        value: selectiveCity.id,
+                        child: Text(selectiveCity.name),
+                      );
+                    }).toList(),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (fieldValue) {
+                      if (fieldValue == null) {
+                        return context.appLocalization.fieldRequired;
+                      }
+                      return null;
+                    },
+                    onChanged: (cityCode) {
+                      if (cityCode != null) {
+                        cityCtrl.text = cityCode;
+                        userMainBloc
+                            .add(ChangeLocationDoctorCityEvent(cityCode));
+                      }
+                    },
+                  ),
+                );
+  }
+
+  Padding _stateListWidget(BuildContext context) {
+    return Padding(
+                  padding: const EdgeInsets.only(
+                      bottom: 30.0, right: 20, left: 20),
+                  child: DropdownButtonFormField(
+                    hint: Text(context.appLocalization.labelSelect),
+                    key: stateFieldKey,
+                    value: selectedState,
+                    decoration: InputDecoration(
+                        hintText: context.appLocalization.labelSelect,
+                        labelText: context.appLocalization.labelState,
+                        labelStyle: AppStyles.textStyleSelect,
+                        errorStyle: AppStyles.textFormFieldError),
+                    style: AppStyles.textStyleOptionSelect,
+                    items: stateList.map((SelectModel selectiveState) {
+                      return DropdownMenuItem(
+                        value: selectiveState.id,
+                        child: Text(selectiveState.name),
+                      );
+                    }).toList(),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (fieldValue) {
+                      if (fieldValue == null) {
+                        return context.appLocalization.fieldRequired;
+                      }
+                      return null;
+                    },
+                    onChanged: (stateCode) {
+                      selectedCity = null;
+                      if (stateCode != null) {
+                        stateCtrl.text = stateCode;
+                        userMainBloc
+                            .add(ShowLocationDoctorCitiesEvent(stateCode));
+                      }
+                    },
+                  ),
+                );
+  }
+
   Widget allGenderList() {
     return BlocBuilder<GenderBloc, GenderState>(
       builder: (context, state) {
@@ -383,9 +349,9 @@ class _EditProfileState extends State<EditProfile> {
                   isExpanded: true,
                   dropdownColor: Colors.white,
                   // style: fontTextBlack,
-                  // key: _genderKey,
+                   key: genderFieldKey,
                   validator: (value) {
-                    // return genderValidator(value.toString());
+                     return ProfileValidations().genderValidator(context, value.toString());
                   },
                   items: state.genderMap.data.map((item) {
                     return DropdownMenuItem(
@@ -394,14 +360,15 @@ class _EditProfileState extends State<EditProfile> {
                     );
                   }).toList(),
                   onChanged: (newVal) {
-                    /*_genderKey.currentState!.validate();
-                    _mySelectionGender = newVal.toString();*/
+                    genderFieldKey.currentState!.validate();
+                    selectedGender = newVal;
                   },
                   onTap: () {
+                    genderFieldKey.currentState!.validate();
                     /* _genderValid = _genderKey.currentState!.validate();
                     _saveButtonEnable = _isFormValid();*/
                   },
-                  value: null,
+                  value: selectedGender,
                 )
               ],
             ),
@@ -413,15 +380,67 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  Widget _fullNameWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
+        controller: fullNameCtrl,
+        readOnly: false,
+        minLines: 1,
+        maxLines: 5,
+        key: fullNameFieldKey,
+        validator: (value) =>
+            ProfileValidations().fullnameValidator(context, value ?? ''),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelFullName,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _emailWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
+        controller: emailCtrl,
+        readOnly: false,
+        minLines: 1,
+        maxLines: 5,
+        key: emailFielKey,
+        validator: (value) =>
+            ProfileValidations().emailValidator(context, value ?? ''),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelEmail,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
   Widget _phoneNumberWidget() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
         controller: phoneNumberCtrl,
         inputFormatters: [maskPhoneNumber],
         //readOnly: isReadOnly,
         minLines: 1,
         maxLines: 5,
+        key: phoneNumberFieldKey,
+        validator: (value) =>
+            ProfileValidations().numberValidator(context, value ?? ''),
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelPhone,
@@ -438,11 +457,15 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
         controller: otherNumberCtrl,
         inputFormatters: [maskPhoneNumber2],
         //readOnly: isReadOnly,
         minLines: 1,
         maxLines: 5,
+        key: otherNumberFieldKey,
+        validator: (value) =>
+            ProfileValidations().otherNumberValidator(context, value ?? ''),
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelPhone,
@@ -455,7 +478,120 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  setDataInfo(BuildContext context) {
+  Widget _countryWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        controller: countryCtrl,
+        readOnly: true,
+        minLines: 1,
+        maxLines: 5,
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelCountry,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _directionWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
+        controller: directionCtrl,
+        readOnly: false,
+        minLines: 1,
+        maxLines: 5,
+        key: directionFieldKey,
+        validator: (value) =>
+            ProfileValidations().directionValidator(context, value ?? ''),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelDirection,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _mppsWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
+        controller: cmppsCtrl,
+        readOnly: false,
+        minLines: 1,
+        maxLines: 5,
+        key: mppsFieldKey,
+        validator: (value) => ProfileValidations().mppsValidator(context, value ?? ''),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelMPPS,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _cmWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
+        controller: cmCtrl,
+        readOnly: false,
+        minLines: 1,
+        maxLines: 5,
+        key: cmFieldKey,
+        validator: (value) => ProfileValidations().cmValidator(context, value ?? ''),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelCM,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  Widget _specialityWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.always,
+        controller: specialityCtrl,
+        readOnly: false,
+        minLines: 1,
+        maxLines: 5,
+        key: specialityFieldKey,
+        validator: (value) => ProfileValidations().specialityValidator(context, value ?? ''),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.only(bottom: 5),
+            labelText: context.appLocalization.labelSpeciality,
+            labelStyle: const TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            //hintText: placeHolder,
+            hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
+      ),
+    );
+  }
+
+  /* setDataInfo(BuildContext context) {
     fullNameCtrl = TextEditingController(
         text: context.select(
             (ProfileBloc profileBloc) => profileBloc.profileModel?.fullName));
@@ -521,7 +657,7 @@ class _EditProfileState extends State<EditProfile> {
     specialityCtrl = TextEditingController(
         text: context.select(
             (ProfileBloc profileBloc) => profileBloc.profileModel?.speciality));
-  }
+  }*/
 
   Widget _inputBdate(BuildContext context /*, EdgeInsets style*/) {
     /*return BlocBuilder<EditProfileBloc, EditProfileState>(
@@ -554,11 +690,11 @@ class _EditProfileState extends State<EditProfile> {
               //hintText: date,
               counterStyle: const TextStyle(color: Colors.black),
               focusedBorder: const UnderlineInputBorder(
-                  //borderSide: BorderSide(color: secondaryColor, width: 2),
-                  ),
+                //borderSide: BorderSide(color: secondaryColor, width: 2),
+              ),
 
               errorStyle:
-                  const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
+              const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
               /*errorBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: secondaryColor)),*/
               suffixIcon: Icon(
@@ -621,8 +757,6 @@ class _EditProfileState extends State<EditProfile> {
       fieldHintText: context.appLocalization.dateFormat,
       fieldLabelText: '${context.appLocalization.labelDateOfBirth} (*)',
     ).then((value) {
-      print(value);
-
       if (value == null) {
         DateTime dt = DateTime.parse(selectedDate.toString());
 

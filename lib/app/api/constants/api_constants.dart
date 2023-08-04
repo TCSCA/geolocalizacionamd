@@ -26,7 +26,7 @@ class ApiConstants {
   static final String urlApiValidateIfOrderIsCompletedOrRejected
   = '$urlApi/validateIfOrderIsCompletedOrRejected';
   static final String urlApiGetHistoryAmdOrder = '$urlApi/getHistoryAmdOrder';
-  static final String urlApiGetAllGender = '$urlApi/allGender';
+  static final String urlApiGetAllGender = '$urlApi/getAllGender';
   static final String urlApiGetAllStatesByCountry =
       '$urlApi/getAllStatesByCountry/idCountry';
   static final String urlApiGetAllCityByState =
