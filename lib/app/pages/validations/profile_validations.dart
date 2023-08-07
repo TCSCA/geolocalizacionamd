@@ -96,5 +96,13 @@ class ProfileValidations {
     return null;
   }
 
+  bdValidator(BuildContext context, String event) {
+    if (event == '') {
+      return context.appLocalization.fieldRequired;
+    }
+
+    return null;
+  }
+
 
 }

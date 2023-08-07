@@ -8,3 +8,46 @@ class GetProfileEvent extends ProfileEvent {
   @override
   List<Object?> get props => [];
 }
+
+class EditProfileEvent extends ProfileEvent {
+  String fullName,
+      email,
+      dateOfBirth,
+      phoneNumber,
+      otherPhone,
+      direction,
+      speciality;
+  int idGender, idCountry, idState, idCity, mpps, cm;
+
+  EditProfileEvent(
+      {required this.fullName,
+      required this.email,
+      required this.dateOfBirth,
+      required this.idGender,
+      required this.phoneNumber,
+      required this.otherPhone,
+      required this.idCountry,
+      required this.idState,
+      required this.idCity,
+      required this.direction,
+      required this.mpps,
+      required this.cm,
+      required this.speciality});
+
+  @override
+  List<Object?> get props => [
+        fullName,
+        email,
+        dateOfBirth,
+        idGender,
+        phoneNumber,
+        otherPhone,
+        idCountry,
+        idState,
+        idCity,
+        direction,
+        mpps,
+        cm,
+        speciality
+      ];
+}

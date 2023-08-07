@@ -36,5 +36,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             messageError: AppConstants.codeGeneralErrorMessage));
       }
     });
+
+
+    on<EditProfileEvent>((event, emit) async {
+
+    });
   }
 }

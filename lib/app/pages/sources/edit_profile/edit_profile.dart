@@ -69,6 +69,7 @@ class _EditProfileState extends State<EditProfile> {
   String? selectedCity;
   String? selectedState;
   int? selectedGender;
+  String? dateOfBirthSave;
 
   final maskPhoneNumber = MaskTextInputFormatter(
       mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
@@ -91,6 +92,10 @@ class _EditProfileState extends State<EditProfile> {
         text:
         '${state.profileModel?.dayBirthday}-${state.profileModel
             ?.monthBirthday}-${state.profileModel?.yearBirthday}');
+
+    dateOfBirthSave = '${state.profileModel?.yearBirthday}-${state.profileModel
+        ?.monthBirthday}-${state.profileModel?.dayBirthday}';
+
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
     otherNumberCtrl = TextEditingController(
@@ -122,10 +127,7 @@ class _EditProfileState extends State<EditProfile> {
     userMainBloc.add(
         const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
 
-    return /*BlocProvider.value(
-      value: BlocProvider.of<ProfileBloc>(context),
-      child:*/
-      WillPopScope(
+    return WillPopScope(
         onWillPop: () async => backButtonActions(),
         child: SafeArea(
           child: Scaffold(
@@ -222,9 +224,24 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: editFormKey.currentState.validate() ? () {
-                            print(cmppsCtrl);
-                          } : null,
+                          onPressed: () {
+                            context.read<ProfileBloc>().add(EditProfileEvent(
+                              fullName: fullNameCtrl.text,
+                              email: emailCtrl.text,
+                              dateOfBirth: dateOfBirthSave!,
+                              idGender: selectedGender!,
+                              phoneNumber: phoneNumberCtrl.text,
+                              otherPhone: otherNumberCtrl.text,
+                              idCountry:  58,
+                              idState: int.parse(selectedState!),
+                              idCity: int.parse(selectedCity!),
+                              direction: directionCtrl.text,
+                              mpps: int.parse(cmppsCtrl.text),
+                              cm: int.parse(cmCtrl.text),
+                              speciality: specialityCtrl.text
+
+                            ));
+                          } ,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding:
@@ -273,7 +290,7 @@ class _EditProfileState extends State<EditProfile> {
                         child: Text(selectiveCity.name),
                       );
                     }).toList(),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autovalidateMode: AutovalidateMode.always,
                     validator: (fieldValue) {
                       if (fieldValue == null) {
                         return context.appLocalization.fieldRequired;
@@ -659,9 +676,7 @@ class _EditProfileState extends State<EditProfile> {
             (ProfileBloc profileBloc) => profileBloc.profileModel?.speciality));
   }*/
 
-  Widget _inputBdate(BuildContext context /*, EdgeInsets style*/) {
-    /*return BlocBuilder<EditProfileBloc, EditProfileState>(
-      builder: (context, state) {*/
+  Widget _inputBdate(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: Column(
@@ -675,13 +690,11 @@ class _EditProfileState extends State<EditProfile> {
           TextFormField(
             controller: birthdayCtrl,
             autovalidateMode: AutovalidateMode.always,
-            // key: _bdKey,
+            key: birthdayFieldKey,
             keyboardType: TextInputType.visiblePassword,
             style: const TextStyle(fontSize: 16, color: Colors.black),
             validator: (value) {
-              return null;
-
-              /// return bdValidator(date);
+              return ProfileValidations().bdValidator(context, birthdayCtrl.text);
             },
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(vertical: 18.0),
@@ -708,8 +721,8 @@ class _EditProfileState extends State<EditProfile> {
             onTap: () async {
               FocusScope.of(context).requestFocus(FocusNode());
               await _selectDate(context);
-              //_dateValid = _bdKey.currentState!.validate();
-              // _saveButtonEnable = _isFormValid();
+              birthdayFieldKey.currentState!.validate();
+
               String dateDay = selectedDate!.day.toString();
               String dateMonth = selectedDate!.month.toString();
 
@@ -723,10 +736,8 @@ class _EditProfileState extends State<EditProfile> {
                   text: '$dateDay-$dateMonth-${selectedDate!.year}');
               //date = '$dateDay/$dateMonth/${selectedDate!.year}';
 
-              /*context.read<EditProfileBloc>().add(EditDateOfBird(
-                      dateOfbird: '${selectedDate.year}-$dateMonth-$dateDay'));*/
 
-              // dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';
+               dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';
             },
             onChanged: (value) {
               // setState(() {
