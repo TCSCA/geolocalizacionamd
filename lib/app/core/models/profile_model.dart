@@ -1,4 +1,5 @@
 class ProfileModel {
+  int? idAffiliate;
   String? fullName;
   String? dayBirthday;
   String? monthBirthday;
@@ -23,6 +24,7 @@ class ProfileModel {
   String? mc;
 
   ProfileModel({
+    this.idAffiliate,
     this.fullName,
     this.dayBirthday,
     this.monthBirthday,

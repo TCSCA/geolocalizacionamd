@@ -37,9 +37,32 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
     });
 
-
     on<EditProfileEvent>((event, emit) async {
+      emit(ProfileLoadingState());
 
+      try {
+        getProfileController.doEditProfile(
+            event.fullName,
+            event.email,
+            event.dateOfBirth,
+            event.idGender,
+            event.phoneNumber,
+            event.otherPhone,
+            event.idCountry,
+            event.idState,
+            event.idCity,
+            event.direction,
+            event.mpps,
+            event.cm,
+            event.speciality);
+      } on ErrorAppException catch (exapp) {
+        emit(ProfileErrorState(messageError: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(ProfileErrorState(messageError: exgen.message));
+      } catch (unknowerror) {
+        emit(const ProfileErrorState(
+            messageError: AppConstants.codeGeneralErrorMessage));
+      }
     });
   }
 }

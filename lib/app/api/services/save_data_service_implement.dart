@@ -207,4 +207,49 @@ class SaveDataServiceImp implements SaveDataService {
 
     return isComplete;
   }
+
+  @override
+  Future<void> editProfileService(
+      String fullName,
+      String email,
+      String dateOfBirth,
+      int idGender,
+      String phoneNumber,
+      String otherPhone,
+      int idCountry,
+      int idState,
+      int idCity,
+      String direction,
+      int mpps,
+      int cm,
+      String speciality,
+      tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+
+    final Uri urlEditProfile = Uri.parse(ApiConstants.urlApiEditProfileService);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyEditProfile = jsonEncode({
+      "idAffiliate":,
+      "fullName": fullName,
+      "idGender": idGender,
+      "birthday": dateOfBirth,
+      "email": email,
+      "phoneNumber":phoneNumber,
+      "otherNumber":otherPhone,
+      "idCity": idCity,
+      "direction": direction,
+      "speciality": speciality,
+      "photoProfile": [],
+      "digitalSignature":[]
+    });
+
+
+    print('Hola');
+  }
 }

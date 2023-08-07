@@ -1,6 +1,8 @@
 import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:geolocalizacionamd/app/api/mappings/profile_mapping.dart';
 import 'package:geolocalizacionamd/app/api/services/consult_data_service_implement.dart';
+import 'package:geolocalizacionamd/app/api/services/save_data_service.dart';
+import 'package:geolocalizacionamd/app/api/services/save_data_service_implement.dart';
 import 'package:geolocalizacionamd/app/core/controllers/secure_storage_controller.dart';
 import 'package:geolocalizacionamd/app/core/models/profile_model.dart';
 
@@ -14,6 +16,7 @@ class ProfileController {
   final ConsultDataService consultDataService = ConsultDataServiceImp();
   final SecureStorageController secureStorageController =
       SecureStorageController();
+  final SaveDataService saveDataService = SaveDataServiceImp();
 
   late ProfileModel profileModel;
   late ProfileMap profileMap;
@@ -37,6 +40,7 @@ class ProfileController {
       final month = realMonth < 10 ? '0$realMonth' : realMonth.toString();
 
       profileModel = ProfileModel(
+          idAffiliate: profileMap.data?.idAffiliate,
           fullName: profileMap.data?.fullName,
           identificationDocument: profileMap.data?.identificationDocument,
           documentType: profileMap.data?.documentType,
@@ -86,5 +90,49 @@ class ProfileController {
       throw ErrorGeneralException();
     }
     return genderMap;
+  }
+
+  Future<void> doEditProfile(
+      String fullName,
+      String email,
+      String dateOfBirth,
+      int idGender,
+      String phoneNumber,
+      String otherPhone,
+      int idCountry,
+      int idState,
+      int idCity,
+      String direction,
+      int mpps,
+      int cm,
+      String speciality) async {
+    final tokenUser =
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+    try {
+      await saveDataService.editProfileService(
+          fullName,
+          email,
+          dateOfBirth,
+          idGender,
+          phoneNumber,
+          otherPhone,
+          idCountry,
+          idState,
+          idCity,
+          direction,
+          mpps,
+          cm,
+          speciality,
+          tokenUser);
+    } on ErrorAppException {
+      rethrow;
+    } on ActiveConnectionException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
   }
 }

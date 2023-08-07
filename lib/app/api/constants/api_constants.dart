@@ -37,6 +37,8 @@ class ApiConstants {
       '$urlApi/rejectHomeServiceAttention';
   static final String urlApiCompleteHomeService =
       '$urlApi/completeHomeServiceAttention';
+  static final String urlApiEditProfileService =
+      '$urlApi/editProfile';
   static final String urlApiChangePassword = '$urlApi/changePassword';
   static final String urlApiGetAllReasonRejection =
       '$urlApi/getAllReasonRejectionAmd';
