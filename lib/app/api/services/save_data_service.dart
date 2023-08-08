@@ -18,6 +18,7 @@ abstract class SaveDataService {
       final String tokenUser, final RejectAmdModel requestReject);
 
   Future<void> editProfileService(
+      int idAffiliate,
       String fullName,
       String email,
       String dateOfBirth,

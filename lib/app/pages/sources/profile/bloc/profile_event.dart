@@ -17,10 +17,11 @@ class EditProfileEvent extends ProfileEvent {
       otherPhone,
       direction,
       speciality;
-  int idGender, idCountry, idState, idCity, mpps, cm;
+  int idAffiliate, idGender, idCountry, idState, idCity, mpps, cm;
 
   EditProfileEvent(
-      {required this.fullName,
+      {required this.idAffiliate,
+      required this.fullName,
       required this.email,
       required this.dateOfBirth,
       required this.idGender,
@@ -36,6 +37,7 @@ class EditProfileEvent extends ProfileEvent {
 
   @override
   List<Object?> get props => [
+        idAffiliate,
         fullName,
         email,
         dateOfBirth,

@@ -93,6 +93,7 @@ class ProfileController {
   }
 
   Future<void> doEditProfile(
+      int idAffiliate,
       String fullName,
       String email,
       String dateOfBirth,
@@ -111,6 +112,7 @@ class ProfileController {
 
     try {
       await saveDataService.editProfileService(
+          idAffiliate,
           fullName,
           email,
           dateOfBirth,

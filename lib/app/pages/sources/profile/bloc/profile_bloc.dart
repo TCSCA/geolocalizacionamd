@@ -42,6 +42,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       try {
         getProfileController.doEditProfile(
+          event.idAffiliate,
             event.fullName,
             event.email,
             event.dateOfBirth,

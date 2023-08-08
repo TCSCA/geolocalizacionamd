@@ -210,6 +210,7 @@ class SaveDataServiceImp implements SaveDataService {
 
   @override
   Future<void> editProfileService(
+      int idAffiliate,
       String fullName,
       String email,
       String dateOfBirth,
@@ -235,7 +236,7 @@ class SaveDataServiceImp implements SaveDataService {
     };
 
     final String bodyEditProfile = jsonEncode({
-      "idAffiliate":,
+      "idAffiliate": idAffiliate,
       "fullName": fullName,
       "idGender": idGender,
       "birthday": dateOfBirth,

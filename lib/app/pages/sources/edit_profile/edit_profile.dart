@@ -226,6 +226,7 @@ class _EditProfileState extends State<EditProfile> {
                         ElevatedButton(
                           onPressed: () {
                             context.read<ProfileBloc>().add(EditProfileEvent(
+                              idAffiliate: BlocProvider.of<ProfileBloc>(context, listen: false).profileModel!.idAffiliate!,
                               fullName: fullNameCtrl.text,
                               email: emailCtrl.text,
                               dateOfBirth: dateOfBirthSave!,
