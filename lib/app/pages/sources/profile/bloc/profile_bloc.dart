@@ -39,9 +39,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     on<EditProfileEvent>((event, emit) async {
       emit(ProfileLoadingState());
+      final bool updateProfileSuccess;
 
       try {
-        getProfileController.doEditProfile(
+    updateProfileSuccess =  await  getProfileController.doEditProfile(
           event.idAffiliate,
             event.fullName,
             event.email,
@@ -56,6 +57,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             event.mpps,
             event.cm,
             event.speciality);
+
+    if(updateProfileSuccess) {
+      emit(ProfileUpdateSuccessState());
+    }
+
       } on ErrorAppException catch (exapp) {
         emit(ProfileErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {

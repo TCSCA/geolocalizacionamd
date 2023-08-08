@@ -209,7 +209,7 @@ class SaveDataServiceImp implements SaveDataService {
   }
 
   @override
-  Future<void> editProfileService(
+  Future<bool> editProfileService(
       int idAffiliate,
       String fullName,
       String email,
@@ -227,6 +227,7 @@ class SaveDataServiceImp implements SaveDataService {
       tokenUser) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
+    bool editProfileStatusSuccess = false;
 
     final Uri urlEditProfile = Uri.parse(ApiConstants.urlApiEditProfileService);
 
@@ -241,16 +242,39 @@ class SaveDataServiceImp implements SaveDataService {
       "idGender": idGender,
       "birthday": dateOfBirth,
       "email": email,
-      "phoneNumber":phoneNumber,
-      "otherNumber":otherPhone,
+      "phoneNumber": phoneNumber,
+      "otherNumber": otherPhone,
       "idCity": idCity,
       "direction": direction,
       "speciality": speciality,
-      "photoProfile": [],
-      "digitalSignature":[]
+      "medicalLicense": "$mpps|$cm",
+      "photoProfile": null,
+      "digitalSignature": null
     });
 
+    try {
+      responseApi = await http.post(urlEditProfile,
+          headers: headerEditProfile, body: bodyEditProfile);
 
-    print('Hola');
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        editProfileStatusSuccess = true;
+      } else {
+        final String error =
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        throw ErrorAppException(
+            message:
+            (error.isNotEmpty ? error : ApiConstants.generalErrorCodeApi));
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return editProfileStatusSuccess;
   }
 }

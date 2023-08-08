@@ -92,7 +92,7 @@ class ProfileController {
     return genderMap;
   }
 
-  Future<void> doEditProfile(
+  Future<bool> doEditProfile(
       int idAffiliate,
       String fullName,
       String email,
@@ -109,9 +109,10 @@ class ProfileController {
       String speciality) async {
     final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    final bool updateProfileSuccess;
 
     try {
-      await saveDataService.editProfileService(
+     updateProfileSuccess = await saveDataService.editProfileService(
           idAffiliate,
           fullName,
           email,
@@ -136,5 +137,7 @@ class ProfileController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
+
+    return updateProfileSuccess;
   }
 }

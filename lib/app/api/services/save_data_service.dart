@@ -17,7 +17,7 @@ abstract class SaveDataService {
   Future<bool> onCompleteHomeService(
       final String tokenUser, final RejectAmdModel requestReject);
 
-  Future<void> editProfileService(
+  Future<bool> editProfileService(
       int idAffiliate,
       String fullName,
       String email,

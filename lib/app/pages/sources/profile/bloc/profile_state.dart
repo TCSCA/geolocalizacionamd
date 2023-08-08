@@ -19,7 +19,7 @@ class ProfileSuccessState extends ProfileState {
   List<Object> get props => [profileModel];
 }
 
-class ProffileUpdateSuccessState extends ProfileState {
+class ProfileUpdateSuccessState extends ProfileState {
 
   @override
   List<Object?> get props => [];

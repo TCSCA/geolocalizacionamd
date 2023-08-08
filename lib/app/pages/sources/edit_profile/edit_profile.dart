@@ -7,6 +7,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../core/controllers/profile_controller.dart';
 import '../../../core/models/select_model.dart';
 import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
+import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../styles/app_styles.dart';
@@ -25,24 +26,24 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
 
   final GlobalKey<FormFieldState> fullNameFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFielKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> genderFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> birthdayFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> phoneNumberFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> otherNumberFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cityFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> stateFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> countryFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> directionFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> mppsFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cmFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> specialityFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
 
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController identificationDocumentCtrl = TextEditingController();
@@ -81,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
-
+    userMainBloc = BlocProvider.of<MainBloc>(context);
     final state = BlocProvider.of<ProfileBloc>(context, listen: false);
     fullNameCtrl = TextEditingController(text: state.profileModel?.fullName);
     identificationDocumentCtrl =
@@ -90,11 +91,10 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-        '${state.profileModel?.dayBirthday}-${state.profileModel
-            ?.monthBirthday}-${state.profileModel?.yearBirthday}');
+            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
 
-    dateOfBirthSave = '${state.profileModel?.yearBirthday}-${state.profileModel
-        ?.monthBirthday}-${state.profileModel?.dayBirthday}';
+    dateOfBirthSave =
+        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
 
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
@@ -110,8 +110,7 @@ class _EditProfileState extends State<EditProfile> {
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
     selectedDate = DateTime.parse(
-        '${state.profileModel?.yearBirthday}-${state.profileModel
-            ?.monthBirthday}${state.profileModel?.dayBirthday}');
+        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}${state.profileModel?.dayBirthday}');
 
     selectedState = state.profileModel?.idState.toString();
     selectedCity = state.profileModel?.idCity.toString();
@@ -123,77 +122,182 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc.add(
-        const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
+    userMainBloc
+        .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
 
     return WillPopScope(
-        onWillPop: () async => backButtonActions(),
-        child: SafeArea(
-          child: Scaffold(
-            appBar: AppCommonWidgets.generateAppBar(
-                context: context, appBarHeight: 140.0),
-            body: BlocProvider(
-              create: (context) =>
-              GenderBloc(profileController: ProfileController())
-                ..add(ConsultAllGenderEvent()),
-              child: MultiBlocListener(
-                listeners: [
-                  //NavigationBloc y LogoutBloc comunes en todas las paginas.
-                  AppCommonWidgets.listenerNavigationBloc(),
-                  AppCommonWidgets.listenerLogoutBloc()
-                ],
-                child: Container(
-                  padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
-                  child: buildListView(),
-                ),
+      onWillPop: () async => backButtonActions(),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppCommonWidgets.generateAppBar(
+              context: context, appBarHeight: 140.0),
+          body: BlocProvider(
+            create: (context) =>
+                GenderBloc(profileController: ProfileController())
+                  ..add(ConsultAllGenderEvent()),
+            child: MultiBlocListener(
+              listeners: [
+                //NavigationBloc y LogoutBloc comunes en todas las paginas.
+                AppCommonWidgets.listenerNavigationBloc(),
+                AppCommonWidgets.listenerLogoutBloc()
+              ],
+              child: Container(
+                padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
+                child: buildListView(),
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
     //  );
   }
 
   Widget buildListView() {
     return BlocConsumer<ProfileBloc, ProfileState>(
-      listenWhen: (previous, current) => current is ProfileSuccessState,
-      buildWhen: (previous, current) => current is! ProfileSuccessState,
       listener: (context, state) {
-        if (state is ProfileSuccessState) {}
+        if (state is ProfileSuccessState) {
+        } else if (state is ProfileUpdateSuccessState) {
+          context.read<ProfileBloc>().add(GetProfileEvent());
+        }
       },
       builder: (context, state) {
-        if (state is ProfileSuccessState) {
-          return BlocListener<MainBloc, MainState>(
-            listener: (context, state) {
-              if (state is LocationStatesSuccessState) {
-                setState(() {
-                  stateList = state.listStates;
-                });
+        // if (state is ProfileSuccessState) {
+        return BlocConsumer<MainBloc, MainState>(
+          listener: (context, state) {
+            if (state is LocationShowLoadingState) {
+              LoadingBuilder(context).showLoadingIndicator(state.message);
+            }
+            if (state is LocationStatesSuccessState) {
+              LoadingBuilder(context).hideOpenDialog();
 
-                //  selectedState = null;
-              }
-              if (state is LocationCitiesSuccessState) {
-                setState(() {
-                  cityList = state.listCities;
-                });
+              stateList = state.listStates;
+              userMainBloc.add(ShowLocationDoctorCitiesEvent(stateCtrl.text));
+              //selectedState = null;
+            }
+            if (state is LocationCitiesSuccessState) {
+              LoadingBuilder(context).hideOpenDialog();
 
-                selectedState = state.selectedState;
-                // selectedCity = null;
+              cityList = state.listCities;
+              selectedState = state.selectedState;
+
+              if (cityCtrl.text.isEmpty) {
+                selectedCity = null;
               }
-            },
-            child: Form(
+            }
+
+            if (state is ChangeLocationDoctorCityState) {
+              selectedCity = state.selectedCity;
+            }
+          },
+          builder: (context, state) {
+            return Form(
               child: ListView(
                 children: [
+                   /*Center(
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 80.0,
+                          backgroundImage:
+                              AssetImage('assets/images/profile_default.png'),
+                        ),
+                        Positioned(
+                            bottom: 20.0,
+                            right: 20.0,
+                            child: InkWell(
+                              onTap: () {},
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.teal,
+                                size: 28.0,
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),*/
                   _fullNameWidget(),
                   _emailWidget(),
-                   allGenderList(),
+                  allGenderList(),
                   _inputBdate(context),
                   _phoneNumberWidget(),
                   _otherPhoneWidget(),
                   _countryWidget(),
-                  _stateListWidget(context),
-                  _cityListWidget(context),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 30.0, right: 20, left: 20),
+                    child: DropdownButtonFormField(
+                      hint: Text(context.appLocalization.labelSelect),
+                      key: stateFieldKey,
+                      decoration: InputDecoration(
+                          hintText: context.appLocalization.labelSelect,
+                          labelText: context.appLocalization.labelState,
+                          labelStyle: AppStyles.textStyleSelect,
+                          errorStyle: AppStyles.textFormFieldError),
+                      style: AppStyles.textStyleOptionSelect,
+                      items: stateList.map((SelectModel selectiveState) {
+                        return DropdownMenuItem(
+                          value: selectiveState.id,
+                          child: Text(selectiveState.name),
+                        );
+                      }).toList(),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (fieldValue) {
+                        if (fieldValue == null) {
+                          return context.appLocalization.fieldRequired;
+                        }
+                        return null;
+                      },
+                      onChanged: (stateCode) {
+                        if (stateCode != null) {
+                          stateCtrl.text = stateCode;
+                          cityCtrl.clear();
+                          selectedCity = null;
+                          cityList.clear();
+                          userMainBloc
+                              .add(ShowLocationDoctorCitiesEvent(stateCode));
+                        }
+                      },
+                      value: selectedState,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: 30.0, right: 20, left: 20),
+                    child: DropdownButtonFormField(
+                      hint: Text(context.appLocalization.labelSelect),
+                      key: cityFieldKey,
+                      decoration: InputDecoration(
+                          labelText: context.appLocalization.labelCity,
+                          hintText: context.appLocalization.labelSelect,
+                          labelStyle: AppStyles.textStyleSelect,
+                          errorStyle: AppStyles.textFormFieldError),
+                      style: AppStyles.textStyleOptionSelect,
+                      items: cityList.map((SelectModel selectiveCity) {
+                        return DropdownMenuItem(
+                          value: selectiveCity.id,
+                          child: Text(selectiveCity.name),
+                        );
+                      }).toList(),
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (fieldValue) {
+                        if (fieldValue == null) {
+                          return context.appLocalization.fieldRequired;
+                        }
+                        return null;
+                      },
+                      onChanged: (cityCode) {
+                        selectedCity = cityCode;
+                        if (cityCode != null) {
+                          cityCtrl.text = cityCode;
+                          userMainBloc
+                              .add(ChangeLocationDoctorCityEvent(cityCode));
+                        }
+                      },
+                      value: selectedCity,
+                    ),
+                  ),
+                  //_cityListWidget(context),
                   _directionWidget(),
                   _mppsWidget(),
                   _cmWidget(),
@@ -203,7 +307,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Padding(
                     padding:
-                    const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -212,7 +316,7 @@ class _EditProfileState extends State<EditProfile> {
                           onPressed: () {},
                           style: OutlinedButton.styleFrom(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 30),
+                                  const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -226,27 +330,31 @@ class _EditProfileState extends State<EditProfile> {
                         ElevatedButton(
                           onPressed: () {
                             context.read<ProfileBloc>().add(EditProfileEvent(
-                              idAffiliate: BlocProvider.of<ProfileBloc>(context, listen: false).profileModel!.idAffiliate!,
-                              fullName: fullNameCtrl.text,
-                              email: emailCtrl.text,
-                              dateOfBirth: dateOfBirthSave!,
-                              idGender: selectedGender!,
-                              phoneNumber: maskPhoneNumber.unmaskText(phoneNumberCtrl.text),
-                              otherPhone: maskPhoneNumber2.unmaskText(otherNumberCtrl.text),
-                              idCountry:  58,
-                              idState: int.parse(selectedState!),
-                              idCity: int.parse(selectedCity!),
-                              direction: directionCtrl.text,
-                              mpps: int.parse(cmppsCtrl.text),
-                              cm: int.parse(cmCtrl.text),
-                              speciality: specialityCtrl.text
-
-                            ));
-                          } ,
+                                idAffiliate: BlocProvider.of<ProfileBloc>(
+                                        context,
+                                        listen: false)
+                                    .profileModel!
+                                    .idAffiliate!,
+                                fullName: fullNameCtrl.text,
+                                email: emailCtrl.text,
+                                dateOfBirth: dateOfBirthSave!,
+                                idGender: selectedGender!,
+                                phoneNumber: maskPhoneNumber
+                                    .unmaskText(phoneNumberCtrl.text),
+                                otherPhone: maskPhoneNumber2
+                                    .unmaskText(otherNumberCtrl.text),
+                                idCountry: 25,
+                                idState: int.parse(selectedState!),
+                                idCity: int.parse(selectedCity!),
+                                direction: directionCtrl.text,
+                                mpps: int.parse(cmppsCtrl.text),
+                                cm: int.parse(cmCtrl.text),
+                                speciality: specialityCtrl.text));
+                          },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 30),
+                                  const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -262,90 +370,11 @@ class _EditProfileState extends State<EditProfile> {
                   )
                 ],
               ),
-            ),
-          );
-        } else {
-          return Container();
-        }
+            );
+          },
+        );
       },
     );
-  }
-
-  Padding _cityListWidget(BuildContext context) {
-    return Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 30.0, right: 20, left: 20),
-                  child: DropdownButtonFormField(
-                    hint: Text(context.appLocalization.labelSelect),
-                    key: cityFieldKey,
-                    value: selectedCity,
-                    decoration: InputDecoration(
-                        labelText: context.appLocalization.labelCity,
-                        hintText: context.appLocalization.labelSelect,
-                        labelStyle: AppStyles.textStyleSelect,
-                        errorStyle: AppStyles.textFormFieldError),
-                    style: AppStyles.textStyleOptionSelect,
-                    items: cityList.map((SelectModel selectiveCity) {
-                      return DropdownMenuItem(
-                        value: selectiveCity.id,
-                        child: Text(selectiveCity.name),
-                      );
-                    }).toList(),
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (fieldValue) {
-                      if (fieldValue == null) {
-                        return context.appLocalization.fieldRequired;
-                      }
-                      return null;
-                    },
-                    onChanged: (cityCode) {
-                      if (cityCode != null) {
-                        cityCtrl.text = cityCode;
-                        userMainBloc
-                            .add(ChangeLocationDoctorCityEvent(cityCode));
-                      }
-                    },
-                  ),
-                );
-  }
-
-  Padding _stateListWidget(BuildContext context) {
-    return Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 30.0, right: 20, left: 20),
-                  child: DropdownButtonFormField(
-                    hint: Text(context.appLocalization.labelSelect),
-                    key: stateFieldKey,
-                    value: selectedState,
-                    decoration: InputDecoration(
-                        hintText: context.appLocalization.labelSelect,
-                        labelText: context.appLocalization.labelState,
-                        labelStyle: AppStyles.textStyleSelect,
-                        errorStyle: AppStyles.textFormFieldError),
-                    style: AppStyles.textStyleOptionSelect,
-                    items: stateList.map((SelectModel selectiveState) {
-                      return DropdownMenuItem(
-                        value: selectiveState.id,
-                        child: Text(selectiveState.name),
-                      );
-                    }).toList(),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (fieldValue) {
-                      if (fieldValue == null) {
-                        return context.appLocalization.fieldRequired;
-                      }
-                      return null;
-                    },
-                    onChanged: (stateCode) {
-                      selectedCity = null;
-                      if (stateCode != null) {
-                        stateCtrl.text = stateCode;
-                        userMainBloc
-                            .add(ShowLocationDoctorCitiesEvent(stateCode));
-                      }
-                    },
-                  ),
-                );
   }
 
   Widget allGenderList() {
@@ -367,9 +396,10 @@ class _EditProfileState extends State<EditProfile> {
                   isExpanded: true,
                   dropdownColor: Colors.white,
                   // style: fontTextBlack,
-                   key: genderFieldKey,
+                  key: genderFieldKey,
                   validator: (value) {
-                     return ProfileValidations().genderValidator(context, value.toString());
+                    return ProfileValidations()
+                        .genderValidator(context, value.toString());
                   },
                   items: state.genderMap.data.map((item) {
                     return DropdownMenuItem(
@@ -550,7 +580,8 @@ class _EditProfileState extends State<EditProfile> {
         minLines: 1,
         maxLines: 5,
         key: mppsFieldKey,
-        validator: (value) => ProfileValidations().mppsValidator(context, value ?? ''),
+        validator: (value) =>
+            ProfileValidations().mppsValidator(context, value ?? ''),
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelMPPS,
@@ -573,7 +604,8 @@ class _EditProfileState extends State<EditProfile> {
         minLines: 1,
         maxLines: 5,
         key: cmFieldKey,
-        validator: (value) => ProfileValidations().cmValidator(context, value ?? ''),
+        validator: (value) =>
+            ProfileValidations().cmValidator(context, value ?? ''),
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelCM,
@@ -596,7 +628,8 @@ class _EditProfileState extends State<EditProfile> {
         minLines: 1,
         maxLines: 5,
         key: specialityFieldKey,
-        validator: (value) => ProfileValidations().specialityValidator(context, value ?? ''),
+        validator: (value) =>
+            ProfileValidations().specialityValidator(context, value ?? ''),
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelSpeciality,
@@ -695,7 +728,8 @@ class _EditProfileState extends State<EditProfile> {
             keyboardType: TextInputType.visiblePassword,
             style: const TextStyle(fontSize: 16, color: Colors.black),
             validator: (value) {
-              return ProfileValidations().bdValidator(context, birthdayCtrl.text);
+              return ProfileValidations()
+                  .bdValidator(context, birthdayCtrl.text);
             },
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(vertical: 18.0),
@@ -704,11 +738,11 @@ class _EditProfileState extends State<EditProfile> {
               //hintText: date,
               counterStyle: const TextStyle(color: Colors.black),
               focusedBorder: const UnderlineInputBorder(
-                //borderSide: BorderSide(color: secondaryColor, width: 2),
-              ),
+                  //borderSide: BorderSide(color: secondaryColor, width: 2),
+                  ),
 
               errorStyle:
-              const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
+                  const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
               /*errorBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: secondaryColor)),*/
               suffixIcon: Icon(
@@ -737,8 +771,7 @@ class _EditProfileState extends State<EditProfile> {
                   text: '$dateDay-$dateMonth-${selectedDate!.year}');
               //date = '$dateDay/$dateMonth/${selectedDate!.year}';
 
-
-               dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';
+              dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';
             },
             onChanged: (value) {
               // setState(() {
@@ -783,5 +816,13 @@ class _EditProfileState extends State<EditProfile> {
       }
       return null;
     });
+  }
+
+  @override
+  void dispose() {
+    cityCtrl.dispose();
+    stateCtrl.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
 }
