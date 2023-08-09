@@ -1,12 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/controllers/profile_controller.dart';
 import '../../../core/models/select_model.dart';
 import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
+import '../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
@@ -17,6 +24,7 @@ import '../main/bloc/main_bloc.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
+
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -72,6 +80,10 @@ class _EditProfileState extends State<EditProfile> {
   int? selectedGender;
   String? dateOfBirthSave;
 
+  late Uint8List? _bytesImage;
+
+/*  final List _bytesImageEmpty = [];*/
+
   final maskPhoneNumber = MaskTextInputFormatter(
       mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
   final maskPhoneNumber2 = MaskTextInputFormatter(
@@ -82,6 +94,9 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+
+    //_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
+
     userMainBloc = BlocProvider.of<MainBloc>(context);
     final state = BlocProvider.of<ProfileBloc>(context, listen: false);
     fullNameCtrl = TextEditingController(text: state.profileModel?.fullName);
@@ -131,10 +146,14 @@ class _EditProfileState extends State<EditProfile> {
         child: Scaffold(
           appBar: AppCommonWidgets.generateAppBar(
               context: context, appBarHeight: 140.0),
-          body: BlocProvider(
-            create: (context) =>
-                GenderBloc(profileController: ProfileController())
-                  ..add(ConsultAllGenderEvent()),
+          body: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                  create: (context) =>
+                      GenderBloc(profileController: ProfileController())
+                        ..add(ConsultAllGenderEvent())),
+              BlocProvider(create: (context) => ImageProfileBloc())
+            ],
             child: MultiBlocListener(
               listeners: [
                 //NavigationBloc y LogoutBloc comunes en todas las paginas.
@@ -194,28 +213,23 @@ class _EditProfileState extends State<EditProfile> {
             return Form(
               child: ListView(
                 children: [
-                   /*Center(
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 80.0,
-                          backgroundImage:
-                              AssetImage('assets/images/profile_default.png'),
-                        ),
-                        Positioned(
-                            bottom: 20.0,
-                            right: 20.0,
-                            child: InkWell(
-                              onTap: () {},
-                              child: Icon(
-                                Icons.camera_alt,
-                                color: Colors.teal,
-                                size: 28.0,
-                              ),
-                            ))
-                      ],
-                    ),
-                  ),*/
+                  BlocConsumer<ImageProfileBloc, ImageProfileState>(
+                    listener: (context, state) {
+
+
+                    },
+                    builder: (context, state) {
+                      return ImageWidget(
+                        isEdit: true,
+                        color: Colors.blueGrey,
+                        imagePath: state.imageBuild,
+                        onClicked: () async {
+                          await _selectImageCamera(context);/*takeImage(context, state.imageBuild != null ? true : false);*/
+                        },
+                      );
+                    },
+                  ),
+
                   _fullNameWidget(),
                   _emailWidget(),
                   allGenderList(),
@@ -824,5 +838,108 @@ class _EditProfileState extends State<EditProfile> {
     stateCtrl.dispose();
     // TODO: implement dispose
     super.dispose();
+  }
+
+  takeImage(BuildContext context, bool imageReady) async {
+    _showChoiceDialog(context, imageReady);
+
+  }
+
+  bool invalidatePermissionCamera = true;
+  bool invalidatePermissionStorage = true;
+  XFile? imagee;
+
+  _selectImageCamera(BuildContext context) async {
+    //Navigator.pop(context);
+
+    var cameraPermission = await Permission.camera.request();
+
+    if (cameraPermission == PermissionStatus.permanentlyDenied ||
+        cameraPermission == PermissionStatus.restricted) {
+      if (invalidatePermissionCamera) {
+        //  _importantPermission(S.current.important, S.current.MSG_181, context);
+      }
+      if (invalidatePermissionCamera == false) {
+        invalidatePermissionCamera = true;
+      }
+    } else if (cameraPermission == PermissionStatus.granted) {
+      BlocProvider.of<ImageProfileBloc>(context).add(SelectImageByCamera());
+      //context.read<ImageProfileBloc>().add(CleanImageByProfile());
+      ///_showChoiceDialog(context);
+      // Either the permission was already granted before or the user just granted it.
+
+      /*imagee = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (imagee != null) {
+        final _path = imagee!.path.toLowerCase();
+        final _imageCheck = _path.endsWith('.jpg') ||
+            _path.endsWith('.jpeg') ||
+            _path.endsWith('.png');
+        final _imageSize = (await imagee!.length()) / 1000;
+        _cropImage(imagee!.path);
+        //imageRaw = await imagee!.readAsBytes();
+        print(await imagee!.length());
+      }*/
+    } else if (cameraPermission == PermissionStatus.denied) {
+      invalidatePermissionCamera = false;
+    }
+  }
+
+
+  Future<void> _showChoiceDialog(BuildContext context, bool imageReady) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              "Elige una opción",
+              style: TextStyle(color: Colors.blue),
+            ),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  const Divider(
+                    height: 1,
+                    color: Colors.blue,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      //_seletImageGallery();
+                    },
+                    title: Text('Galeria'),
+                    leading: const Icon(
+                      Icons.account_box,
+                      color: Colors.blue,
+                    ),
+                  ),
+
+                  ListTile(
+                    onTap: () {
+                      _selectImageCamera(context);
+                     /// context.read<ImageProfileBloc>().add(SelectImageByCamera());
+                    },
+                    title: Text('Camara'),
+                    leading: const Icon(
+                      Icons.camera,
+                      color: Colors.blue,
+                    ),
+                  ),
+
+                  imageReady
+                      ? ListTile(
+                    onTap: () {
+
+                    },
+                    title: Text('Borrar imagen'),
+                    leading: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  )
+                      : Container(),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
