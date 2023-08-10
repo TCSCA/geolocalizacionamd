@@ -449,16 +449,17 @@ class _LoginPageState extends State<LoginPage> {
                           denyFingerprint == 'Y')
                         _BiometricWidget(onTap: () => _authenticate(context)),
                       const SizedBox(height: 50.0),
-                      /*Container(
+                      Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(horizontal: 40),
                         //width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
+                            /*Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RenewPasswordPage()));
+                                    builder: (context) => RenewPasswordPage()));*/
+                            context.go(GeoAmdRoutes.changePassword, extra: NavigationBloc());
                           },
                           child: Text(
                             context.appLocalization.forgotPassword,
@@ -468,7 +469,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(
                         height: 20,
-                      ),*/
+                      ),
                       InkWell(
                         onTap: () => launchUrl(
                           Uri.parse(
