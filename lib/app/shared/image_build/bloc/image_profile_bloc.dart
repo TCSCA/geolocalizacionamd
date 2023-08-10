@@ -10,7 +10,7 @@ part 'image_profile_event.dart';
 part 'image_profile_state.dart';
 
 class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
-  ImageProfileBloc() : super(const ImageProfileState()) {
+  ImageProfileBloc() : super(ImageProfileInitial()) {
     on<ImageProfileEvent>((event, emit) {
       // TODO: implement event handler
     });
@@ -23,11 +23,11 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
 
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
-      emit(ImageProfileState(imageBuild: bytesImage, imagePath: imagePath));
+      emit(ImageChangeSuccessState(imageBuild: bytesImage, imagePath: imagePath));
     });
 
     on<CleanImageByProfile> ((event, emit) async {
-      emit(const ImageProfileState(imageBuild: null, imagePath: null));
+      emit(const ImageChangeSuccessState(imageBuild: null, imagePath: null));
     });
   }
   }

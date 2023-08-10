@@ -79,8 +79,8 @@ class _EditProfileState extends State<EditProfile> {
   String? selectedState;
   int? selectedGender;
   String? dateOfBirthSave;
-
-  late Uint8List? _bytesImage;
+//_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
+  late Uint8List? _bytesImage = null;
 
 /*  final List _bytesImageEmpty = [];*/
 
@@ -91,12 +91,12 @@ class _EditProfileState extends State<EditProfile> {
 
   late MainBloc userMainBloc;
 
-  @override
+/*  @override
   void initState() {
     super.initState();
-
-    //_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
-
+  }
+  */
+  setData() {
     userMainBloc = BlocProvider.of<MainBloc>(context);
     final state = BlocProvider.of<ProfileBloc>(context, listen: false);
     fullNameCtrl = TextEditingController(text: state.profileModel?.fullName);
@@ -106,10 +106,10 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
+        '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
 
     dateOfBirthSave =
-        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
+    '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
 
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
@@ -130,15 +130,19 @@ class _EditProfileState extends State<EditProfile> {
     selectedState = state.profileModel?.idState.toString();
     selectedCity = state.profileModel?.idCity.toString();
     selectedGender = state.profileModel!.idGender;
-
-    BlocProvider.of<MainBloc>(context)
-        .add(ShowLocationDoctorCitiesEvent(selectedState!));
   }
 
   @override
   Widget build(BuildContext context) {
+    setData();
+
+    BlocProvider.of<MainBloc>(context)
+        .add(ShowLocationDoctorCitiesEvent(selectedState!));
+
     userMainBloc
         .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
+
+
 
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
@@ -215,16 +219,18 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   BlocConsumer<ImageProfileBloc, ImageProfileState>(
                     listener: (context, state) {
-
-
+                      if(state is ImageChangeSuccessState) {
+                        _bytesImage = state.imageBuild;
+                      }
                     },
                     builder: (context, state) {
                       return ImageWidget(
                         isEdit: true,
                         color: Colors.blueGrey,
-                        imagePath: state.imageBuild,
+                        imagePath: _bytesImage,
                         onClicked: () async {
-                          await _selectImageCamera(context);/*takeImage(context, state.imageBuild != null ? true : false);*/
+                          //await _selectImageCamera(context);
+                          takeImage(context);
                         },
                       );
                     },
@@ -840,9 +846,8 @@ class _EditProfileState extends State<EditProfile> {
     super.dispose();
   }
 
-  takeImage(BuildContext context, bool imageReady) async {
-    _showChoiceDialog(context, imageReady);
-
+  takeImage(BuildContext context) async {
+    _showChoiceDialog(context);
   }
 
   bool invalidatePermissionCamera = true;
@@ -885,7 +890,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
 
-  Future<void> _showChoiceDialog(BuildContext context, bool imageReady) {
+  Future<void> _showChoiceDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -924,7 +929,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ),
 
-                  imageReady
+                  _bytesImage != null
                       ? ListTile(
                     onTap: () {
 
