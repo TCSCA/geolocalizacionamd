@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -24,7 +25,6 @@ import '../main/bloc/main_bloc.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
-
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -79,6 +79,7 @@ class _EditProfileState extends State<EditProfile> {
   String? selectedState;
   int? selectedGender;
   String? dateOfBirthSave;
+
 //_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
   late Uint8List? _bytesImage = null;
 
@@ -106,10 +107,10 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-        '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
+            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
 
     dateOfBirthSave =
-    '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
+        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
 
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
@@ -141,8 +142,6 @@ class _EditProfileState extends State<EditProfile> {
 
     userMainBloc
         .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
-
-
 
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
@@ -219,7 +218,7 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   BlocConsumer<ImageProfileBloc, ImageProfileState>(
                     listener: (context, state) {
-                      if(state is ImageChangeSuccessState) {
+                      if (state is ImageChangeSuccessState) {
                         _bytesImage = state.imageBuild;
                       }
                     },
@@ -229,7 +228,6 @@ class _EditProfileState extends State<EditProfile> {
                         color: Colors.blueGrey,
                         imagePath: _bytesImage,
                         onClicked: () async {
-                          //await _selectImageCamera(context);
                           takeImage(context);
                         },
                       );
@@ -847,7 +845,13 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   takeImage(BuildContext context) async {
-    _showChoiceDialog(context);
+    int option;
+    option = await _showChoiceDialog();
+    if (option == 1) {
+      _seletImageGallery(context);
+    } else if (option == 2) {
+      await _selectImageCamera(context);
+    }
   }
 
   bool invalidatePermissionCamera = true;
@@ -889,9 +893,36 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+  _seletImageGallery(context) async {
+    PermissionStatus storagePermission;
 
-  Future<void> _showChoiceDialog(BuildContext context) {
-    return showDialog(
+    if (Platform.isAndroid) {
+      storagePermission = await Permission.storage.request();
+    } else {
+      storagePermission = await Permission.photos.request();
+      print(storagePermission);
+    }
+
+    if (storagePermission == PermissionStatus.granted ||
+        storagePermission == PermissionStatus.limited) {
+      BlocProvider.of<ImageProfileBloc>(context).add(SelectImageByGallery());
+    } else if (storagePermission == PermissionStatus.permanentlyDenied ||
+        storagePermission == PermissionStatus.restricted) {
+      if (invalidatePermissionStorage) {
+        // _importantPermission(S.current.important, S.current.MSG_181, context);
+      }
+      if (!invalidatePermissionStorage) {
+        invalidatePermissionStorage = true;
+      }
+    } else if (storagePermission == PermissionStatus.denied) {
+      invalidatePermissionStorage = false;
+    }
+  }
+
+  Future<int> _showChoiceDialog() async {
+    int selectionOption = 0;
+
+    await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -908,6 +939,8 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   ListTile(
                     onTap: () {
+                      selectionOption = 1;
+                      context.pop();
                       //_seletImageGallery();
                     },
                     title: Text('Galeria'),
@@ -916,11 +949,12 @@ class _EditProfileState extends State<EditProfile> {
                       color: Colors.blue,
                     ),
                   ),
-
                   ListTile(
                     onTap: () {
-                      _selectImageCamera(context);
-                     /// context.read<ImageProfileBloc>().add(SelectImageByCamera());
+                      context.pop();
+                      selectionOption = 2;
+                      //_selectImageCamera(context);
+                      /// context.read<ImageProfileBloc>().add(SelectImageByCamera());
                     },
                     title: Text('Camara'),
                     leading: const Icon(
@@ -928,23 +962,23 @@ class _EditProfileState extends State<EditProfile> {
                       color: Colors.blue,
                     ),
                   ),
-
                   _bytesImage != null
                       ? ListTile(
-                    onTap: () {
-
-                    },
-                    title: Text('Borrar imagen'),
-                    leading: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  )
+                          onTap: () {
+                            selectionOption = 3;
+                          },
+                          title: Text('Borrar imagen'),
+                          leading: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        )
                       : Container(),
                 ],
               ),
             ),
           );
         });
+    return selectionOption;
   }
 }

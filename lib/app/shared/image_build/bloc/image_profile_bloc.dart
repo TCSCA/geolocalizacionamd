@@ -26,6 +26,16 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       emit(ImageChangeSuccessState(imageBuild: bytesImage, imagePath: imagePath));
     });
 
+    on<SelectImageByGallery>((event, emit) async {
+      String imagePath;
+      Uint8List? bytesImage;
+
+      bytesImage = await ImageProfileController().selectImageByGalleryCtrl();
+      imagePath = const Base64Encoder().convert(List.from(bytesImage!));
+
+      emit(ImageChangeSuccessState(imageBuild: bytesImage, imagePath: imagePath));
+    });
+
     on<CleanImageByProfile> ((event, emit) async {
       emit(const ImageChangeSuccessState(imageBuild: null, imagePath: null));
     });

@@ -6,25 +6,43 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageProfileController {
-  XFile? imagee;
+  XFile? image;
+  final ImagePicker _picker = ImagePicker();
 
   selectImageByCameraCtrl() async {
-    Uint8List? bytesImage;
-    String? imagePath;
+    Uint8List? bytesImage = null;
 
-    imagee = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (imagee != null) {
-      final _path = imagee!.path.toLowerCase();
+    image = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (image != null) {
+      final _path = image!.path.toLowerCase();
       final _imageCheck = _path.endsWith('.jpg') ||
           _path.endsWith('.jpeg') ||
           _path.endsWith('.png');
       //final _imageSize = (await imagee!.length()) / 1000;
-    bytesImage = await _cropImage(imagee!.path);
+    bytesImage = await _cropImage(image!.path);
     //imageRaw = await imagee!.readAsBytes();
-    print(await imagee!.length());
+    print(await image!.length());
   }
 
    return bytesImage;
+  }
+
+
+  selectImageByGalleryCtrl() async {
+    Uint8List? bytesImage = null;
+
+    image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final _path = image!.path.toLowerCase();
+      /*final _imageCheck = _path.endsWith('.jpg') ||
+          _path.endsWith('.jpeg') ||
+          _path.endsWith('.png');*/
+
+     bytesImage = await _cropImage(image!.path);
+      //imageRaw = await image!.readAsBytes();
+      print(await image!.length());
+    }
+    return bytesImage;
   }
 
 
