@@ -897,7 +897,9 @@ class _EditProfileState extends State<EditProfile> {
     PermissionStatus storagePermission;
 
     if (Platform.isAndroid) {
-      storagePermission = await Permission.storage.request();
+      storagePermission = await Permission.storage.request(
+
+      );
     } else {
       storagePermission = await Permission.photos.request();
       print(storagePermission);
