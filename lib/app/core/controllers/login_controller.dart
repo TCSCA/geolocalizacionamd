@@ -125,9 +125,6 @@ class LoginController {
   }
 
   Future<void> cleanDataSession() async {
-    final amdBorrado =
-        await secureStorageController.readSecureData(ApiConstants.idDoctorAmd);
-    print(amdBorrado);
     await secureStorageController
         .deleteSecureData(ApiConstants.doctorInAttentionLabel);
     await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
