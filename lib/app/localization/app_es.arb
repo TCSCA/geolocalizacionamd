@@ -65,10 +65,11 @@
     "appMsg006": "La atención fue rechazada con éxito. Es necesario que se ponga Disponible para continuar recibiendo nuevas atenciones.",
     "appMsg007": "La transacción fue exitosa. Es necesario que se ponga Disponible para continuar recibiendo nuevas atenciones.",
     "appMsg008": "No tienes órdenes pendientes para atender en este momento.",
-    "appMsg009": "Debes finalizar la atención antes de salir de la aplicación.",
+    "appMsg009": "Actualmente, tiene una atención confirmada. Es necesario que finalice la misma antes de salir de la aplicación.",
     "appMsg010": "La atención fue confirmada con éxito.",
     "appMsg011": "Tienes una atención confirmada anteriormente. Es necesario que finalice la misma para continuar recibiendo nuevas atenciones.",
     "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?",
+    "appMsg137": "No se encontraron datos registrados",
     "appMsg229": "¿Desea que la opción huella dactilar se muestre como alternativa para iniciar sesión a futuro?",
     "appMsg234": "Usted se encuentra disponible para atender, para poder cerrar sesión debe desconectarse.",
     "changePasswordAction": "Cambiando contraseña",
@@ -76,5 +77,6 @@
     "biometricAuthentication": "Autenticación Biométrica",
     "biometricNotSupported" : "Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad",
     "limitBiometricAttempts": "Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.",
-    "invalidFingerprint": "La huella dactilar es incorrecta, por favor intente nuevamente."
+    "invalidFingerprint": "La huella dactilar es incorrecta, por favor intente nuevamente.",
+    "appMsg012": "Actualmente, tiene una atención confirmada. Es necesario que finalice la misma para continuar recibiendo nuevas atenciones."
 }

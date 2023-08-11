@@ -80,6 +80,9 @@ class AppMessages {
     if (code.trim() == 'MSGAPP-011') {
       return context.appLocalization.appMsg011;
     }
+    if (code.trim() == 'MSGAPP-012') {
+      return context.appLocalization.appMsg012;
+    }
     return code;
   }
 }

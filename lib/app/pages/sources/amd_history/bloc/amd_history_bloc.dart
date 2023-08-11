@@ -25,7 +25,11 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
       try {
        homeServiceModel = await amdHistoryController.getHistoryAmdOrderListCtrl();
 
-        emit(AmdHistorySuccessDataState(homeService: homeServiceModel));
+       List<HomeServiceModel> homeServiceModelF = homeServiceModel.where((i) => i.idStatusHomeService == 4).toList();
+       List<HomeServiceModel> homeServiceModelP = homeServiceModel.where((i) => i.idStatusHomeService == 3).toList();
+
+
+        emit(AmdHistorySuccessDataState(homeServiceF: homeServiceModelF, homeServiceP: homeServiceModelP));
 
       } on ErrorAppException catch (exapp) {
         emit(AmdHistoryErrorState(messageError: exapp.message));

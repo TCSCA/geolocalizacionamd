@@ -180,3 +180,40 @@ class HomeServiceAssignedErrorState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class DoctorHomeServiceAssignedState extends MainState {
+  final String message;
+  const DoctorHomeServiceAssignedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class NotHomeServiceAssignedState extends MainState {
+  const NotHomeServiceAssignedState();
+  @override
+  List<Object> get props => [];
+}
+
+class DoctorHomeServiceAttentionState extends MainState {
+  final String message;
+  const DoctorHomeServiceAttentionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class DisableButtonState extends MainState {
+  const DisableButtonState();
+}
+
+class ShowHomeServiceInAttentionState extends MainState {
+  final HomeServiceModel homeServiceConfirmed;
+  const ShowHomeServiceInAttentionState({required this.homeServiceConfirmed});
+  @override
+  List<Object> get props => [homeServiceConfirmed];
+}
+
+class AmdConfirmedAdminSuccessState extends MainState {
+  const AmdConfirmedAdminSuccessState();
+  @override
+  List<Object> get props => [];
+}

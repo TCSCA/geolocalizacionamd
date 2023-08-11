@@ -15,7 +15,6 @@ import '/app/pages/widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/core/models/select_model.dart';
 import '/app/pages/styles/app_styles.dart';
-import '/app/shared/method/back_button_action.dart';
 
 class MainWidgets {
   PreferredSizeWidget generateAppBar({required BuildContext context}) {
@@ -183,8 +182,8 @@ class MainWidgets {
                 return CustomDialogBox(
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusSuccess),
-                  descriptions: AppMessages().getMessage(
-                      context, context.appLocalization.appMsg010),
+                  descriptions: AppMessages()
+                      .getMessage(context, context.appLocalization.appMsg010),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,
@@ -218,6 +217,52 @@ class MainWidgets {
                   dialogCancel: () {},
                 );
               });
+        }
+        if (state is DoctorHomeServiceAssignedState) {
+          //LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              routeSettings: const RouteSettings(name: GeoAmdRoutes.home),
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.home);
+          });
+        }
+        if (state is DoctorHomeServiceAttentionState) {
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            AppCommonWidgets.pageCurrentChanged(
+                context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+          });
+        }
+        if (state is NotHomeServiceAssignedState) {
+          context.go(GeoAmdRoutes.amdLocation);
         }
       },
       builder: (context, state) {
@@ -313,23 +358,21 @@ class MainWidgets {
                       )
                     ] else ...[
                       FloatingActionButton.extended(
-                        label: const Text(
-                          'No disponible',
-                          style: TextStyle(
-                              fontFamily: 'TitlesHighlight',
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        backgroundColor: Colors.grey,
-                        icon: const Icon(
-                          Icons.power_settings_new,
-                          size: 24.0,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          context.go(GeoAmdRoutes.amdLocation);
-                        },
-                      )
+                          label: const Text(
+                            'No disponible',
+                            style: TextStyle(
+                                fontFamily: 'TitlesHighlight',
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          backgroundColor: Colors.grey,
+                          icon: const Icon(
+                            Icons.power_settings_new,
+                            size: 24.0,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => BlocProvider.of<MainBloc>(context)
+                              .add(const ValidateDoctorAmdAssignedEvent()))
                     ]
                   ],
                 )
@@ -441,7 +484,7 @@ class MainWidgets {
                 context: context,
                 builder: (BuildContext context) {
                   return WillPopScope(
-                    onWillPop: () async => backButtonActions(),
+                    onWillPop: () async => false,
                     child: AlertDialog(
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
@@ -484,13 +527,23 @@ class MainWidgets {
                                         itemHeight: null,
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(8.0)),
-                                        hint: const Text("Seleccione motivo"),
+                                        hint:
+                                            const Text("Seleccione una opción"),
                                         key: reasonFieldKey,
                                         decoration: const InputDecoration(
+                                          focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: AppStyles
+                                                      .colorBluePrimary)),
+                                          enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: AppStyles
+                                                      .colorBluePrimary)),
+                                          
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',
-                                          hintText: 'Seleccione motivo',
+                                          hintText: 'Seleccione una opción',
                                           labelStyle: TextStyle(
                                               fontSize: 27.0,
                                               color: Colors.black,
@@ -518,7 +571,7 @@ class MainWidgets {
                                             AutovalidateMode.onUserInteraction,
                                         validator: (fieldValue) {
                                           if (fieldValue == null) {
-                                            return 'Motivo es requerido';
+                                            return 'Campo requerido.';
                                           }
                                           return null;
                                         },
@@ -616,6 +669,12 @@ class MainWidgets {
                   );
                 });
           }
+          if (state is AmdConfirmedAdminSuccessState) {
+            LoadingBuilder(context).hideOpenDialog();
+            //Viene del boton Ver atencion y se redicciona a pagina En Atencion
+            AppCommonWidgets.pageCurrentChanged(
+                context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+          }
         },
         /* buildWhen: (previous, current) =>
             previous != current && current is HomeServiceSuccessState, */
@@ -627,6 +686,11 @@ class MainWidgets {
           } else if (state is ReasonRejectionSuccessState) {
             //LoadingBuilder(context).hideOpenDialog();
             final homeServiceAssigned = (state.homeServiceAssigned);
+            return AmdPendingCard(homeService: homeServiceAssigned);
+          } else if (state is DoctorHomeServiceAssignedState) {
+            //LoadingBuilder(context).hideOpenDialog();
+            final homeServiceAssigned =
+                BlocProvider.of<MainBloc>(context).homeServicePending;
             return AmdPendingCard(homeService: homeServiceAssigned);
           } else {
             //LoadingBuilder(context).hideOpenDialog();

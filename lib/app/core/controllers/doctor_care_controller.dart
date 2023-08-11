@@ -77,9 +77,6 @@ class DoctorCareController {
       requestConnect.tokenDevice = tokenFirebase;
       respApiConnect =
           await saveDataService.onConnectDoctorAmd(requestConnect, tokenUser);
-
-      await secureStorageController.writeSecureData(
-          ApiConstants.doctorConnectedLabel, 'true');
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -98,8 +95,6 @@ class DoctorCareController {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiDisconect = await saveDataService.onDisconectDoctorAmd(tokenUser);
-      await secureStorageController.writeSecureData(
-          ApiConstants.doctorConnectedLabel, 'false');
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -300,5 +295,40 @@ class DoctorCareController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
+  }
+
+  Future<void> changeDoctorConnected(final String isConnected) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.doctorConnectedLabel, isConnected);
+  }
+
+  Future<void> changeDoctorAmdPending(final String isAmdAssigned) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.doctorAmdAssignedLabel, isAmdAssigned);
+  }
+
+  Future<bool> validateDoctorAmdAssigned() async {
+    bool newBoolValue = false;
+    String isAmdAssigned = await secureStorageController
+        .readSecureData(ApiConstants.doctorAmdAssignedLabel);
+    if (isAmdAssigned.isNotEmpty) {
+      newBoolValue = isAmdAssigned.toLowerCase() != "false";
+    }
+    return newBoolValue;
+  }
+
+  Future<String> getAmdConfirmed() async {
+    String amdConfirmed = '';
+    amdConfirmed = await secureStorageController
+        .readSecureData(ApiConstants.idAmdconfirmedLabel);
+    if (amdConfirmed.isEmpty) {
+      amdConfirmed = '0';
+    }
+    return amdConfirmed;
+  }
+
+  Future<void> changeIdAmdConfirmed(final String idAmdconfirmed) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.idAmdconfirmedLabel, idAmdconfirmed);
   }
 }
