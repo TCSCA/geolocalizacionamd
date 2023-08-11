@@ -5,6 +5,7 @@ abstract class ImageProfileEvent extends Equatable {
 }
 
 class SelectImageByGallery extends ImageProfileEvent {
+
   @override
   List<Object?> get props => [];
 }

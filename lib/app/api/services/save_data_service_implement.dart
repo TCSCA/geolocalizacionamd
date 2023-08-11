@@ -216,7 +216,7 @@ class SaveDataServiceImp implements SaveDataService {
       String dateOfBirth,
       int idGender,
       String phoneNumber,
-      String otherPhone,
+      String? otherPhone,
       int idCountry,
       int idState,
       int idCity,
@@ -224,7 +224,8 @@ class SaveDataServiceImp implements SaveDataService {
       int mpps,
       int cm,
       String speciality,
-      tokenUser) async {
+      String? photoProfile,
+      String tokenUser) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     bool editProfileStatusSuccess = false;
@@ -248,7 +249,7 @@ class SaveDataServiceImp implements SaveDataService {
       "direction": direction,
       "speciality": speciality,
       "medicalLicense": "$mpps|$cm",
-      "photoProfile": null,
+      "photoProfile": photoProfile,
       "digitalSignature": null
     });
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +8,6 @@ import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -82,6 +82,7 @@ class _EditProfileState extends State<EditProfile> {
 
 //_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
   late Uint8List? _bytesImage = null;
+  String? pathImage;
 
 /*  final List _bytesImageEmpty = [];*/
 
@@ -220,6 +221,17 @@ class _EditProfileState extends State<EditProfile> {
                     listener: (context, state) {
                       if (state is ImageChangeSuccessState) {
                         _bytesImage = state.imageBuild;
+                        pathImage = state.imagePath;
+                      } else if (state is CameraPermissionSuccessState) {
+                        if (state.typePermission == 'gallery') {
+                          context
+                              .read<ImageProfileBloc>()
+                              .add(SelectImageByGallery());
+                        } else if (state.typePermission == 'camera') {
+                          context
+                              .read<ImageProfileBloc>()
+                              .add(SelectImageByCamera());
+                        }
                       }
                     },
                     builder: (context, state) {
@@ -367,7 +379,8 @@ class _EditProfileState extends State<EditProfile> {
                                 direction: directionCtrl.text,
                                 mpps: int.parse(cmppsCtrl.text),
                                 cm: int.parse(cmCtrl.text),
-                                speciality: specialityCtrl.text));
+                                speciality: specialityCtrl.text,
+                                photoProfile: pathImage));
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
@@ -848,76 +861,14 @@ class _EditProfileState extends State<EditProfile> {
     int option;
     option = await _showChoiceDialog();
     if (option == 1) {
-      _seletImageGallery(context);
+      BlocProvider.of<ImageProfileBloc>(context)
+          .add(ValidatePermissionGalleryEvent());
     } else if (option == 2) {
-      await _selectImageCamera(context);
-    }
-  }
-
-  bool invalidatePermissionCamera = true;
-  bool invalidatePermissionStorage = true;
-  XFile? imagee;
-
-  _selectImageCamera(BuildContext context) async {
-    //Navigator.pop(context);
-
-    var cameraPermission = await Permission.camera.request();
-
-    if (cameraPermission == PermissionStatus.permanentlyDenied ||
-        cameraPermission == PermissionStatus.restricted) {
-      if (invalidatePermissionCamera) {
-        //  _importantPermission(S.current.important, S.current.MSG_181, context);
-      }
-      if (invalidatePermissionCamera == false) {
-        invalidatePermissionCamera = true;
-      }
-    } else if (cameraPermission == PermissionStatus.granted) {
-      BlocProvider.of<ImageProfileBloc>(context).add(SelectImageByCamera());
-      //context.read<ImageProfileBloc>().add(CleanImageByProfile());
-      ///_showChoiceDialog(context);
-      // Either the permission was already granted before or the user just granted it.
-
-      /*imagee = await ImagePicker().pickImage(source: ImageSource.camera);
-      if (imagee != null) {
-        final _path = imagee!.path.toLowerCase();
-        final _imageCheck = _path.endsWith('.jpg') ||
-            _path.endsWith('.jpeg') ||
-            _path.endsWith('.png');
-        final _imageSize = (await imagee!.length()) / 1000;
-        _cropImage(imagee!.path);
-        //imageRaw = await imagee!.readAsBytes();
-        print(await imagee!.length());
-      }*/
-    } else if (cameraPermission == PermissionStatus.denied) {
-      invalidatePermissionCamera = false;
-    }
-  }
-
-  _seletImageGallery(context) async {
-    PermissionStatus storagePermission;
-
-    if (Platform.isAndroid) {
-      storagePermission = await Permission.storage.request(
-
-      );
-    } else {
-      storagePermission = await Permission.photos.request();
-      print(storagePermission);
-    }
-
-    if (storagePermission == PermissionStatus.granted ||
-        storagePermission == PermissionStatus.limited) {
-      BlocProvider.of<ImageProfileBloc>(context).add(SelectImageByGallery());
-    } else if (storagePermission == PermissionStatus.permanentlyDenied ||
-        storagePermission == PermissionStatus.restricted) {
-      if (invalidatePermissionStorage) {
-        // _importantPermission(S.current.important, S.current.MSG_181, context);
-      }
-      if (!invalidatePermissionStorage) {
-        invalidatePermissionStorage = true;
-      }
-    } else if (storagePermission == PermissionStatus.denied) {
-      invalidatePermissionStorage = false;
+      BlocProvider.of<ImageProfileBloc>(context)
+          .add(ValidatePermissionCameraEvent());
+      // await _selectImageCamera(context);
+    } else if (option == 3) {
+      BlocProvider.of<ImageProfileBloc>(context).add(CleanImageByProfile());
     }
   }
 
@@ -943,7 +894,6 @@ class _EditProfileState extends State<EditProfile> {
                     onTap: () {
                       selectionOption = 1;
                       context.pop();
-                      //_seletImageGallery();
                     },
                     title: Text('Galeria'),
                     leading: const Icon(
@@ -955,8 +905,6 @@ class _EditProfileState extends State<EditProfile> {
                     onTap: () {
                       context.pop();
                       selectionOption = 2;
-                      //_selectImageCamera(context);
-                      /// context.read<ImageProfileBloc>().add(SelectImageByCamera());
                     },
                     title: Text('Camara'),
                     leading: const Icon(
@@ -968,6 +916,7 @@ class _EditProfileState extends State<EditProfile> {
                       ? ListTile(
                           onTap: () {
                             selectionOption = 3;
+                            context.pop();
                           },
                           title: Text('Borrar imagen'),
                           leading: const Icon(

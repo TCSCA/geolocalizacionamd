@@ -1,13 +1,125 @@
-import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:io';
+
+import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageProfileController {
+
   XFile? image;
   final ImagePicker _picker = ImagePicker();
+  bool invalidatePermissionCamera = true;
+  bool invalidatePermissionStorage = true;
+
+  List validateType = [
+    "isPermanentlyDenied",
+    "isGranted",
+    "isLimit"
+  ];
+
+
+  doValidatePermissionCamera() async {
+
+    var cameraPermission = await Permission.camera.request();
+    String validate = '';
+
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+      int androidVersion = androidInfo.version.sdkInt;
+
+      if (androidVersion < 33) {
+        // For Android versions earlier than 12
+        cameraPermission = await Permission.storage.request();
+        // return await Permission.storage.isGranted;
+      } else {
+        // For Android 12 and later
+        cameraPermission = await Permission.photos.request();
+        //  return await Permission.manageExternalStorage.isGranted;
+      }
+
+    } else {
+      cameraPermission = await Permission.photos.request();
+    }
+
+    if (cameraPermission == PermissionStatus.permanentlyDenied ||
+        cameraPermission == PermissionStatus.restricted) {
+      if (invalidatePermissionCamera) {
+        validate = validateType[2];
+        //  _importantPermission(S.current.important, S.current.MSG_181, context);
+      }
+      if (invalidatePermissionCamera == false) {
+        invalidatePermissionCamera = true;
+      }
+    } else if (cameraPermission == PermissionStatus.granted) {
+      validate = validateType[1];
+      //BlocProvider.of<ImageProfileBloc>(context).add(SelectImageByCamera());
+      //context.read<ImageProfileBloc>().add(CleanImageByProfile());
+      ///_showChoiceDialog(context);
+      // Either the permission was already granted before or the user just granted it.
+
+
+    } else if (cameraPermission == PermissionStatus.denied) {
+      invalidatePermissionCamera = false;
+      validate = validateType[2];
+    }
+
+    return validate;
+  }
+
+
+  doValidatePermissionGallery() async {
+    PermissionStatus photoPermission;
+
+    String validate = '';
+
+    if (Platform.isAndroid) {
+
+      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+      int androidVersion = androidInfo.version.sdkInt;
+
+      if (androidVersion < 33) {
+
+        // For Android versions earlier than 12
+        photoPermission = await Permission.storage.request();
+       // return await Permission.storage.isGranted;
+
+      } else {
+        // For Android 12 and later
+        photoPermission = await Permission.photos.request();
+      //  return await Permission.manageExternalStorage.isGranted;
+      }
+
+    } else {
+      photoPermission = await Permission.photos.request();
+    }
+
+    if (photoPermission == PermissionStatus.granted ||
+        photoPermission == PermissionStatus.limited) {
+        validate = validateType[1];
+    } else if (photoPermission == PermissionStatus.permanentlyDenied ||
+        photoPermission == PermissionStatus.restricted) {
+      if (invalidatePermissionStorage) {
+
+        validate = validateType[2];
+        ///TODO: MSG - La plataforma requiere que usted de los permisos
+        // _importantPermission(S.current.important, S.current.MSG_181, context);
+      }
+      if (!invalidatePermissionStorage) {
+        invalidatePermissionStorage = true;
+      }
+    } else if (photoPermission == PermissionStatus.denied) {
+      invalidatePermissionStorage = false;
+      validate = validateType[0];
+    }
+
+    return validate;
+  }
+
 
   selectImageByCameraCtrl() async {
     Uint8List? bytesImage = null;
@@ -51,6 +163,7 @@ class ImageProfileController {
 
     final imgCrop = ImageCropper();
     CroppedFile? croppedImage = await imgCrop.cropImage(
+      compressQuality: 50,
       sourcePath: filePath,
       maxWidth: 500,
       maxHeight: 500,

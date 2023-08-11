@@ -56,7 +56,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             event.direction,
             event.mpps,
             event.cm,
-            event.speciality);
+            event.speciality,
+            event.photoProfile);
 
     if(updateProfileSuccess) {
       emit(ProfileUpdateSuccessState());

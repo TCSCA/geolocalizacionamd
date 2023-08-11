@@ -106,7 +106,8 @@ class ProfileController {
       String direction,
       int mpps,
       int cm,
-      String speciality) async {
+      String speciality,
+      String? photoProfile) async {
     final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
     final bool updateProfileSuccess;
@@ -127,6 +128,7 @@ class ProfileController {
           mpps,
           cm,
           speciality,
+          photoProfile,
           tokenUser);
     } on ErrorAppException {
       rethrow;

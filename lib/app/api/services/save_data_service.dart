@@ -24,12 +24,14 @@ abstract class SaveDataService {
       String dateOfBirth,
       int idGender,
       String phoneNumber,
-      String otherPhone,
+      String? otherPhone,
       int idCountry,
       int idState,
       int idCity,
       String direction,
       int mpps,
       int cm,
-      String speciality, tokenUser);
+      String speciality,
+      String? photoProfile,
+      String tokenUser);
 }
