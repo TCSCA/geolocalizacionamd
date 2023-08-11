@@ -5,7 +5,7 @@ import '/app/core/models/menu_model.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/pages/sources/login/bloc/login_bloc.dart';
 import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
-import '../../widgets/common_widgets.dart';
+import '/app/pages/widgets/common_widgets.dart';
 
 class AmdHistoryWidgets {
   PreferredSizeWidget generateAppBarWithTabBar(
