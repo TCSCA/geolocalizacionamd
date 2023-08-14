@@ -64,8 +64,6 @@ class LoginController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     } finally {
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorConnectedLabel);
       cleanDataSession();
     }
 
@@ -130,7 +128,8 @@ class LoginController {
     await secureStorageController
         .deleteSecureData(ApiConstants.doctorInAttentionLabel);
     await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
-
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorConnectedLabel);
     await secureStorageController
         .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
     await secureStorageController
