@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import '/app/api/services/consult_data_service.dart';
 import '/app/api/services/consult_data_service_implement.dart';
 import '/app/api/constants/api_constants.dart';
@@ -21,6 +23,8 @@ class LoginController {
 
     try {
       var responseLogin = await loginService.doLogin(user, password);
+
+      //BlocProvider.of<ImageProfileBloc>(context).add();
 
       await secureStorageController.writeSecureData(
           ApiConstants.tokenLabel, responseLogin.data);

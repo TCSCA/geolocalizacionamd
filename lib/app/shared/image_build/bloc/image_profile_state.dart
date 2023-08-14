@@ -16,12 +16,14 @@ class LoadingImageState extends ImageProfileState {
 
 class ImageChangeSuccessState extends ImageProfileState {
 
- const ImageChangeSuccessState({this.imageBuild, this.imagePath});
+ const ImageChangeSuccessState({this.imageBuild, this.imagePath, this.doctorSignaturePath, this.doctorSignatureBuild});
    final Uint8List? imageBuild;
    final String? imagePath;
+   final Uint8List? doctorSignatureBuild;
+   final String? doctorSignaturePath;
 
   @override
-  List<Object?> get props => [imageBuild, imagePath];
+  List<Object?> get props => [imageBuild, imagePath, doctorSignatureBuild, doctorSignaturePath];
 }
 
 class ValidatePermissionImageState  extends ImageProfileState{

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,6 +91,8 @@ class _LoginPageState extends State<LoginPage> {
                     await prefs.setString('userSave', userController.text);
 
                     await prefs.setBool('checkUserSave', checkUserSave);
+
+                  BlocProvider.of<ImageProfileBloc>(context).add(ConsultPhotoEvent());
 
                     if (!isUsedFingerprint) {
                       await prefs.setString(

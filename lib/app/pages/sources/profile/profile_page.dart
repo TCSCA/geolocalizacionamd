@@ -24,7 +24,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -53,7 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: const Icon(Icons.edit),
             onPressed: () {
               context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
-            },),
+            },
+          ),
         ),
       ),
     );
@@ -86,7 +86,7 @@ class ListViewProfileWidget extends StatelessWidget {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusError),
                   descriptions:
-                  AppMessages().getMessage(context, state.messageError),
+                      AppMessages().getMessage(context, state.messageError),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusError,
@@ -120,10 +120,8 @@ class ListViewProfileWidget extends StatelessWidget {
                                   'assets/images/profile_default.png'),
                               fit: BoxFit.cover)),
                     )*/
-                    BlocProvider(
-                      create: (context) => ImageProfileBloc()..add(ConsultPhotoEvent()),
-                      child: _ImageWidget(),
-                    ),
+
+                    _ImageWidget()
                   ],
                 ),
               ),
@@ -136,8 +134,9 @@ class ListViewProfileWidget extends StatelessWidget {
               const Divider(),
               _ProfileDataWidget(
                   title: context.appLocalization.labelIdentificationDocument,
-                  subtitle: '${state.profileModel.documentType}-${state
-                      .profileModel.identificationDocument}' ?? ''),
+                  subtitle:
+                      '${state.profileModel.documentType}-${state.profileModel.identificationDocument}' ??
+                          ''),
               const Divider(),
               _ProfileDataWidget(
                   title: context.appLocalization.labelEmail,
@@ -149,8 +148,7 @@ class ListViewProfileWidget extends StatelessWidget {
               _ProfileDataWidget(
                   title: 'Fecha de Nacimiento',
                   subtitle:
-                  '${state.profileModel.dayBirthday}-${state.profileModel
-                      .monthBirthday}-${state.profileModel.yearBirthday}'),
+                      '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}'),
               const Divider(),
               _ProfileDataWidget(
                   title: 'Número de Teléfono',
@@ -182,6 +180,17 @@ class ListViewProfileWidget extends StatelessWidget {
               _ProfileDataWidget(
                   title: 'Especialidad',
                   subtitle: state.profileModel.speciality ?? ''),
+              if(state.profileModel.validateSignature!)
+                Row(
+                  children: [
+                    Text('FirmaRegistrada'),
+                    MaterialButton(
+                        onPressed: () {
+
+                        })
+                  ],
+                ),
+
               const Divider(
                 height: 10,
               ),
@@ -200,9 +209,10 @@ class ListViewProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget buildTextField({required String labelText,
-    required String placeHolder,
-    required bool isReadOnly}) {
+  Widget buildTextField(
+      {required String labelText,
+      required String placeHolder,
+      required bool isReadOnly}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextField(
@@ -223,17 +233,17 @@ class ListViewProfileWidget extends StatelessWidget {
 }
 
 class _ImageWidget extends StatelessWidget {
-   _ImageWidget({
+  _ImageWidget({
     super.key,
   });
 
   Uint8List? _bytesImage;
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ImageProfileBloc, ImageProfileState>(
       listener: (context, state) {
-
-        if(state is ImageChangeSuccessState) {
+        if (state is ImageChangeSuccessState) {
           _bytesImage = state.imageBuild;
         }
         // TODO: implement listener
@@ -242,7 +252,7 @@ class _ImageWidget extends StatelessWidget {
         return ImageWidget(
           isEdit: false,
           color: Colors.blueGrey,
-          imagePath: _bytesImage,
+          imagePath: state is ImageChangeSuccessState ? state.imageBuild : null,
           onClicked: () async {},
         );
       },

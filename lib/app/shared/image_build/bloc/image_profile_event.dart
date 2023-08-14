@@ -27,7 +27,14 @@ class ValidatePermissionCameraEvent extends ImageProfileEvent {
 
 class ValidatePermissionGalleryEvent extends ImageProfileEvent {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
+
+}
+
+class SelectDoctorSignature extends ImageProfileEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
 
 }
 
@@ -35,5 +42,4 @@ class ConsultPhotoEvent extends ImageProfileEvent {
   @override
   // TODO: implement props
   List<Object?> get props => [];
-
 }

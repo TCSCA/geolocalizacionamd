@@ -33,5 +33,6 @@ abstract class SaveDataService {
       int cm,
       String speciality,
       String? photoProfile,
+      String? digitalSignature,
       String tokenUser);
 }

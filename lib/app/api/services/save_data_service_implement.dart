@@ -225,6 +225,7 @@ class SaveDataServiceImp implements SaveDataService {
       int cm,
       String speciality,
       String? photoProfile,
+      String? digitalSignature,
       String tokenUser) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
@@ -250,7 +251,7 @@ class SaveDataServiceImp implements SaveDataService {
       "speciality": speciality,
       "medicalLicense": "$mpps|$cm",
       "photoProfile": photoProfile,
-      "digitalSignature": null
+      "digitalSignature": digitalSignature
     });
 
     try {

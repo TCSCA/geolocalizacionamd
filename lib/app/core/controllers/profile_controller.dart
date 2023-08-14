@@ -61,7 +61,9 @@ class ProfileController {
           speciality: profileMap.data?.speciality,
           medicalLicense: profileMap.data?.medicalLicense,
           mpps: mpps,
-          mc: mc);
+          mc: mc,
+          validatePhoto: profileMap.data?.validatePhoto,
+          validateSignature: profileMap.data?.validateSignature);
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
@@ -107,13 +109,14 @@ class ProfileController {
       int mpps,
       int cm,
       String speciality,
-      String? photoProfile) async {
+      String? photoProfile,
+      String? digitalSignature) async {
     final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
     final bool updateProfileSuccess;
 
     try {
-     updateProfileSuccess = await saveDataService.editProfileService(
+      updateProfileSuccess = await saveDataService.editProfileService(
           idAffiliate,
           fullName,
           email,
@@ -129,6 +132,7 @@ class ProfileController {
           cm,
           speciality,
           photoProfile,
+          digitalSignature,
           tokenUser);
     } on ErrorAppException {
       rethrow;

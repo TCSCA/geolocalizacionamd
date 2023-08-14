@@ -21,6 +21,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       // TODO: implement event handler
     });
 
+    on<GetProfileInitialEvent>((event, emit) {
+      emit(ProfileInitial());
+    });
+
     on<GetProfileEvent>((event, emit) async {
       emit(ProfileLoadingState());
 
@@ -57,7 +61,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             event.mpps,
             event.cm,
             event.speciality,
-            event.photoProfile);
+            event.photoProfile,
+            event.digitalSignature);
 
     if(updateProfileSuccess) {
       emit(ProfileUpdateSuccessState());

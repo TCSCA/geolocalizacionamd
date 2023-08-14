@@ -22,6 +22,8 @@ class ProfileModel {
   String? direction;
   String? mpps;
   String? mc;
+  bool? validatePhoto;
+  bool? validateSignature;
 
   ProfileModel({
     this.idAffiliate,
@@ -46,6 +48,8 @@ class ProfileModel {
     this.country,
     this.direction,
     this.mpps,
-    this.mc
+    this.mc,
+    this.validatePhoto,
+    this.validateSignature
   });
 }

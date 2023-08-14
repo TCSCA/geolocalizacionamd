@@ -46,6 +46,8 @@ class Data {
   String? state;
   String? country;
   String? direction;
+  bool? validatePhoto;
+  bool? validateSignature;
 
   Data({
     this.idAffiliate,
@@ -71,6 +73,8 @@ class Data {
     this.state,
     this.country,
     this.direction,
+    this.validatePhoto,
+    this.validateSignature
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -97,6 +101,8 @@ class Data {
     state: json["state"],
     country: json["country"],
     direction: json["direction"],
+    validatePhoto: json["validatePhoto"],
+    validateSignature: json["validateSignature"]
   );
 
 }

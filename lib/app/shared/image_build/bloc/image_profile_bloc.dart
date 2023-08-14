@@ -16,9 +16,13 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       // TODO: implement event handler
     });
 
+    Uint8List? bytesImage;
+    String imagePath;
+
+    Uint8List? doctorSignatureBuild;
+    String doctorSignaturePath;
+
     on<SelectImageByCamera>((event, emit) async {
-      String imagePath;
-      Uint8List? bytesImage;
 
       bytesImage = await ImageProfileController().selectImageByCameraCtrl();
 
@@ -29,8 +33,6 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<SelectImageByGallery>((event, emit) async {
-      String imagePath;
-      Uint8List? bytesImage;
 
       bytesImage = await ImageProfileController().selectImageByGalleryCtrl();
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
@@ -48,7 +50,7 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
 
       String validateStatus;
       validateStatus =
-      await ImageProfileController().doValidatePermissionGallery();
+          await ImageProfileController().doValidatePermissionGallery();
 
       if (validateStatus == "isGranted") {
         emit(const CameraPermissionSuccessState(typePermission: "gallery"));
@@ -60,7 +62,7 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       String validateStatus;
 
       validateStatus =
-      await ImageProfileController().doValidatePermissionCamera();
+          await ImageProfileController().doValidatePermissionCamera();
 
       if (validateStatus == "isGranted") {
         emit(const CameraPermissionSuccessState(typePermission: "camera"));
@@ -68,17 +70,20 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<ConsultPhotoEvent>((event, emit) async {
-      Uint8List? imageProfile;
-      String imagePath;
 
 
-      imageProfile = await ImageProfileController().doConsultDataImageProfile();
-      imagePath = const Base64Encoder().convert(List.from(imageProfile!));
+      bytesImage = await ImageProfileController().doConsultDataImageProfile();
+      imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
       emit(ImageChangeSuccessState(
-          imageBuild: imageProfile,
-          imagePath:imagePath
-      ));
+          imageBuild: bytesImage, imagePath: imagePath));
+    });
+
+    on<SelectDoctorSignature>((event, emit) async {
+      doctorSignatureBuild = await ImageProfileController().selectDigitalSignatureByGalleryCtrl();
+      doctorSignaturePath = const Base64Encoder().convert(List.from(bytesImage!));
+
+      emit(ImageChangeSuccessState(doctorSignatureBuild: doctorSignatureBuild, doctorSignaturePath: doctorSignaturePath));
     });
   }
 }

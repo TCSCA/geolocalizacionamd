@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/controllers/login_controller.dart';
 import '/app/core/controllers/menu_controller.dart';
@@ -145,6 +146,9 @@ class _MyAppState extends State<MyApp> {
         }),
         BlocProvider(create: (BuildContext context) {
           return MainBloc(doctorCareController: DoctorCareController());
+        }),
+        BlocProvider(create: (BuildContext context) {
+          return ImageProfileBloc();
         })
       ],
       child: MaterialApp.router(

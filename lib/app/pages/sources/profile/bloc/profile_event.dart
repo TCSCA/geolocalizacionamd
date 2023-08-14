@@ -9,8 +9,13 @@ class GetProfileEvent extends ProfileEvent {
   List<Object?> get props => [];
 }
 
+class GetProfileInitialEvent extends ProfileEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class EditProfileEvent extends ProfileEvent {
-  String? photoProfile;
+  String? photoProfile, digitalSignature;
   String fullName,
       email,
       dateOfBirth,
@@ -35,7 +40,8 @@ class EditProfileEvent extends ProfileEvent {
       required this.mpps,
       required this.cm,
       required this.speciality,
-      this.photoProfile});
+      this.photoProfile,
+      this.digitalSignature});
 
   @override
   List<Object?> get props => [
@@ -52,6 +58,8 @@ class EditProfileEvent extends ProfileEvent {
         direction,
         mpps,
         cm,
-        speciality
+        speciality,
+        photoProfile,
+        digitalSignature
       ];
 }

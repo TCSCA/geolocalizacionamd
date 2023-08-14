@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:go_router/go_router.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/pages/messages/app_messages.dart';
@@ -89,11 +91,19 @@ class MainWidgets {
                     child: CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
                       radius: 90,
-                      child: CircleAvatar(
-                        backgroundImage:
-                            Image.memory(Uint8List.fromList(user.photoPerfil))
+                      child: BlocBuilder<ImageProfileBloc, ImageProfileState>(
+                        builder: (context, state) {
+                          return  ImageWidget(
+                              onClicked: () {},
+                              isEdit: false,
+                              imagePath: state is ImageChangeSuccessState ? state.imageBuild : null,
+                              color: Colors.blueGrey)/*CircleAvatar(
+                            backgroundImage: Image.memory(
+                                    Uint8List.fromList(user.photoPerfil))
                                 .image,
-                        radius: 55,
+                            radius: 55,
+                          )*/;
+                        },
                       ),
                     ),
                   ),
@@ -183,8 +193,8 @@ class MainWidgets {
                 return CustomDialogBox(
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusSuccess),
-                  descriptions: AppMessages().getMessage(
-                      context, context.appLocalization.appMsg010),
+                  descriptions: AppMessages()
+                      .getMessage(context, context.appLocalization.appMsg010),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,

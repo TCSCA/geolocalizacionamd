@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,20 +5,23 @@ import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../../core/controllers/profile_controller.dart';
 import '../../../core/models/select_model.dart';
 import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
+import '../../../shared/dialog/custom_dialog_box.dart';
 import '../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
+import '../../messages/app_messages.dart';
+import '../../routes/geoamd_route.dart';
 import '../../styles/app_styles.dart';
 import '../../validations/profile_validations.dart';
 import '../../widgets/common_widgets.dart';
 import '../main/bloc/main_bloc.dart';
+import '../navigation/bloc/navigation_bloc.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -34,24 +34,24 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
 
   final GlobalKey<FormFieldState> fullNameFieldKey =
-      GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFielKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> genderFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> birthdayFieldKey =
-      GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> phoneNumberFieldKey =
-      GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> otherNumberFieldKey =
-      GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cityFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> stateFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> countryFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> directionFieldKey =
-      GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> mppsFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cmFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> specialityFieldKey =
-      GlobalKey<FormFieldState>();
+  GlobalKey<FormFieldState>();
 
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController identificationDocumentCtrl = TextEditingController();
@@ -81,8 +81,11 @@ class _EditProfileState extends State<EditProfile> {
   String? dateOfBirthSave;
 
 //_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
-  late Uint8List? _bytesImage = null;
+  Uint8List? _bytesImage = null;
   String? pathImage;
+
+  Uint8List? doctorSignatureBuild = null;
+  String? doctorSignaturePath;
 
 /*  final List _bytesImageEmpty = [];*/
 
@@ -93,11 +96,6 @@ class _EditProfileState extends State<EditProfile> {
 
   late MainBloc userMainBloc;
 
-/*  @override
-  void initState() {
-    super.initState();
-  }
-  */
   setData() {
     userMainBloc = BlocProvider.of<MainBloc>(context);
     final state = BlocProvider.of<ProfileBloc>(context, listen: false);
@@ -108,10 +106,12 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
+        '${state.profileModel?.dayBirthday}-${state.profileModel
+            ?.monthBirthday}-${state.profileModel?.yearBirthday}');
 
     dateOfBirthSave =
-        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
+    '${state.profileModel?.yearBirthday}-${state.profileModel
+        ?.monthBirthday}-${state.profileModel?.dayBirthday}';
 
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
@@ -127,7 +127,8 @@ class _EditProfileState extends State<EditProfile> {
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
     selectedDate = DateTime.parse(
-        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}${state.profileModel?.dayBirthday}');
+        '${state.profileModel?.yearBirthday}-${state.profileModel
+            ?.monthBirthday}${state.profileModel?.dayBirthday}');
 
     selectedState = state.profileModel?.idState.toString();
     selectedCity = state.profileModel?.idCity.toString();
@@ -154,9 +155,8 @@ class _EditProfileState extends State<EditProfile> {
             providers: [
               BlocProvider(
                   create: (context) =>
-                      GenderBloc(profileController: ProfileController())
-                        ..add(ConsultAllGenderEvent())),
-              BlocProvider(create: (context) => ImageProfileBloc())
+                  GenderBloc(profileController: ProfileController())
+                    ..add(ConsultAllGenderEvent())),
             ],
             child: MultiBlocListener(
               listeners: [
@@ -179,9 +179,51 @@ class _EditProfileState extends State<EditProfile> {
   Widget buildListView() {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        if (state is ProfileSuccessState) {
-        } else if (state is ProfileUpdateSuccessState) {
-          context.read<ProfileBloc>().add(GetProfileEvent());
+        if (state is ProfileLoadingState) {
+          LoadingBuilder(context).showLoadingIndicator(
+              context.appLocalization.titleLoginLoading);
+        }
+
+        if (state is ProfileSuccessState) {} else
+        if (state is ProfileUpdateSuccessState) {
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages().getMessageTitle(
+                      context, AppConstants.statusSuccess),
+                  descriptions:
+                  AppMessages().getMessage(context, 'actualizacion'),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusSuccess,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+          LoadingBuilder(context).hideOpenDialog();
+
+/*           showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages().getMessageTitle(
+                      context, AppConstants.statusSuccess),
+                  descriptions: 'datos Actualizados correctamente'*/ /*AppMessages().getMessage(
+                      context,
+                      context.appLocalization.appMsg229)*/ /*,
+                  isConfirmation: true,
+                  dialogAction: () {},
+                  type: AppConstants.statusSuccess,
+                  isdialogCancel: false,
+                  dialogCancel: () {
+                  },
+                );
+              });*/
+          context.read<ProfileBloc>().add(GetProfileInitialEvent());
+          context.go(GeoAmdRoutes.profile, extra: NavigationBloc());
         }
       },
       builder: (context, state) {
@@ -332,12 +374,39 @@ class _EditProfileState extends State<EditProfile> {
                   _mppsWidget(),
                   _cmWidget(),
                   _specialityWidget(),
+                  MaterialButton(
+                      child: const Icon(
+                        Icons.attach_file
+                      ),
+                      onPressed: () {
+                    context.read<ImageProfileBloc>().add(SelectDoctorSignature());
+                  }),
+                  BlocConsumer<ImageProfileBloc, ImageProfileState>(
+                    listener: (context, state) {
+                      if(state is ImageChangeSuccessState) {
+                        doctorSignaturePath = state.doctorSignaturePath;
+                        doctorSignatureBuild = state.doctorSignatureBuild;
+                      }
+                    },
+                    builder: (context, state) {
+                      if(state is ImageChangeSuccessState) {
+                        return Column(
+                          children: [
+                            _digitalSignatureDoctor(doctorSignatureBuild),
+                          ],
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+
+                    },
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                    const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -346,7 +415,7 @@ class _EditProfileState extends State<EditProfile> {
                           onPressed: () {},
                           style: OutlinedButton.styleFrom(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
+                              const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -360,32 +429,35 @@ class _EditProfileState extends State<EditProfile> {
                         ElevatedButton(
                           onPressed: () {
                             context.read<ProfileBloc>().add(EditProfileEvent(
-                                idAffiliate: BlocProvider.of<ProfileBloc>(
-                                        context,
-                                        listen: false)
-                                    .profileModel!
-                                    .idAffiliate!,
-                                fullName: fullNameCtrl.text,
-                                email: emailCtrl.text,
-                                dateOfBirth: dateOfBirthSave!,
-                                idGender: selectedGender!,
-                                phoneNumber: maskPhoneNumber
-                                    .unmaskText(phoneNumberCtrl.text),
-                                otherPhone: maskPhoneNumber2
-                                    .unmaskText(otherNumberCtrl.text),
-                                idCountry: 25,
-                                idState: int.parse(selectedState!),
-                                idCity: int.parse(selectedCity!),
-                                direction: directionCtrl.text,
-                                mpps: int.parse(cmppsCtrl.text),
-                                cm: int.parse(cmCtrl.text),
-                                speciality: specialityCtrl.text,
-                                photoProfile: pathImage));
+                              idAffiliate: BlocProvider
+                                  .of<ProfileBloc>(
+                                  context,
+                                  listen: false)
+                                  .profileModel!
+                                  .idAffiliate!,
+                              fullName: fullNameCtrl.text,
+                              email: emailCtrl.text,
+                              dateOfBirth: dateOfBirthSave!,
+                              idGender: selectedGender!,
+                              phoneNumber: maskPhoneNumber
+                                  .unmaskText(phoneNumberCtrl.text),
+                              otherPhone: maskPhoneNumber2
+                                  .unmaskText(otherNumberCtrl.text),
+                              idCountry: 25,
+                              idState: int.parse(selectedState!),
+                              idCity: int.parse(selectedCity!),
+                              direction: directionCtrl.text,
+                              mpps: int.parse(cmppsCtrl.text),
+                              cm: int.parse(cmCtrl.text),
+                              speciality: specialityCtrl.text,
+                              photoProfile: pathImage,
+                              digitalSignature: doctorSignaturePath
+                            ));
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
+                              const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -673,73 +745,6 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  /* setDataInfo(BuildContext context) {
-    fullNameCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.fullName));
-
-    identificationDocumentCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-            profileBloc.profileModel?.identificationDocument));
-    emailCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.email));
-
-    genderCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.gender));
-
-    birthdayCtrl =
-        TextEditingController(text: context.select((ProfileBloc profileBloc) {
-      final day = profileBloc.profileModel?.dayBirthday;
-      final month = profileBloc.profileModel?.monthBirthday;
-      final year = profileBloc.profileModel?.yearBirthday;
-      return '$day-$month-$year';
-    }));
-
-    phoneNumberCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-            profileBloc.profileModel?.phoneNumber));
-
-    otherNumberCtrl = TextEditingController(
-        text: context.select((ProfileBloc profileBloc) =>
-            profileBloc.profileModel?.otherNumber));
-
-    countryCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.country));
-
-    stateCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.state));
-
-    cityCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.city));
-
-    directionCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.direction));
-
-    selectedDate = DateTime.parse(context.select((ProfileBloc profileBloc) {
-      final day = profileBloc.profileModel?.dayBirthday;
-      final month = profileBloc.profileModel?.monthBirthday;
-      final year = profileBloc.profileModel?.yearBirthday;
-      return '$year-$month-$day';
-    }));
-
-    cmppsCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.mpps));
-
-    cmCtrl = TextEditingController(
-        text: context
-            .select((ProfileBloc profileBloc) => profileBloc.profileModel?.mc));
-
-    specialityCtrl = TextEditingController(
-        text: context.select(
-            (ProfileBloc profileBloc) => profileBloc.profileModel?.speciality));
-  }*/
 
   Widget _inputBdate(BuildContext context) {
     return Padding(
@@ -769,11 +774,11 @@ class _EditProfileState extends State<EditProfile> {
               //hintText: date,
               counterStyle: const TextStyle(color: Colors.black),
               focusedBorder: const UnderlineInputBorder(
-                  //borderSide: BorderSide(color: secondaryColor, width: 2),
-                  ),
+                //borderSide: BorderSide(color: secondaryColor, width: 2),
+              ),
 
               errorStyle:
-                  const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
+              const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
               /*errorBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: secondaryColor)),*/
               suffixIcon: Icon(
@@ -914,16 +919,16 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   _bytesImage != null
                       ? ListTile(
-                          onTap: () {
-                            selectionOption = 3;
-                            context.pop();
-                          },
-                          title: Text('Borrar imagen'),
-                          leading: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        )
+                    onTap: () {
+                      selectionOption = 3;
+                      context.pop();
+                    },
+                    title: Text('Borrar imagen'),
+                    leading: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  )
                       : Container(),
                 ],
               ),
@@ -932,4 +937,22 @@ class _EditProfileState extends State<EditProfile> {
         });
     return selectionOption;
   }
+
+
+  Widget _digitalSignatureDoctor(Uint8List? doctorSignatureBuild) {
+
+    if(doctorSignatureBuild != null) {
+      return Image.memory(
+        doctorSignatureBuild,
+        fit: BoxFit.cover,
+        height: 250,
+
+      );
+    } else {
+      return const SizedBox();
+    }
+
+  }
 }
+
+
