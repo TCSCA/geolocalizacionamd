@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
+import '../../../shared/image_build/image_widget.dart';
 import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
@@ -24,35 +28,35 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => backButtonActions(),
-        child: SafeArea(
-          child: Scaffold(
-            appBar: AppCommonWidgets.generateAppBar(
-                context: context, appBarHeight: 140.0),
-            body: MultiBlocListener(
-              listeners: [
-                //NavigationBloc y LogoutBloc comunes en todas las paginas.
-                AppCommonWidgets.listenerNavigationBloc(),
-                AppCommonWidgets.listenerLogoutBloc()
-              ],
-              child: Container(
-                padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const ListViewProfileWidget(),
-                ),
+      onWillPop: () async => backButtonActions(),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppCommonWidgets.generateAppBar(
+              context: context, appBarHeight: 140.0),
+          body: MultiBlocListener(
+            listeners: [
+              //NavigationBloc y LogoutBloc comunes en todas las paginas.
+              AppCommonWidgets.listenerNavigationBloc(),
+              AppCommonWidgets.listenerLogoutBloc()
+            ],
+            child: Container(
+              padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
+              child: GestureDetector(
+                onTap: () {},
+                child: const ListViewProfileWidget(),
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: const Color(0xff2B5178),
-              heroTag: 'button-edit-profile',
-              child: const Icon(Icons.edit),
-              onPressed: () {
-                context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
-              },),
           ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color(0xff2B5178),
+            heroTag: 'button-edit-profile',
+            child: const Icon(Icons.edit),
+            onPressed: () {
+              context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
+            },),
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -99,7 +103,7 @@ class ListViewProfileWidget extends StatelessWidget {
               Center(
                 child: Stack(
                   children: [
-                    Container(
+                    /*Container(
                       width: 130,
                       height: 130,
                       decoration: BoxDecoration(
@@ -115,6 +119,10 @@ class ListViewProfileWidget extends StatelessWidget {
                               image: AssetImage(
                                   'assets/images/profile_default.png'),
                               fit: BoxFit.cover)),
+                    )*/
+                    BlocProvider(
+                      create: (context) => ImageProfileBloc()..add(ConsultPhotoEvent()),
+                      child: _ImageWidget(),
                     ),
                   ],
                 ),
@@ -180,47 +188,6 @@ class ListViewProfileWidget extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-             /* Padding(
-                padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                      child: const Text(
-                        'Cancelar',
-                        style: TextStyle(
-                            fontSize: 15,
-                            letterSpacing: 2,
-                            color: Colors.black),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.go(
-                            GeoAmdRoutes.editProfile, extra: NavigationBloc());
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                      child: const Text(
-                        'Guardar',
-                        style: TextStyle(
-                            fontSize: 15,
-                            letterSpacing: 2,
-                            color: Colors.black),
-                      ),
-                    )
-                  ],
-                ),
-              )*/
             ],
           );
         } else if (state is ProfileInitial) {
@@ -251,6 +218,34 @@ class ListViewProfileWidget extends StatelessWidget {
             hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
       ),
+    );
+  }
+}
+
+class _ImageWidget extends StatelessWidget {
+   _ImageWidget({
+    super.key,
+  });
+
+  Uint8List? _bytesImage;
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ImageProfileBloc, ImageProfileState>(
+      listener: (context, state) {
+
+        if(state is ImageChangeSuccessState) {
+          _bytesImage = state.imageBuild;
+        }
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        return ImageWidget(
+          isEdit: false,
+          color: Colors.blueGrey,
+          imagePath: _bytesImage,
+          onClicked: () async {},
+        );
+      },
     );
   }
 }

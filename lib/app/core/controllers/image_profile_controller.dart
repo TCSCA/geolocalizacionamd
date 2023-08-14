@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:io';
 
+import 'package:geolocalizacionamd/app/core/controllers/secure_storage_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
@@ -8,7 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../api/constants/api_constants.dart';
+import '../../api/services/consult_data_service.dart';
+import '../../api/services/consult_data_service_implement.dart';
+
 class ImageProfileController {
+
+  final SecureStorageController secureStorageController =
+  SecureStorageController();
 
   XFile? image;
   final ImagePicker _picker = ImagePicker();
@@ -20,6 +28,21 @@ class ImageProfileController {
     "isGranted",
     "isLimit"
   ];
+
+
+  doConsultDataImageProfile() async {
+
+    Uint8List? imageProfile;
+
+    final ConsultDataService consultDataService = ConsultDataServiceImp();
+
+    final tokenUser =
+    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+    imageProfile = await consultDataService.getPhotoService(tokenUser);
+
+  return imageProfile;
+  }
 
 
   doValidatePermissionCamera() async {

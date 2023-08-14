@@ -48,7 +48,7 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
 
       String validateStatus;
       validateStatus =
-          await ImageProfileController().doValidatePermissionGallery();
+      await ImageProfileController().doValidatePermissionGallery();
 
       if (validateStatus == "isGranted") {
         emit(const CameraPermissionSuccessState(typePermission: "gallery"));
@@ -60,11 +60,25 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       String validateStatus;
 
       validateStatus =
-          await ImageProfileController().doValidatePermissionCamera();
+      await ImageProfileController().doValidatePermissionCamera();
 
       if (validateStatus == "isGranted") {
         emit(const CameraPermissionSuccessState(typePermission: "camera"));
       }
+    });
+
+    on<ConsultPhotoEvent>((event, emit) async {
+      Uint8List? imageProfile;
+      String imagePath;
+
+
+      imageProfile = await ImageProfileController().doConsultDataImageProfile();
+      imagePath = const Base64Encoder().convert(List.from(imageProfile!));
+
+      emit(ImageChangeSuccessState(
+          imageBuild: imageProfile,
+          imagePath:imagePath
+      ));
     });
   }
 }

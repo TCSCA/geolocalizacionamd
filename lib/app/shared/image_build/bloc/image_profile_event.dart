@@ -30,3 +30,10 @@ class ValidatePermissionGalleryEvent extends ImageProfileEvent {
   List<Object?> get props => throw UnimplementedError();
 
 }
+
+class ConsultPhotoEvent extends ImageProfileEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+
+}
