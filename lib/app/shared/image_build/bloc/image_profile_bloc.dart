@@ -23,7 +23,6 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     String doctorSignaturePath;
 
     on<SelectImageByCamera>((event, emit) async {
-
       bytesImage = await ImageProfileController().selectImageByCameraCtrl();
 
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
@@ -33,7 +32,6 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<SelectImageByGallery>((event, emit) async {
-
       bytesImage = await ImageProfileController().selectImageByGalleryCtrl();
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
@@ -70,8 +68,6 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<ConsultPhotoEvent>((event, emit) async {
-
-
       bytesImage = await ImageProfileController().doConsultDataImageProfile();
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
@@ -80,10 +76,27 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<SelectDoctorSignature>((event, emit) async {
-      doctorSignatureBuild = await ImageProfileController().selectDigitalSignatureByGalleryCtrl();
-      doctorSignaturePath = const Base64Encoder().convert(List.from(bytesImage!));
+      emit(LoadingImageState());
 
-      emit(ImageChangeSuccessState(doctorSignatureBuild: doctorSignatureBuild, doctorSignaturePath: doctorSignaturePath));
+      doctorSignatureBuild =
+          await ImageProfileController().selectDigitalSignatureByGalleryCtrl();
+      doctorSignaturePath =
+          const Base64Encoder().convert(List.from(doctorSignatureBuild!));
+
+      emit(ImageChangeSuccessState(
+          doctorSignatureBuild: doctorSignatureBuild,
+          doctorSignaturePath: doctorSignaturePath));
+    });
+
+    on<ConsultDigitalSignatureEvent>((event, emit) async {
+      emit(LoadingImageState());
+      doctorSignatureBuild =
+          await ImageProfileController().doConsultDigitalSignature();
+      doctorSignaturePath =
+          const Base64Encoder().convert(List.from(bytesImage!));
+      emit(ImageChangeSuccessState(
+          doctorSignatureBuild: doctorSignatureBuild,
+          doctorSignaturePath: doctorSignaturePath));
     });
   }
 }

@@ -49,7 +49,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlApiGetActiveAmdOrder =
-        Uri.parse(ApiConstants.urlApiGetActiveAmdOrder);
+    Uri.parse(ApiConstants.urlApiGetActiveAmdOrder);
     final Map<String, String> headerActiveAmdOrder = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
@@ -70,7 +70,7 @@ class ConsultDataServiceImp implements ConsultDataService {
         }
       } else {
         final String error =
-            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
         if (error.isNotEmpty) {
           throw ErrorAppException(message: error);
         } else {
@@ -128,19 +128,19 @@ class ConsultDataServiceImp implements ConsultDataService {
   }
 
   @override
-  Future<void> validateIfOrderIsCompletedOrRejected(
-      String tokenUser, int idHomeServiceAttention) async {
+  Future<void> validateIfOrderIsCompletedOrRejected(String tokenUser,
+      int idHomeServiceAttention) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlValidateIfOrderIsCompletedOrRejected =
-        Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
+    Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
     final Map<String, String> header = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
 
     final String bodyValidateIfOrderIsCompletedOrRejected =
-        jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
+    jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
 
     try {
       responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
@@ -150,7 +150,7 @@ class ConsultDataServiceImp implements ConsultDataService {
       if (decodeRespApi[ApiConstants.statusLabelApi] !=
           ApiConstants.statusSuccessApi) {
         final String error =
-            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
 
         if (error == ApiConstants.amdPendingAdminFinalizedCodeApi ||
             error == ApiConstants.amdconfirmedAdminFinalizedCodeApi) {
@@ -169,15 +169,15 @@ class ConsultDataServiceImp implements ConsultDataService {
   }
 
   @override
-  Future<List<HomeServiceMap>> getHistoryAmdOrderList(
-      String tokenUser, int idDoctorAmd) async {
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(String tokenUser,
+      int idDoctorAmd) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
 
     ///HomeServiceMap homeServiceMap;
 
     final Uri urlGetHistoryAmdOrder =
-        Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
+    Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
 
     final Map<String, String> header = {
       ApiConstants.headerToken: tokenUser,
@@ -185,7 +185,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     final String bodyGetHistoryAmdOrder =
-        jsonEncode({'idDoctorAmd': idDoctorAmd});
+    jsonEncode({'idDoctorAmd': idDoctorAmd});
 
     //List<HistoryAmdMap> historyAmdMapList;
     List<HomeServiceMap> homeServiceList;
@@ -254,7 +254,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     final List bytesImageEmpty = [];
     //
     final Uri urlGetPhotoProfile =
-        Uri.parse(ApiConstants.urlApiGetPhotoProfile);
+    Uri.parse(ApiConstants.urlApiGetPhotoProfile);
 
     final Map<String, String> headerPhoto = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
@@ -266,14 +266,50 @@ class ConsultDataServiceImp implements ConsultDataService {
 
       decodeRespApi = jsonDecode(responseApi.body);
       imageArray = decodeRespApi["data"]["photoProfile"];
-      if( decodeRespApi["data"]["photoProfile"] != null) {
+      if (decodeRespApi["data"]["photoProfile"] != null) {
         imageProfile = Uint8List.fromList(imageArray.cast<int>());
       }
       else {
         imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
       }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return imageProfile;
+  }
 
+  @override
+  Future<Uint8List?> getDigitalSignatureService(String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
 
+    Uint8List? imageProfile;
+    List<dynamic> imageArray = [];
+    final List bytesImageEmpty = [];
+
+    final Uri urlGetDigitalSignature =
+    Uri.parse(ApiConstants.urlApiGetDigitalSignature);
+
+    final Map<String, String> headerSignature = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.post(urlGetDigitalSignature, headers: headerSignature);
+
+      decodeRespApi = jsonDecode(responseApi.body);
+      imageArray = decodeRespApi["data"]["digitalSignature"];
+      if (decodeRespApi["data"]["digitalSignature"] != null) {
+        imageProfile = Uint8List.fromList(imageArray.cast<int>());
+      }
+      else {
+        imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
+      }
 
     } on EmptyDataException {
       rethrow;
@@ -282,6 +318,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
+
     return imageProfile;
   }
 }

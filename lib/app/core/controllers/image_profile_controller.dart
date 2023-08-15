@@ -37,6 +37,19 @@ class ImageProfileController {
     return imageProfile;
   }
 
+  doConsultDigitalSignature() async {
+    Uint8List? imageProfile;
+
+    final ConsultDataService consultDataService = ConsultDataServiceImp();
+
+    final tokenUser =
+    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+    imageProfile = await consultDataService.getDigitalSignatureService(tokenUser);
+
+    return imageProfile;
+  }
+
   doValidatePermissionCamera() async {
     var cameraPermission = await Permission.camera.request();
     String validate = '';
@@ -161,7 +174,7 @@ class ImageProfileController {
   }
 
   selectDigitalSignatureByGalleryCtrl() async {
-    Uint8List? bytesImage = null;
+    Uint8List? bytesSignature = null;
 
     image = await _picker.pickImage(
       source: ImageSource.gallery,
@@ -175,11 +188,13 @@ class ImageProfileController {
           _path.endsWith('.jpeg') ||
           _path.endsWith('.png');*/
 
-      bytesImage = await image!.readAsBytes();
+      bytesSignature = await _cropSignature(_path);
+
+     // bytesImage = await image!.readAsBytes();
       //imageRaw = await image!.readAsBytes();
       print(await image!.length());
     }
-    return bytesImage;
+    return bytesSignature;
   }
 
   _cropImage(filePath) async {
@@ -194,6 +209,44 @@ class ImageProfileController {
       compressFormat: ImageCompressFormat.jpg,
       cropStyle: CropStyle.circle,
       aspectRatio: const CropAspectRatio(ratioX: 2.0, ratioY: 2.0),
+      uiSettings: <PlatformUiSettings>[
+        AndroidUiSettings(
+          toolbarTitle: 'Recorte de imagen',
+          toolbarColor: Colors.blueGrey,
+          toolbarWidgetColor: Colors.white,
+          // initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: true,
+          hideBottomControls: true,
+          showCropGrid: false,
+        ),
+        IOSUiSettings(
+            rotateClockwiseButtonHidden: true,
+            rectWidth: 500,
+            rectHeight: 500,
+            resetButtonHidden: false,
+            aspectRatioPickerButtonHidden: true,
+            rotateButtonsHidden: false)
+      ],
+    );
+    if (croppedImage != null) {
+      _bytesImage = await croppedImage.readAsBytes();
+    }
+
+    return _bytesImage;
+  }
+
+  _cropSignature(filePath) async {
+    Uint8List? _bytesImage;
+
+    final imgCrop = ImageCropper();
+    CroppedFile? croppedImage = await imgCrop.cropImage(
+      compressQuality: 25,
+      sourcePath: filePath,
+      maxWidth: 500,
+      maxHeight: 500,
+      compressFormat: ImageCompressFormat.jpg,
+      cropStyle: CropStyle.rectangle,
+      aspectRatio: const CropAspectRatio(ratioX: 5.5, ratioY: 3.0),
       uiSettings: <PlatformUiSettings>[
         AndroidUiSettings(
           toolbarTitle: 'Recorte de imagen',

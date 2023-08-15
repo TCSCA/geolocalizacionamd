@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 
 class ProfileValidations {
-
-  fullnameValidator(BuildContext context,String event) {
+  fullnameValidator(BuildContext context, String event) {
     final RegExp regExp =
-    RegExp(r"^[A-Za-zéáíóúñÁÉÍÓÚÑ'\s]+(?: [A-Za-zéáíóúñÁÉÍÓÚÑ']+)*$");
+        RegExp(r"^[A-Za-zéáíóúñÁÉÍÓÚÑ'\s]+(?: [A-Za-zéáíóúñÁÉÍÓÚÑ']+)*$");
     if (!regExp.hasMatch(event) && event != '') {
       return context.appLocalization.invalidData;
     } else {
@@ -58,7 +57,6 @@ class ProfileValidations {
     return null;
   }
 
-
   directionValidator(BuildContext context, String event) {
     if (event != "" && event.length < 4) {
       return context.appLocalization.invalidLengthField;
@@ -76,15 +74,29 @@ class ProfileValidations {
   }
 
   mppsValidator(BuildContext context, String event) {
+    RegExp regExp = RegExp(r"^[1-9]{1}[0-9]+$");
     if (event == 'null' || event == '') {
       return context.appLocalization.fieldRequired;
+    } else {
+      if (!regExp.hasMatch(event)) {
+        return context.appLocalization.invalidData;
+      } else if (event.length < 5) {
+        return context.appLocalization.invalidLengthField;
+      }
     }
     return null;
   }
 
   cmValidator(BuildContext context, String event) {
+    RegExp regExp = RegExp(r"^[1-9]{1}[0-9]+$");
     if (event == 'null' || event == '') {
       return context.appLocalization.fieldRequired;
+    } else {
+      if (!regExp.hasMatch(event)) {
+        return context.appLocalization.invalidData;
+      } else if (event.length < 5) {
+        return context.appLocalization.invalidLengthField;
+      }
     }
     return null;
   }
@@ -103,6 +115,4 @@ class ProfileValidations {
 
     return null;
   }
-
-
 }

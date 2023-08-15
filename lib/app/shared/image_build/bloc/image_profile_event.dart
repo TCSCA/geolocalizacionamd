@@ -43,3 +43,10 @@ class ConsultPhotoEvent extends ImageProfileEvent {
   // TODO: implement props
   List<Object?> get props => [];
 }
+
+class ConsultDigitalSignatureEvent extends ImageProfileEvent {
+
+  @override
+  List<Object?> get props => [];
+
+}

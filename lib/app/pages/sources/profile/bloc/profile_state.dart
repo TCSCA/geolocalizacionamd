@@ -29,7 +29,14 @@ class ProfileUpdateSuccessState extends ProfileState {
 class ProfileLoadingState extends ProfileState {
   @override
   // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
+
+}
+
+class ProfileUpdateLoadingState extends ProfileState {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
 
 }
 

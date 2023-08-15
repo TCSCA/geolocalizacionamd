@@ -34,24 +34,24 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<FormState> editFormKey = GlobalKey<FormState>();
 
   final GlobalKey<FormFieldState> fullNameFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFielKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> genderFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> birthdayFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> phoneNumberFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> otherNumberFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cityFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> stateFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> countryFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> directionFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> mppsFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> cmFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> specialityFieldKey =
-  GlobalKey<FormFieldState>();
+      GlobalKey<FormFieldState>();
 
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController identificationDocumentCtrl = TextEditingController();
@@ -106,12 +106,10 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-        '${state.profileModel?.dayBirthday}-${state.profileModel
-            ?.monthBirthday}-${state.profileModel?.yearBirthday}');
+            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
 
     dateOfBirthSave =
-    '${state.profileModel?.yearBirthday}-${state.profileModel
-        ?.monthBirthday}-${state.profileModel?.dayBirthday}';
+        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
 
     phoneNumberCtrl = TextEditingController(
         text: maskPhoneNumber.maskText(state.profileModel?.phoneNumber ?? ''));
@@ -127,8 +125,7 @@ class _EditProfileState extends State<EditProfile> {
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
     selectedDate = DateTime.parse(
-        '${state.profileModel?.yearBirthday}-${state.profileModel
-            ?.monthBirthday}${state.profileModel?.dayBirthday}');
+        '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}${state.profileModel?.dayBirthday}');
 
     selectedState = state.profileModel?.idState.toString();
     selectedCity = state.profileModel?.idCity.toString();
@@ -155,8 +152,8 @@ class _EditProfileState extends State<EditProfile> {
             providers: [
               BlocProvider(
                   create: (context) =>
-                  GenderBloc(profileController: ProfileController())
-                    ..add(ConsultAllGenderEvent())),
+                      GenderBloc(profileController: ProfileController())
+                        ..add(ConsultAllGenderEvent())),
             ],
             child: MultiBlocListener(
               listeners: [
@@ -178,23 +175,22 @@ class _EditProfileState extends State<EditProfile> {
 
   Widget buildListView() {
     return BlocConsumer<ProfileBloc, ProfileState>(
-      listener: (context, state) {
-        if (state is ProfileLoadingState) {
-          LoadingBuilder(context).showLoadingIndicator(
-              context.appLocalization.titleLoginLoading);
-        }
-
-        if (state is ProfileSuccessState) {} else
+      listener: (context, state) async {
         if (state is ProfileUpdateSuccessState) {
-          showDialog(
+          LoadingBuilder(context).showLoadingIndicator('gardando perfil');
+        }
+        if (state is ProfileSuccessState) {
+        } else if (state is ProfileUpdateSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
+          await showDialog(
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
                 return CustomDialogBox(
-                  title: AppMessages().getMessageTitle(
-                      context, AppConstants.statusSuccess),
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusSuccess),
                   descriptions:
-                  AppMessages().getMessage(context, 'actualizacion'),
+                      AppMessages().getMessage(context, 'actualizacion'),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,
@@ -202,7 +198,6 @@ class _EditProfileState extends State<EditProfile> {
                   dialogCancel: () {},
                 );
               });
-          LoadingBuilder(context).hideOpenDialog();
 
 /*           showDialog(
               context: context,
@@ -374,22 +369,35 @@ class _EditProfileState extends State<EditProfile> {
                   _mppsWidget(),
                   _cmWidget(),
                   _specialityWidget(),
-                  MaterialButton(
-                      child: const Icon(
-                        Icons.attach_file
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: 30.0, right: 20, left: 20),
+                        child: Text(
+                          'Seleccione una Firma de la galeria',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
                       ),
-                      onPressed: () {
-                    context.read<ImageProfileBloc>().add(SelectDoctorSignature());
-                  }),
+                      MaterialButton(
+                          child: const Icon(Icons.attach_file),
+                          onPressed: () {
+                            context
+                                .read<ImageProfileBloc>()
+                                .add(SelectDoctorSignature());
+                          }),
+                    ],
+                  ),
                   BlocConsumer<ImageProfileBloc, ImageProfileState>(
                     listener: (context, state) {
-                      if(state is ImageChangeSuccessState) {
+                      if (state is ImageChangeSuccessState) {
                         doctorSignaturePath = state.doctorSignaturePath;
                         doctorSignatureBuild = state.doctorSignatureBuild;
                       }
                     },
                     builder: (context, state) {
-                      if(state is ImageChangeSuccessState) {
+                      if (state is ImageChangeSuccessState) {
                         return Column(
                           children: [
                             _digitalSignatureDoctor(doctorSignatureBuild),
@@ -398,7 +406,6 @@ class _EditProfileState extends State<EditProfile> {
                       } else {
                         return const SizedBox();
                       }
-
                     },
                   ),
                   const SizedBox(
@@ -406,7 +413,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Padding(
                     padding:
-                    const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -415,7 +422,7 @@ class _EditProfileState extends State<EditProfile> {
                           onPressed: () {},
                           style: OutlinedButton.styleFrom(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 30),
+                                  const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -429,35 +436,33 @@ class _EditProfileState extends State<EditProfile> {
                         ElevatedButton(
                           onPressed: () {
                             context.read<ProfileBloc>().add(EditProfileEvent(
-                              idAffiliate: BlocProvider
-                                  .of<ProfileBloc>(
-                                  context,
-                                  listen: false)
-                                  .profileModel!
-                                  .idAffiliate!,
-                              fullName: fullNameCtrl.text,
-                              email: emailCtrl.text,
-                              dateOfBirth: dateOfBirthSave!,
-                              idGender: selectedGender!,
-                              phoneNumber: maskPhoneNumber
-                                  .unmaskText(phoneNumberCtrl.text),
-                              otherPhone: maskPhoneNumber2
-                                  .unmaskText(otherNumberCtrl.text),
-                              idCountry: 25,
-                              idState: int.parse(selectedState!),
-                              idCity: int.parse(selectedCity!),
-                              direction: directionCtrl.text,
-                              mpps: int.parse(cmppsCtrl.text),
-                              cm: int.parse(cmCtrl.text),
-                              speciality: specialityCtrl.text,
-                              photoProfile: pathImage,
-                              digitalSignature: doctorSignaturePath
-                            ));
+                                idAffiliate: BlocProvider.of<ProfileBloc>(
+                                        context,
+                                        listen: false)
+                                    .profileModel!
+                                    .idAffiliate!,
+                                fullName: fullNameCtrl.text,
+                                email: emailCtrl.text,
+                                dateOfBirth: dateOfBirthSave!,
+                                idGender: selectedGender!,
+                                phoneNumber: maskPhoneNumber
+                                    .unmaskText(phoneNumberCtrl.text),
+                                otherPhone: maskPhoneNumber2
+                                    .unmaskText(otherNumberCtrl.text),
+                                idCountry: 25,
+                                idState: int.parse(selectedState!),
+                                idCity: int.parse(selectedCity!),
+                                direction: directionCtrl.text,
+                                mpps: int.parse(cmppsCtrl.text),
+                                cm: int.parse(cmCtrl.text),
+                                speciality: specialityCtrl.text,
+                                photoProfile: pathImage,
+                                digitalSignature: doctorSignaturePath));
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 30),
+                                  const EdgeInsets.symmetric(horizontal: 30),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20))),
                           child: const Text(
@@ -583,6 +588,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: phoneNumberCtrl,
         inputFormatters: [maskPhoneNumber],
@@ -608,6 +614,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: otherNumberCtrl,
         inputFormatters: [maskPhoneNumber2],
@@ -677,6 +684,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: cmppsCtrl,
         readOnly: false,
@@ -689,7 +697,7 @@ class _EditProfileState extends State<EditProfile> {
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelMPPS,
             labelStyle: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -701,6 +709,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: cmCtrl,
         readOnly: false,
@@ -745,7 +754,6 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-
   Widget _inputBdate(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
@@ -774,11 +782,11 @@ class _EditProfileState extends State<EditProfile> {
               //hintText: date,
               counterStyle: const TextStyle(color: Colors.black),
               focusedBorder: const UnderlineInputBorder(
-                //borderSide: BorderSide(color: secondaryColor, width: 2),
-              ),
+                  //borderSide: BorderSide(color: secondaryColor, width: 2),
+                  ),
 
               errorStyle:
-              const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
+                  const TextStyle(/*color: tertiaryColor,*/ fontSize: 14),
               /*errorBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: secondaryColor)),*/
               suffixIcon: Icon(
@@ -919,16 +927,16 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   _bytesImage != null
                       ? ListTile(
-                    onTap: () {
-                      selectionOption = 3;
-                      context.pop();
-                    },
-                    title: Text('Borrar imagen'),
-                    leading: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  )
+                          onTap: () {
+                            selectionOption = 3;
+                            context.pop();
+                          },
+                          title: Text('Borrar imagen'),
+                          leading: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        )
                       : Container(),
                 ],
               ),
@@ -938,21 +946,14 @@ class _EditProfileState extends State<EditProfile> {
     return selectionOption;
   }
 
-
   Widget _digitalSignatureDoctor(Uint8List? doctorSignatureBuild) {
-
-    if(doctorSignatureBuild != null) {
+    if (doctorSignatureBuild != null) {
       return Image.memory(
         doctorSignatureBuild,
-        fit: BoxFit.cover,
         height: 250,
-
       );
     } else {
       return const SizedBox();
     }
-
   }
 }
-
-

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/profile/widgets/digital_signature.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
@@ -103,24 +104,6 @@ class ListViewProfileWidget extends StatelessWidget {
               Center(
                 child: Stack(
                   children: [
-                    /*Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 4, color: Colors.white),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                color: Colors.black.withOpacity(0.1))
-                          ],
-                          shape: BoxShape.circle,
-                          image: const DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/profile_default.png'),
-                              fit: BoxFit.cover)),
-                    )*/
-
                     _ImageWidget()
                   ],
                 ),
@@ -180,17 +163,32 @@ class ListViewProfileWidget extends StatelessWidget {
               _ProfileDataWidget(
                   title: 'Especialidad',
                   subtitle: state.profileModel.speciality ?? ''),
-              if(state.profileModel.validateSignature!)
-                Row(
-                  children: [
-                    Text('FirmaRegistrada'),
-                    MaterialButton(
-                        onPressed: () {
+              const Divider(
+                height: 10,
+              ),
+              if (state.profileModel.validateSignature!)
+                ListTile(
+                  title: const Text('Firma digital',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Row(
+                    children: [
+                      const Text(
+                        'Usted tiene una firma digital',
+                      ),
+                      MaterialButton(
+                          child: const Icon(Icons.file_present),
+                          onPressed: () {
+                            
 
-                        })
-                  ],
+                            
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    DigitalSignatureWidget());
+                          }),
+                    ],
+                  ),
                 ),
-
               const Divider(
                 height: 10,
               ),
@@ -233,10 +231,6 @@ class ListViewProfileWidget extends StatelessWidget {
 }
 
 class _ImageWidget extends StatelessWidget {
-  _ImageWidget({
-    super.key,
-  });
-
   Uint8List? _bytesImage;
 
   @override

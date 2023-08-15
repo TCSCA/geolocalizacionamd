@@ -42,7 +42,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
 
     on<EditProfileEvent>((event, emit) async {
-      emit(ProfileLoadingState());
+      emit(ProfileUpdateSuccessState());
       final bool updateProfileSuccess;
 
       try {
