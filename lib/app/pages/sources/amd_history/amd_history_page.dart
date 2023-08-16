@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:geolocalizacionamd/app/core/controllers/amd_history_controller.dart';
+import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/bloc/amd_history_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/expansion_title_widget.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
@@ -58,26 +60,23 @@ class TabBarViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
-
       listener: (context, state) {
-
-        if(state is AmdHistoryLoadingState) {
-          LoadingBuilder(context).showLoadingIndicator(
-              'Cargando historial');
+        if (state is AmdHistoryLoadingState) {
+          LoadingBuilder(context).showLoadingIndicator('Cargando historial');
         } else if (state is AmdHistorySuccessDataState) {
           LoadingBuilder(context).hideOpenDialog();
-
-        } if(state is AmdHistoryErrorState) {
+        }
+        if (state is AmdHistoryErrorState) {
           LoadingBuilder(context).hideOpenDialog();
           showDialog(
               context: context,
               barrierDismissible: false,
               builder: (BuildContext context) {
                 return CustomDialogBox(
-                  title: AppMessages().getMessageTitle(
-                      context, AppConstants.statusError),
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
                   descriptions:
-                  AppMessages().getMessage(context, state.messageError),
+                      AppMessages().getMessage(context, state.messageError),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusError,
@@ -91,119 +90,13 @@ class TabBarViewWidget extends StatelessWidget {
         if (state is AmdHistorySuccessDataState) {
           return TabBarView(
             children: [
-              ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                itemCount: state.homeService.length,
-                itemBuilder: (BuildContext context, int index) {
-                //   Finalizado
-                  if(state.homeService[index].idStatusHomeService == 4) {
-                    return ExpansionTitleWidget(
-                      orderNumber: state.homeService[index].orderNumber,
-                      dateOrderDay:
-                      state.homeService[index].registerDate.day,
-                      dateOrderMonth:
-                      state.homeService[index].registerDate.month,
-                      dateOrderYear:
-                      state.homeService[index].registerDate.year,
-                      fullNamePatient: state.homeService[index].fullNamePatient,
-                      identificationDocument:
-                      state.homeService[index].identificationDocument,
-                      phoneNumberPatient:
-                      state.homeService[index].phoneNumberPatient,
-                      address: state.homeService[index].address,
-                      applicantDoctor: state.homeService[index].applicantDoctor,
-                      phoneNumberDoctor:
-                      state.homeService[index].phoneNumberDoctor,
-                      typeService: state.homeService[index].typeService,
-                      linkAmd: state.homeService[index].linkAmd,
-                      statusHomeService: state.homeService[index].statusHomeService,
-
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                /*children: [
-                  */ /*Card(
-                  margin: const EdgeInsets.all(2),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      side: const BorderSide(
-                          color: Color(0xff2B5178), width: 1.0)),
-                  color: const Color(0xFFfbfcff).withOpacity(0.5),
-                  //shadowColor: const Color(0xff2B5178).withOpacity(0.7),
-
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Column(
-                      //mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        const SizedBox(height: 3.0),
-                        ListTile(
-                          leading: Image.asset(
-                              'assets/images/gps_doctor_image.png'),
-                           trailing: TextButton(
-                                  onPressed: () => {}, child: const Text('Ver')),
-                          title: const Text('Orden Nro. 8888888'),
-                          subtitle: Column(
-                            children: [
-                              const Row(
-                                children: [
-                                  Text('Paciente:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('Ruperto Lugo')
-                                ],
-                              ),
-                              const SizedBox(height: 3.0),
-                              const Row(
-                                children: [
-                                  Text('Teléfono:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('04241234567')
-                                ],
-                              ),
-                              const SizedBox(height: 3.0),
-                              const Row(
-                                children: [
-                                  Text('Doctor Solicitante:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('Jhoander Armas')
-                                ],
-                              ),
-                              const SizedBox(height: 3.0),
-                              const Row(
-                                children: [
-                                  Text('Fecha y Hora:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('17-05-2023 3:40PM')
-                                ],
-                              ),
-                              TextButton(
-                                  onPressed: () => {},
-                                  child: const Text('Ver Detalle'))
-                            ],
-                          ),
-                        ),
-                         Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                TextButton(
-                                    onPressed: () => {},
-                                    child: const Text('Ver Detalle')),
-                              ],
-                            )
-                      ],
-                    ),
-                  ),
-                )*/ /*
-
-                ],*/
+              ListViewHistoryAmd(
+                homeService: state.homeServiceF,
               ),
-              ListView.builder(
+              ListViewHistoryAmd(
+                homeService: state.homeServiceP,
+              ),
+              /*ListView.builder(
                 padding: const EdgeInsets.all(8.0),
                 itemCount: state.homeService.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -229,77 +122,10 @@ class TabBarViewWidget extends StatelessWidget {
                       linkAmd: '',
                     );
                   } else {
-                    return const SizedBox();
+                    return SizedBox();
                   }
-
                 },
-                /*children: [
-                  *//*Card(
-                  margin: const EdgeInsets.all(2),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      side: const BorderSide(
-                          color: Color(0xff2B5178), width: 1.0)),
-                  color: const Color(0xFFfbfcff).withOpacity(0.5),
-                  //shadowColor: const Color(0xff2B5178).withOpacity(0.7),
-
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          leading: Image.asset(
-                              'assets/images/gps_doctor_image.png'),
-                          title: const Text('Rechazo Nro. 258746'),
-                          subtitle: const Column(
-                            children: [
-                              SizedBox(height: 3.0),
-                              Row(
-                                children: [
-                                  Text('Paciente:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('Ruperto Lugo')
-                                ],
-                              ),
-                              SizedBox(height: 3.0),
-                              Row(
-                                children: [
-                                  Text('Teléfono:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('04241234567')
-                                ],
-                              ),
-                              SizedBox(height: 3.0),
-                              Row(
-                                children: [
-                                  Text('Doctor Solicitante:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('Jhoander Armas')
-                                ],
-                              ),
-                              SizedBox(height: 3.0),
-                              Row(
-                                children: [
-                                  Text('Fecha y Hora:',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  Text('17-05-2023 3:40PM')
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )*//*
-                  ExpansionTitleWidget()
-                ],*/
-              )
+              )*/
             ],
           );
         } else {
@@ -307,5 +133,65 @@ class TabBarViewWidget extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+class ListViewHistoryAmd extends StatelessWidget {
+  final List<HomeServiceModel>? homeService;
+
+  const ListViewHistoryAmd({
+    super.key,
+    this.homeService,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (homeService!.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/gps_doctor_image.png',
+            width: 300,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Text(
+            context.appLocalization.appMsg137,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: 'TitlesHighlight',
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 80,
+          ),
+        ],
+      );
+    } else {
+      return ListView.builder(
+        padding: const EdgeInsets.all(8.0),
+        itemCount: homeService?.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ExpansionTitleWidget(
+            orderNumber: homeService?[index].orderNumber,
+            dateOrderDay: homeService?[index].registerDate.day,
+            dateOrderMonth: homeService?[index].registerDate.month,
+            dateOrderYear: homeService?[index].registerDate.year,
+            fullNamePatient: homeService?[index].fullNamePatient,
+            identificationDocument: homeService?[index].identificationDocument,
+            phoneNumberPatient: homeService?[index].phoneNumberPatient,
+            address: homeService?[index].address,
+            applicantDoctor: homeService?[index].applicantDoctor,
+            phoneNumberDoctor: homeService?[index].phoneNumberDoctor,
+            typeService: homeService?[index].typeService,
+            linkAmd: homeService?[index].linkAmd,
+            statusHomeService: homeService?[index].statusHomeService,
+          );
+        },
+      );
+    }
   }
 }

@@ -90,6 +90,10 @@ class LoginController {
       await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
       await secureStorageController
           .deleteSecureData(ApiConstants.doctorConnectedLabel);
+      await secureStorageController
+          .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
+      await secureStorageController
+          .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
     }
     return respWebSocket;
   }
@@ -105,7 +109,7 @@ class LoginController {
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
-
+      
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {

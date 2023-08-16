@@ -280,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
                                 return 'Campo requerido';
                               }
                               if (fieldValue.length < 6) {
-                                return 'Longitud del dato menor a la minima requerida';
+                                return 'Longitud del dato menor a la mínima requerida';
                               }
                               return null;
                             }),
@@ -352,7 +352,7 @@ class _LoginPageState extends State<LoginPage> {
                                 return 'Campo requerido';
                               }
                               if (fieldValue.length < 4) {
-                                return 'Longitud del dato menor a la minima requerida';
+                                return 'Longitud del dato menor a la mínima requerida';
                               }
                               return null;
                             }),

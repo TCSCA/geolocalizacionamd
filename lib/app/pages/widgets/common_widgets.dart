@@ -251,7 +251,10 @@ class AppCommonWidgets {
                 isdialogCancel: false,
                 dialogCancel: () {},
               );
-            });
+            }).then((value) {
+          AppCommonWidgets.pageCurrentChanged(
+              context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+        });
       } else if (state is LogoutDoctorConnectedState) {
         LoadingBuilder(context).hideOpenDialog();
         showDialog(
