@@ -22,9 +22,9 @@ class ApiConstants {
   static final String urlApiConnectDoctorAmd = '$urlApi/connectDoctorAmd';
   static final String urlApiDisconectDoctorAmd = '$urlApi/disconectDoctorAmd';
   static final String urlApiGetActiveAmdOrder = '$urlApi/getActiveAmdOrder';
-  static final String urlApiGetProfile= '$urlApi/profile';
-  static final String urlApiValidateIfOrderIsCompletedOrRejected
-  = '$urlApi/validateIfOrderIsCompletedOrRejected';
+  static final String urlApiGetProfile = '$urlApi/profile';
+  static final String urlApiValidateIfOrderIsCompletedOrRejected =
+      '$urlApi/validateIfOrderIsCompletedOrRejected';
   static final String urlApiGetHistoryAmdOrder = '$urlApi/getHistoryAmdOrder';
   static final String urlApiGetAllStatesByCountry =
       '$urlApi/getAllStatesByCountry/idCountry';
@@ -39,6 +39,8 @@ class ApiConstants {
   static final String urlApiChangePassword = '$urlApi/changePassword';
   static final String urlApiGetAllReasonRejection =
       '$urlApi/getAllReasonRejectionAmd';
+  static final String verifyConnectedDoctorAmd =
+      '$urlApi/verifyConnectedDoctorAmd';
   static const String generalErrorCodeApi = 'MSG-001';
   static const String statusLabelApi = 'status';
   static const String statusSuccessApi = 'SUCCESS';
