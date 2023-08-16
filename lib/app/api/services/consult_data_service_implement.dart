@@ -149,7 +149,7 @@ class ConsultDataServiceImp implements ConsultDataService {
           ApiConstants.statusSuccessApi) {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
-        
+
         if (error == ApiConstants.amdPendingAdminFinalizedCodeApi ||
             error == ApiConstants.amdconfirmedAdminFinalizedCodeApi) {
           throw AmdOrderAdminFinalizedException(message: error);
@@ -166,16 +166,16 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
   }
 
-
   @override
-  Future<List<HomeServiceMap>> getHistoryAmdOrderList(String tokenUser, int idDoctorAmd)  async{
-
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(
+      String tokenUser, int idDoctorAmd) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
+
     ///HomeServiceMap homeServiceMap;
 
     final Uri urlGetHistoryAmdOrder =
-    Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
+        Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
 
     final Map<String, String> header = {
       ApiConstants.headerToken: tokenUser,
@@ -183,27 +183,26 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     final String bodyGetHistoryAmdOrder =
-    jsonEncode({'idDoctorAmd': idDoctorAmd});
+        jsonEncode({'idDoctorAmd': idDoctorAmd});
 
     //List<HistoryAmdMap> historyAmdMapList;
     List<HomeServiceMap> homeServiceList;
     try {
-
       responseApi = await http.post(urlGetHistoryAmdOrder,
           headers: header, body: bodyGetHistoryAmdOrder);
-       decodeRespApi = jsonDecode(responseApi.body);
+      decodeRespApi = jsonDecode(responseApi.body);
 
-       if(decodeRespApi[ApiConstants.statusLabelApi] ==
-           ApiConstants.statusSuccessApi) {
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
         // historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
 
-         homeServiceList = List<HomeServiceMap>.from(decodeRespApi[ApiConstants.dataLabelApi]
-             .map((data) => HomeServiceMap.fromJson(data)));
-       } else {
-         throw ErrorAppException(
-             message: decodeRespApi[ApiConstants.dataLabelApi]);
-       }
-
+        homeServiceList = List<HomeServiceMap>.from(
+            decodeRespApi[ApiConstants.dataLabelApi]
+                .map((data) => HomeServiceMap.fromJson(data)));
+      } else {
+        throw ErrorAppException(
+            message: decodeRespApi[ApiConstants.dataLabelApi]);
+      }
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
@@ -213,5 +212,39 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
 
     return homeServiceList;
+  }
+
+  @override
+  Future<String> verifyConnectedDoctorAmd(final String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    late String statusConnected;
+
+    final Uri urlCheckConnected =
+        Uri.parse(ApiConstants.verifyConnectedDoctorAmd);
+
+    final Map<String, String> header = {
+      ApiConstants.headerToken: tokenUser,
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    try {
+      responseApi = await http.post(urlCheckConnected, headers: header);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        statusConnected = decodeRespApi[ApiConstants.dataLabelApi]['code'];
+      } else {
+        statusConnected = decodeRespApi[ApiConstants.dataLabelApi]['code'];
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return statusConnected;
   }
 }

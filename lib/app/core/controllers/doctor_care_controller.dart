@@ -307,6 +307,15 @@ class DoctorCareController {
         ApiConstants.doctorAmdAssignedLabel, isAmdAssigned);
   }
 
+  Future<String> verifyConnected() async {
+    final tokenUser =
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    final statusDoctorConnected =
+        await consultDataService.verifyConnectedDoctorAmd(tokenUser);
+
+    return statusDoctorConnected;
+  }
+
   Future<bool> validateDoctorAmdAssigned() async {
     bool newBoolValue = false;
     String isAmdAssigned = await secureStorageController

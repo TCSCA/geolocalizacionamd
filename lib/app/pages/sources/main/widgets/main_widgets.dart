@@ -119,17 +119,22 @@ class MainWidgets {
       ),
     );
   }
+}
 
-  Widget serviceAvailabilityDashboard({required BuildContext context}) {
-    /* MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc.add(const ShowLocationDoctorStatesEvent('25'));
-    List<SelectModel> stateList = [];
-    String? selectedState;
-    List<SelectModel> cityList = []; */
+class ServiceAvailabilityDashboard extends StatelessWidget {
+  const ServiceAvailabilityDashboard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    BlocProvider.of<MainBloc>(context).add(const CheckDoctorConnectedEvent());
     bool doctorAvailableSwitch =
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch;
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
+        if (state is MainInitial) {
+          LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = state.doctorAvailable;
+        }
         if (state is DoctorServiceState) {
           //desactivarservicio
           LoadingBuilder(context).hideOpenDialog();
@@ -383,8 +388,13 @@ class MainWidgets {
       },
     );
   }
+}
 
-  Widget amdInformationAssigned({required BuildContext context}) {
+class AmdInformationAssigned extends StatelessWidget {
+  const AmdInformationAssigned({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc.add(const ShowHomeServiceAssignedEvent());
     final GlobalKey<FormState> reasonRejectionFormKey = GlobalKey<FormState>();
@@ -539,7 +549,6 @@ class MainWidgets {
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
-                                          
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',
