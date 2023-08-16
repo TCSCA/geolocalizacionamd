@@ -17,7 +17,7 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     Uint8List? bytesImage;
-    String imagePath;
+    String? imagePath;
 
     Uint8List? doctorSignatureBuild;
     String doctorSignaturePath;
@@ -71,6 +71,8 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       bytesImage = await ImageProfileController().doConsultDataImageProfile();
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
+
+
       emit(ImageChangeSuccessState(
           imageBuild: bytesImage, imagePath: imagePath));
     });
@@ -89,14 +91,20 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<ConsultDigitalSignatureEvent>((event, emit) async {
+
+      bytesImage = const ImageChangeSuccessState().imageBuild;
+      imagePath = const ImageChangeSuccessState().imagePath;
+
       emit(LoadingImageState());
       doctorSignatureBuild =
           await ImageProfileController().doConsultDigitalSignature();
       doctorSignaturePath =
-          const Base64Encoder().convert(List.from(bytesImage!));
+          const Base64Encoder().convert(List.from(doctorSignatureBuild!));
       emit(ImageChangeSuccessState(
           doctorSignatureBuild: doctorSignatureBuild,
-          doctorSignaturePath: doctorSignaturePath));
+          doctorSignaturePath: doctorSignaturePath,
+          imagePath: imagePath,
+          imageBuild: bytesImage));
     });
   }
 }

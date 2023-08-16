@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/shared/digital_signature_bloc/digital_signature_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../shared/dialog/custom_dialog_box.dart';
@@ -19,17 +20,17 @@ class DigitalSignatureWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ImageProfileBloc>(context)
-        .add(ConsultDigitalSignatureEvent());
-    return BlocConsumer<ImageProfileBloc, ImageProfileState>(
+    BlocProvider.of<DigitalSignatureBloc>(context)
+        .add(ConsultDigitalSignatureeEvent());
+    return BlocConsumer<DigitalSignatureBloc, DigitalSignatureState>(
       listener: (context, state) {
-        if (state is LoadingImageState) {
+        if (state is LoadingDigitalSignatureState) {
           LoadingBuilder(context)
               .showLoadingIndicator('Cargando firma del doctor');
-        } else if (state is ImageChangeSuccessState) {
+        } else if (state is DigitalSignatureSuccess) {
           LoadingBuilder(context).hideOpenDialog();
           signatureBuild = state.doctorSignatureBuild;
-        } else if (state is ImageErrorState) {
+        } else if (state is DigitalSignatureErrorState) {
           LoadingBuilder(context).hideOpenDialog();
           showDialog(
               context: context,
@@ -50,7 +51,7 @@ class DigitalSignatureWidget extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is ImageChangeSuccessState) {
+        if (state is DigitalSignatureSuccess) {
           return Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),

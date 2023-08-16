@@ -89,5 +89,8 @@
     "biometricAuthentication": "Autenticación Biométrica",
     "biometricNotSupported" : "Este dispositivo no soporta la autenticación biométrica o no se encuentra habilitada  la funcionalidad",
     "limitBiometricAttempts": "Ha alcanzado el máximo de intentos fallidos permitidos. Introduzca la contraseña o espere unos segundos para utilizar el proceso de autenticación biométrica.",
-    "invalidFingerprint": "La huella dactilar es incorrecta, por favor intente nuevamente."
+    "invalidFingerprint": "La huella dactilar es incorrecta, por favor intente nuevamente.",
+    "confirmSaveData": "Por favor confirme que desea guardar los datos ingresados.",
+    "alertCancel": "Al pulsar Aceptar, perderá los datos ingresados y deberá iniciar el proceso nuevamente. Cancelar para volver a la pantalla anterior",
+    "successUpdateData": "Su información ha sido actualizada de manera exitosa"
 }

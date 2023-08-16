@@ -26,6 +26,7 @@ class ImageChangeSuccessState extends ImageProfileState {
   final Uint8List? doctorSignatureBuild;
   final String? doctorSignaturePath;
 
+
   @override
   List<Object?> get props =>
       [imageBuild, imagePath, doctorSignatureBuild, doctorSignaturePath];

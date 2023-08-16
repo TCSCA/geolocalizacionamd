@@ -89,5 +89,8 @@
     "biometricAuthentication": "Biometric Authentication",
     "biometricNotSupported": "This device does not support biometric authentication or the functionality is not enabled.",
     "limitBiometricAttempts": "You have reached the maximum number of failed attempts allowed. Enter the password or wait a few seconds to use the biometric authentication process.",
-    "invalidFingerprint": "The fingerprint is incorrect, please try again."
+    "invalidFingerprint": "The fingerprint is incorrect, please try again.",
+    "confirmSaveData": "Please confirm that you want to save the data entered.",
+    "alertCancel": "Pressing Accept will lose the data entered and you must start the process again. Cancel to return to the previous screen",
+    "successUpdateData": "Your information has been successfully updated."
 }

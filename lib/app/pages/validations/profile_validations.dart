@@ -74,11 +74,11 @@ class ProfileValidations {
   }
 
   mppsValidator(BuildContext context, String event) {
-    RegExp regExp = RegExp(r"^[1-9]{1}[0-9]+$");
+    RegExp regExp = RegExp(r"^[0-9]+$");
     if (event == 'null' || event == '') {
       return context.appLocalization.fieldRequired;
     } else {
-      if (!regExp.hasMatch(event)) {
+      if (!regExp.hasMatch(event) || event[0] == '0') {
         return context.appLocalization.invalidData;
       } else if (event.length < 5) {
         return context.appLocalization.invalidLengthField;
@@ -88,11 +88,11 @@ class ProfileValidations {
   }
 
   cmValidator(BuildContext context, String event) {
-    RegExp regExp = RegExp(r"^[1-9]{1}[0-9]+$");
+    RegExp regExp = RegExp(r"^[0-9]+$");
     if (event == 'null' || event == '') {
       return context.appLocalization.fieldRequired;
     } else {
-      if (!regExp.hasMatch(event)) {
+      if (!regExp.hasMatch(event) || event[0] == '0') {
         return context.appLocalization.invalidData;
       } else if (event.length < 5) {
         return context.appLocalization.invalidLengthField;

@@ -176,11 +176,13 @@ class _EditProfileState extends State<EditProfile> {
   Widget buildListView() {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) async {
-        if (state is ProfileUpdateSuccessState) {
-          LoadingBuilder(context).showLoadingIndicator('gardando perfil');
+        if (state is ProfileUpdateLoadingState) {
+          LoadingBuilder(context).showLoadingIndicator('Cardando perfil');
         }
         if (state is ProfileSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
         } else if (state is ProfileUpdateSuccessState) {
+          BlocProvider.of<ImageProfileBloc>(context).add(ConsultPhotoEvent());
           LoadingBuilder(context).hideOpenDialog();
           await showDialog(
               context: context,
@@ -190,7 +192,7 @@ class _EditProfileState extends State<EditProfile> {
                   title: AppMessages()
                       .getMessageTitle(context, AppConstants.statusSuccess),
                   descriptions:
-                      AppMessages().getMessage(context, 'actualizacion'),
+                      AppMessages().getMessage(context, context.appLocalization.successUpdateData),
                   isConfirmation: false,
                   dialogAction: () {},
                   type: AppConstants.statusSuccess,
@@ -272,10 +274,10 @@ class _EditProfileState extends State<EditProfile> {
                         }
                       }
                     },
-
                     builder: (context, state) {
-
-                      _bytesImage = state is ImageChangeSuccessState ? state.imageBuild : null;
+                      _bytesImage = state is ImageChangeSuccessState
+                          ? state.imageBuild
+                          : null;
 
                       return ImageWidget(
                         isEdit: true,
@@ -303,9 +305,12 @@ class _EditProfileState extends State<EditProfile> {
                       key: stateFieldKey,
                       decoration: InputDecoration(
                           hintText: context.appLocalization.labelSelect,
-                          labelText: '${context.appLocalization.labelState} (*)',
+                          labelText:
+                              '${context.appLocalization.labelState} (*)',
                           labelStyle: const TextStyle(
-                              fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                           errorStyle: AppStyles.textFormFieldError),
                       style: AppStyles.textStyleOptionSelect,
                       items: stateList.map((SelectModel selectiveState) {
@@ -344,7 +349,9 @@ class _EditProfileState extends State<EditProfile> {
                           labelText: '${context.appLocalization.labelCity} (*)',
                           hintText: context.appLocalization.labelSelect,
                           labelStyle: const TextStyle(
-                              fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                           errorStyle: AppStyles.textFormFieldError),
                       style: AppStyles.textStyleOptionSelect,
                       items: cityList.map((SelectModel selectiveCity) {
@@ -377,23 +384,27 @@ class _EditProfileState extends State<EditProfile> {
                   _cmWidget(),
                   _specialityWidget(),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     const Padding(
-                        padding: EdgeInsets.only(
-                            bottom: 30.0, right: 20, left: 20),
+                      const Padding(
+                        padding:
+                            EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
                         child: Text(
-                          'Seleccione una Firma de la galeria',
+                          'Firma Cargada',
                           style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
                         ),
                       ),
                       MaterialButton(
-                          child: const Icon(Icons.attach_file),
-                          onPressed: () {
-                            context
-                                .read<ImageProfileBloc>()
-                                .add(SelectDoctorSignature());
-                          }),
+                            child: const Icon(Icons.drive_folder_upload, size: 30, color: Color(0xff2B5178),),
+                            onPressed: () {
+                              context
+                                  .read<ImageProfileBloc>()
+                                  .add(SelectDoctorSignature());
+                            }),
+                     // ),
                     ],
                   ),
                   BlocConsumer<ImageProfileBloc, ImageProfileState>(
@@ -423,7 +434,7 @@ class _EditProfileState extends State<EditProfile> {
                           right: 20, left: 20, bottom: 20),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(width: 20.0),
                           Container(
@@ -439,7 +450,22 @@ class _EditProfileState extends State<EditProfile> {
                                         borderRadius:
                                             BorderRadius.circular(30))),
                                 onPressed: () {
-                                  context.go(GeoAmdRoutes.profile);
+                                  showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return CustomDialogBox(
+                                            title: context
+                                                .appLocalization.titleWarning,
+                                            descriptions:
+                                            context.appLocalization.alertCancel,
+                                            isConfirmation: true,
+                                            dialogAction: () =>  context.go(GeoAmdRoutes.profile),
+                                            type: AppConstants.statusWarning,
+                                            isdialogCancel: true,
+                                            dialogCancel: () {});
+                                      });
+
                                 },
                                 child: Ink(
                                   decoration: BoxDecoration(
@@ -452,7 +478,7 @@ class _EditProfileState extends State<EditProfile> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 20),
                                     child: Text(
-                                      context.appLocalization.nameButtonReturn,
+                                      context.appLocalization.nameButtonCancel,
                                       textAlign: TextAlign.center,
                                       style: AppStyles.textStyleButton,
                                     ),
@@ -482,7 +508,8 @@ class _EditProfileState extends State<EditProfile> {
                                           return CustomDialogBox(
                                               title: context
                                                   .appLocalization.titleWarning,
-                                              descriptions:'¿Estás seguro que quieres actualizar tus datos?',
+                                              descriptions:
+                                                  context.appLocalization.confirmSaveData,
                                               isConfirmation: true,
                                               dialogAction: () => context.read<ProfileBloc>().add(EditProfileEvent(
                                                   idAffiliate:
@@ -495,13 +522,15 @@ class _EditProfileState extends State<EditProfile> {
                                                   email: emailCtrl.text,
                                                   dateOfBirth: dateOfBirthSave!,
                                                   idGender: selectedGender!,
-                                                  phoneNumber:
-                                                      maskPhoneNumber.unmaskText(
+                                                  phoneNumber: maskPhoneNumber
+                                                      .unmaskText(
                                                           phoneNumberCtrl.text),
                                                   otherPhone: maskPhoneNumber2
-                                                      .unmaskText(otherNumberCtrl.text),
+                                                      .unmaskText(
+                                                          otherNumberCtrl.text),
                                                   idCountry: 25,
-                                                  idState: int.parse(selectedState!),
+                                                  idState:
+                                                      int.parse(selectedState!),
                                                   idCity: int.parse(selectedCity!),
                                                   direction: directionCtrl.text,
                                                   mpps: int.parse(cmppsCtrl.text),
@@ -525,9 +554,7 @@ class _EditProfileState extends State<EditProfile> {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 20),
-                                    child: Text(
-                                      context.appLocalization
-                                          .nameButtonConnectDoctor,
+                                    child: Text('Guardar',
                                       textAlign: TextAlign.center,
                                       style: AppStyles.textStyleButton,
                                     ),
@@ -536,69 +563,6 @@ class _EditProfileState extends State<EditProfile> {
                               )),
                         ],
                       )
-
-                      /*Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-
-                        OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20))),
-                          child: const Text(
-                            'Cancelar',
-                            style: TextStyle(
-                                fontSize: 15,
-                                letterSpacing: 2,
-                                color: Colors.black),
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<ProfileBloc>().add(EditProfileEvent(
-                                idAffiliate: BlocProvider.of<ProfileBloc>(
-                                        context,
-                                        listen: false)
-                                    .profileModel!
-                                    .idAffiliate!,
-                                fullName: fullNameCtrl.text,
-                                email: emailCtrl.text,
-                                dateOfBirth: dateOfBirthSave!,
-                                idGender: selectedGender!,
-                                phoneNumber: maskPhoneNumber
-                                    .unmaskText(phoneNumberCtrl.text),
-                                otherPhone: maskPhoneNumber2
-                                    .unmaskText(otherNumberCtrl.text),
-                                idCountry: 25,
-                                idState: int.parse(selectedState!),
-                                idCity: int.parse(selectedCity!),
-                                direction: directionCtrl.text,
-                                mpps: int.parse(cmppsCtrl.text),
-                                cm: int.parse(cmCtrl.text),
-                                speciality: specialityCtrl.text,
-                                photoProfile: pathImage,
-                                digitalSignature: doctorSignaturePath));
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 30),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20))),
-                          child: const Text(
-                            'Guardar',
-                            style: TextStyle(
-                                fontSize: 15,
-                                letterSpacing: 2,
-                                color: Colors.black),
-                          ),
-                        )
-                      ],
-                    ),*/
                       )
                 ],
               ),
@@ -614,8 +578,8 @@ class _EditProfileState extends State<EditProfile> {
       builder: (context, state) {
         if (state is GenderDataSuccessState) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
-            child: /*Column(
+              padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+              child: /*Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -623,43 +587,45 @@ class _EditProfileState extends State<EditProfile> {
                   style: const TextStyle(
                       fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
                 ),*/
-                DropdownButtonFormField(
-                  hint: Text(context.appLocalization.labelGender),
-                  decoration: InputDecoration(
+                  DropdownButtonFormField(
+                hint: Text(context.appLocalization.labelGender),
+                decoration: InputDecoration(
                     labelText: '${context.appLocalization.labelGender} (*)',
                     hintText: context.appLocalization.labelSelect,
                     labelStyle: const TextStyle(
-                        fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                     errorStyle: AppStyles.textFormFieldError),
-                  autovalidateMode: AutovalidateMode.always,
-                  isExpanded: true,
-                  dropdownColor: Colors.white,
-                  // style: fontTextBlack,
-                  key: genderFieldKey,
-                  validator: (value) {
-                    return ProfileValidations()
-                        .genderValidator(context, value.toString());
-                  },
-                  items: state.genderMap.data.map((item) {
-                    return DropdownMenuItem(
-                      value: item.idGender,
-                      child: Text(item.descriptionEs),
-                    );
-                  }).toList(),
-                  onChanged: (newVal) {
-                    genderFieldKey.currentState!.validate();
-                    selectedGender = newVal;
-                  },
-                  onTap: () {
-                    genderFieldKey.currentState!.validate();
-                    /* _genderValid = _genderKey.currentState!.validate();
+                autovalidateMode: AutovalidateMode.always,
+                isExpanded: true,
+                dropdownColor: Colors.white,
+                // style: fontTextBlack,
+                key: genderFieldKey,
+                validator: (value) {
+                  return ProfileValidations()
+                      .genderValidator(context, value.toString());
+                },
+                items: state.genderMap.data.map((item) {
+                  return DropdownMenuItem(
+                    value: item.idGender,
+                    child: Text(item.descriptionEs),
+                  );
+                }).toList(),
+                onChanged: (newVal) {
+                  genderFieldKey.currentState!.validate();
+                  selectedGender = newVal;
+                },
+                onTap: () {
+                  genderFieldKey.currentState!.validate();
+                  /* _genderValid = _genderKey.currentState!.validate();
                     _saveButtonEnable = _isFormValid();*/
-                  },
-                  value: selectedGender,
-                )
-          /*    ],
+                },
+                value: selectedGender,
+              )
+              /*    ],
             ),*/
-          );
+              );
         } else {
           return Container();
         }
