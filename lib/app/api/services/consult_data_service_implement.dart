@@ -150,7 +150,7 @@ class ConsultDataServiceImp implements ConsultDataService {
       if (decodeRespApi[ApiConstants.statusLabelApi] !=
           ApiConstants.statusSuccessApi) {
         final String error =
-        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
 
         if (error == ApiConstants.amdPendingAdminFinalizedCodeApi ||
             error == ApiConstants.amdconfirmedAdminFinalizedCodeApi) {
@@ -168,16 +168,17 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
   }
 
+
   @override
-  Future<List<HomeServiceMap>> getHistoryAmdOrderList(String tokenUser,
-      int idDoctorAmd) async {
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(
+      String tokenUser, int idDoctorAmd) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
 
     ///HomeServiceMap homeServiceMap;
 
     final Uri urlGetHistoryAmdOrder =
-    Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
+        Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
 
     final Map<String, String> header = {
       ApiConstants.headerToken: tokenUser,
@@ -185,7 +186,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     final String bodyGetHistoryAmdOrder =
-    jsonEncode({'idDoctorAmd': idDoctorAmd});
+        jsonEncode({'idDoctorAmd': idDoctorAmd});
 
     //List<HistoryAmdMap> historyAmdMapList;
     List<HomeServiceMap> homeServiceList;
@@ -197,6 +198,7 @@ class ConsultDataServiceImp implements ConsultDataService {
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
         // historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
+
         homeServiceList = List<HomeServiceMap>.from(
             decodeRespApi[ApiConstants.dataLabelApi]
                 .map((data) => HomeServiceMap.fromJson(data)));
@@ -320,5 +322,39 @@ class ConsultDataServiceImp implements ConsultDataService {
     }
 
     return imageProfile;
+  }
+
+  @override
+  Future<String> verifyConnectedDoctorAmd(final String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    late String statusConnected;
+
+    final Uri urlCheckConnected =
+        Uri.parse(ApiConstants.verifyConnectedDoctorAmd);
+
+    final Map<String, String> header = {
+      ApiConstants.headerToken: tokenUser,
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    try {
+      responseApi = await http.post(urlCheckConnected, headers: header);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        statusConnected = decodeRespApi[ApiConstants.dataLabelApi]['code'];
+      } else {
+        statusConnected = decodeRespApi[ApiConstants.dataLabelApi]['code'];
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return statusConnected;
   }
 }

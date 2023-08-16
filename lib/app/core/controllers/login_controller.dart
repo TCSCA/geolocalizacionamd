@@ -29,8 +29,7 @@ class LoginController {
 
       var responseLogin = await loginService.doLogin(user, password);
 
-      //BlocProvider.of<ImageProfileBloc>(context).add();
-
+      cleanDataSession();
       await secureStorageController.writeSecureData(
           ApiConstants.tokenLabel, responseLogin.data);
       await secureStorageController.writeSecureData(
@@ -84,16 +83,7 @@ class LoginController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     } finally {
-      await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorInAttentionLabel);
-      await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorConnectedLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
+      cleanDataSession();
     }
     return respWebSocket;
   }
@@ -101,6 +91,8 @@ class LoginController {
   Future<UserModel> doResetLoginUser(String user, final String password) async {
     late UserModel userResponse;
     try {
+      cleanDataSession();
+
       var responseLogin = await loginService.resetLogin(user, password);
 
       await secureStorageController.writeSecureData(
@@ -109,7 +101,7 @@ class LoginController {
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
-      
+
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
@@ -148,5 +140,17 @@ class LoginController {
       newBoolValue = connectedDoctor.toLowerCase() != 'false';
     }
     return newBoolValue;
+  }
+
+  Future<void> cleanDataSession() async {
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorInAttentionLabel);
+    await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorConnectedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
   }
 }

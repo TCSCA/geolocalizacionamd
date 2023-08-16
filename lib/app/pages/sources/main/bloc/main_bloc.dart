@@ -465,5 +465,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
+
+    on<CheckDoctorConnectedEvent>((event, emit) async {
+      emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+      final String statusConnected =
+          await doctorCareController.verifyConnected();
+      statusConnected == 'Doctor disponible para atencion'
+          ? doctorAvailableSwitch = true
+          : doctorAvailableSwitch = false;
+      emit(MainInitial(doctorAvailable: doctorAvailableSwitch));
+    });
   }
 }

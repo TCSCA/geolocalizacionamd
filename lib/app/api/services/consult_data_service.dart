@@ -15,4 +15,7 @@ abstract class ConsultDataService {
   Future<GenderMap> getAllGender();
   Future<Uint8List?>getPhotoService(String tokenUser);
   Future<Uint8List?>getDigitalSignatureService(String tokenUser);
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(
+      String tokenUser, int idDoctorAmd);
+  Future<String> verifyConnectedDoctorAmd(String tokenUser);
 }
