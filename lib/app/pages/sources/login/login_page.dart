@@ -94,6 +94,9 @@ class _LoginPageState extends State<LoginPage> {
 
                   BlocProvider.of<ImageProfileBloc>(context).add(ConsultPhotoEvent());
 
+                  await BlocProvider.of<ImageProfileBloc>(context);
+
+
                     if (!isUsedFingerprint) {
                       await prefs.setString(
                           'password', passwordController.text);

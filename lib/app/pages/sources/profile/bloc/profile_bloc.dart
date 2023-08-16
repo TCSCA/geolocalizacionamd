@@ -5,6 +5,7 @@ import 'package:geolocalizacionamd/app/core/models/profile_model.dart';
 import '../../../../core/controllers/profile_controller.dart';
 import '../../../../errors/error_app_exception.dart';
 import '../../../../errors/error_general_exception.dart';
+import '../../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../constants/app_constants.dart';
 
 part 'profile_event.dart';
@@ -42,8 +43,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
 
     on<EditProfileEvent>((event, emit) async {
-      emit(ProfileUpdateSuccessState());
+      emit(ProfileUpdateLoadingState());
       final bool updateProfileSuccess;
+
+      ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
 
       try {
     updateProfileSuccess =  await  getProfileController.doEditProfile(
@@ -65,6 +68,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             event.digitalSignature);
 
     if(updateProfileSuccess) {
+
+      imageProfileBloc.add(ConsultPhotoEvent());
+
       emit(ProfileUpdateSuccessState());
     }
 

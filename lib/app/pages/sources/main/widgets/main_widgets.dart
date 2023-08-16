@@ -90,7 +90,7 @@ class MainWidgets {
                     radius: 70,
                     child: CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
-                      radius: 90,
+                      radius: 55,
                       child: BlocBuilder<ImageProfileBloc, ImageProfileState>(
                         builder: (context, state) {
                           return  ImageWidget(

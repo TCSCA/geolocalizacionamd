@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../shared/dialog/custom_dialog_box.dart';
@@ -9,6 +10,7 @@ import '../../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../../shared/loading/loading_builder.dart';
 import '../../../constants/app_constants.dart';
 import '../../../messages/app_messages.dart';
+import '../../../styles/app_styles.dart';
 
 class DigitalSignatureWidget extends StatelessWidget {
   Uint8List? signatureBuild = null;
@@ -68,25 +70,38 @@ class DigitalSignatureWidget extends StatelessWidget {
                         fit: BoxFit.cover,
                         width: 200,
                       ),
-                    MaterialButton(
-                        child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: const BoxDecoration(
-                                boxShadow: [BoxShadow(color: Colors.blueGrey)],
-                                color: Colors.blueGrey,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                )),
-                            child: const Text(
-                              'Cerrar',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          //context.pop();
-                        })
+                    Container(
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 7.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              elevation: 5,
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xffFFFFFF)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          onPressed: () {
+                            GoRouter.of(context).pop();
+                          },
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                gradient: const LinearGradient(colors: [
+                                  Color(0xffF96352),
+                                  Color(0xffD84835)
+                                ]),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 20),
+                              child: Text(
+                                context.appLocalization.nameButtonReturn,
+                                textAlign: TextAlign.center,
+                                style: AppStyles.textStyleButton,
+                              ),
+                            ),
+                          ),
+                        )),
                   ],
                 )),
           );

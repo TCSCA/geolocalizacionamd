@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class ImageWidget extends StatelessWidget {
-   Uint8List? imagePath;
+  Uint8List? imagePath;
   final VoidCallback onClicked;
   final bool isEdit;
   final Color color;
@@ -19,7 +19,6 @@ class ImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     imagePath = imagePath ?? Uint8List.fromList(_bytesImageEmpty.cast<int>());
 
     return Center(
@@ -30,14 +29,15 @@ class ImageWidget extends StatelessWidget {
             isEdit: isEdit,
             imagePath: imagePath,
           ),
-          Positioned(
-              bottom: 10,
-              right: 10,
-              child: _IconEditorWidget(
-                color: color,
-                isEdit: isEdit,
-                onClicked: onClicked,
-              ))
+          if (isEdit)
+            Positioned(
+                bottom: 10,
+                right: 10,
+                child: _IconEditorWidget(
+                  color: color,
+                  isEdit: isEdit,
+                  onClicked: onClicked,
+                ))
         ],
       ),
     );
@@ -63,20 +63,16 @@ class _ImageBuildWidget extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: isEdit
                     ? 180
-                    : MediaQuery.of(context).size.width < 321
-                        ? 80
-                        : 100,
+                    : 170,
                 height: isEdit
                     ? 180
-                    : MediaQuery.of(context).size.width < 321
-                        ? 50
-                        : 100,
+                    : 170,
               )
             : Image.memory(
                 imagePath!,
                 fit: BoxFit.cover,
-                width: isEdit ? 150 : 100,
-                height: isEdit ? 150 : 100,
+                width: isEdit ? 150 : 130,
+                height: isEdit ? 150 : 130,
               ),
       ),
     );

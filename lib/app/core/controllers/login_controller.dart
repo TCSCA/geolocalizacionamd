@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
@@ -9,6 +11,7 @@ import '/app/api/services/login_service_implement.dart';
 import '/app/errors/error_active_connection.dart';
 import '/app/errors/exceptions.dart';
 import '/app/core/models/user_model.dart';
+import 'image_profile_controller.dart';
 import 'secure_storage_controller.dart';
 
 class LoginController {
@@ -22,6 +25,8 @@ class LoginController {
     late UserModel userResponse;
 
     try {
+      ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+
       var responseLogin = await loginService.doLogin(user, password);
 
       //BlocProvider.of<ImageProfileBloc>(context).add();
@@ -33,6 +38,18 @@ class LoginController {
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
 
+
+
+
+     /* Uint8List? imageBuild = null;
+      String? imagePath;
+
+      imageBuild =
+     await ImageProfileController().doConsultDataImageProfile();
+      imagePath =
+          const Base64Encoder().convert(List.from(imageBuild!));*/
+
+    //  imageProfileBloc.emit(ImageChangeSuccessState(imagePath: imagePath, imageBuild: imageBuild));
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
