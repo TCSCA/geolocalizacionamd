@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/widgets/digital_signature.dart';
-import 'package:geolocalizacionamd/app/shared/digital_signature_bloc/digital_signature_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
@@ -169,7 +168,7 @@ class ListViewProfileWidget extends StatelessWidget {
               const Divider(
                 height: 10,
               ),
-              if (state.profileModel.validateSignature! !=  false)
+              if (state.profileModel.validateSignature!)
                 ListTile(
                   title: const Text('Firma digital',
                       style: TextStyle(fontWeight: FontWeight.bold)),
@@ -191,6 +190,31 @@ class ListViewProfileWidget extends StatelessWidget {
                                       child: */DigitalSignatureWidget());
                                 //    ));
                           }),
+                    ],
+                  ),
+                ),
+              if (!state.profileModel.validateSignature!)
+                const ListTile(
+                  title: Text('Firma digital',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                       Text(
+                        'Sin firma',
+                      ),
+                      /*MaterialButton(
+                          child: const Icon(Icons.file_present, size: 30,
+                              color: Color(0xff2B5178)),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                *//*BlocProvider(
+                                      create: (context) => DigitalSignatureBloc(),
+                                      child: *//*DigitalSignatureWidget());
+                            //    ));
+                          }),*/
                     ],
                   ),
                 ),

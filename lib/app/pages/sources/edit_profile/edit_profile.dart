@@ -82,7 +82,8 @@ class _EditProfileState extends State<EditProfile> {
   String? dateOfBirthSave;
 
 //_bytesImage = Uint8List.fromList(_bytesImageEmpty.cast<int>());
-  Uint8List? _bytesImage = null;
+  Uint8List? _bytesImage;
+  Uint8List? _imgByDatabase;
   String? pathImage;
 
   Uint8List? doctorSignatureBuild = null;
@@ -96,10 +97,13 @@ class _EditProfileState extends State<EditProfile> {
       mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
 
   late MainBloc userMainBloc;
-
   setData() {
     userMainBloc = BlocProvider.of<MainBloc>(context);
+    final imageProfile = BlocProvider.of<ImageProfileBloc>(context).state;
+
     final state = BlocProvider.of<ProfileBloc>(context, listen: false);
+
+    final imageState = BlocProvider.of<ImageProfileBloc>(context, listen: false);
     fullNameCtrl = TextEditingController(text: state.profileModel?.fullName);
     identificationDocumentCtrl =
         TextEditingController(text: state.profileModel?.identificationDocument);
@@ -122,6 +126,8 @@ class _EditProfileState extends State<EditProfile> {
     directionCtrl = TextEditingController(text: state.profileModel?.direction);
     cmppsCtrl = TextEditingController(text: state.profileModel?.mpps);
     cmCtrl = TextEditingController(text: state.profileModel?.mc);
+    _bytesImage = imageProfile is InitialImageProfileState ? imageProfile.imageBuild : null;
+    _imgByDatabase = imageProfile is InitialImageProfileState ? imageProfile.imageBuild : null;
 
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
@@ -276,10 +282,6 @@ class _EditProfileState extends State<EditProfile> {
                       }
                     },
                     builder: (context, state) {
-                      _bytesImage = state is ImageChangeSuccessState
-                          ? state.imageBuild
-                          : null;
-
                       return ImageWidget(
                         isEdit: true,
                         color: Colors.blueGrey,
@@ -462,7 +464,10 @@ class _EditProfileState extends State<EditProfile> {
                                             descriptions:
                                             context.appLocalization.alertCancel,
                                             isConfirmation: true,
-                                            dialogAction: () =>  context.go(GeoAmdRoutes.profile),
+                                            dialogAction: () {
+                                              BlocProvider.of<ImageProfileBloc>(context).add(ImageProfileInitialEvent(imageBuild: _imgByDatabase));
+                                              context.go(GeoAmdRoutes.profile);
+                                            },
                                             type: AppConstants.statusWarning,
                                             isdialogCancel: true,
                                             dialogCancel: () {});
@@ -863,6 +868,8 @@ class _EditProfileState extends State<EditProfile> {
                 fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
           ),
           TextFormField(
+
+            readOnly: true,
             controller: birthdayCtrl,
             autovalidateMode: AutovalidateMode.always,
             key: birthdayFieldKey,

@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../shared/dialog/custom_dialog_box.dart';
 import '../../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../../shared/loading/loading_builder.dart';
+import '../../../../shared/method/back_button_action.dart';
 import '../../../constants/app_constants.dart';
 import '../../../messages/app_messages.dart';
 import '../../../styles/app_styles.dart';
@@ -31,6 +32,7 @@ class DigitalSignatureWidget extends StatelessWidget {
           LoadingBuilder(context).hideOpenDialog();
           signatureBuild = state.doctorSignatureBuild;
         } else if (state is DigitalSignatureErrorState) {
+          GoRouter.of(context).pop();
           LoadingBuilder(context).hideOpenDialog();
           showDialog(
               context: context,
@@ -52,59 +54,61 @@ class DigitalSignatureWidget extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is DigitalSignatureSuccess) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0,
-            child: Container(
-                alignment: Alignment.center,
-                width: 300,
-                height: 200,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    if (signatureBuild != null)
-                      Image.memory(
-                        signatureBuild!,
-                        fit: BoxFit.cover,
-                        width: 200,
-                      ),
-                    Container(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              elevation: 5,
-                              side: const BorderSide(
-                                  width: 2, color: Color(0xffFFFFFF)),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30))),
-                          onPressed: () {
-                            GoRouter.of(context).pop();
-                          },
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(colors: [
-                                  Color(0xffF96352),
-                                  Color(0xffD84835)
-                                ]),
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 20),
-                              child: Text(
-                                context.appLocalization.nameButtonReturn,
-                                textAlign: TextAlign.center,
-                                style: AppStyles.textStyleButton,
+          return WillPopScope(
+            onWillPop: () => backButtonActions(),
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 0,
+              child: Container(
+                  alignment: Alignment.center,
+                  width: 300,
+                  height: 200,
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      if (signatureBuild != null)
+                        Image.memory(
+                          signatureBuild!,
+                          fit: BoxFit.cover,
+                          width: 200,
+                        ),
+                      Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                elevation: 5,
+                                side: const BorderSide(
+                                    width: 2, color: Color(0xffFFFFFF)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30))),
+                            onPressed: () {
+                              GoRouter.of(context).pop();
+                            },
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  gradient: const LinearGradient(colors: [
+                                    Color(0xffF96352),
+                                    Color(0xffD84835)
+                                  ]),
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 15, horizontal: 20),
+                                child: Text(
+                                  context.appLocalization.nameButtonReturn,
+                                  textAlign: TextAlign.center,
+                                  style: AppStyles.textStyleButton,
+                                ),
                               ),
                             ),
-                          ),
-                        )),
-                  ],
-                )),
+                          )),
+                    ],
+                  )),
+            ),
           );
         } else {
           return Container();

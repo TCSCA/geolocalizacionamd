@@ -11,14 +11,14 @@ part 'image_profile_event.dart';
 part 'image_profile_state.dart';
 
 class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
+  Uint8List? bytesImage;
+  String? imagePath;
+
+  Uint8List? doctorSignatureBuild;
+  String? doctorSignaturePath;
+
+
   ImageProfileBloc() : super(const InitialImageProfileState()) {
-
-    Uint8List? bytesImage;
-    String? imagePath;
-
-    Uint8List? doctorSignatureBuild;
-    String doctorSignaturePath;
-
     on<ImageProfileEvent>((event, emit) {
       // TODO: implement event handler
     });

@@ -43,9 +43,10 @@ class ImageProfileController {
     final ConsultDataService consultDataService = ConsultDataServiceImp();
 
     final tokenUser =
-    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
 
-    imageProfile = await consultDataService.getDigitalSignatureService(tokenUser);
+    imageProfile =
+        await consultDataService.getDigitalSignatureService(tokenUser);
 
     return imageProfile;
   }
@@ -144,9 +145,9 @@ class ImageProfileController {
     image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
       final _path = image!.path.toLowerCase();
-      final _imageCheck = _path.endsWith('.jpg') ||
+     /* final _imageCheck = _path.endsWith('.jpg') ||
           _path.endsWith('.jpeg') ||
-          _path.endsWith('.png');
+          _path.endsWith('.png');*/
       //final _imageSize = (await imagee!.length()) / 1000;
       bytesImage = await _cropImage(image!.path);
       //imageRaw = await imagee!.readAsBytes();
@@ -161,7 +162,7 @@ class ImageProfileController {
 
     image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      final _path = image!.path.toLowerCase();
+      //final _path = image!.path;
       /*final _imageCheck = _path.endsWith('.jpg') ||
           _path.endsWith('.jpeg') ||
           _path.endsWith('.png');*/
@@ -175,24 +176,14 @@ class ImageProfileController {
 
   selectDigitalSignatureByGalleryCtrl() async {
     Uint8List? bytesSignature = null;
+    XFile? imageSignature;
+    final ImagePicker pickerSignature = ImagePicker();
 
-    image = await _picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 50,
-      maxWidth: 500,
-      maxHeight: 500,
-    );
-    if (image != null) {
-      final _path = image!.path.toLowerCase();
-      /*final _imageCheck = _path.endsWith('.jpg') ||
-          _path.endsWith('.jpeg') ||
-          _path.endsWith('.png');*/
+    imageSignature = await pickerSignature.pickImage(source: ImageSource.gallery);
 
-      bytesSignature = await _cropSignature(_path);
-
-     // bytesImage = await image!.readAsBytes();
-      //imageRaw = await image!.readAsBytes();
-      print(await image!.length());
+    if (imageSignature != null) {
+      final pathSignature = imageSignature.path;
+      bytesSignature = await _cropSignature(pathSignature);
     }
     return bytesSignature;
   }
@@ -237,39 +228,43 @@ class ImageProfileController {
 
   _cropSignature(filePath) async {
     Uint8List? _bytesImage;
-
     final imgCrop = ImageCropper();
-    CroppedFile? croppedImage = await imgCrop.cropImage(
-      compressQuality: 25,
-      sourcePath: filePath,
-      maxWidth: 500,
-      maxHeight: 500,
-      compressFormat: ImageCompressFormat.jpg,
-      cropStyle: CropStyle.rectangle,
-      aspectRatio: const CropAspectRatio(ratioX: 5.5, ratioY: 3.0),
-      uiSettings: <PlatformUiSettings>[
-        AndroidUiSettings(
-          toolbarTitle: 'Recorte de imagen',
-          toolbarColor: Colors.blueGrey,
-          toolbarWidgetColor: Colors.white,
-          // initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: true,
-          hideBottomControls: true,
-          showCropGrid: false,
-        ),
-        IOSUiSettings(
-            rotateClockwiseButtonHidden: true,
-            rectWidth: 500,
-            rectHeight: 500,
-            resetButtonHidden: false,
-            aspectRatioPickerButtonHidden: true,
-            rotateButtonsHidden: false)
-      ],
-    );
+    CroppedFile? croppedImage;
+    try {
+      croppedImage = await imgCrop.cropImage(
+        compressQuality: 50,
+        sourcePath: filePath,
+        maxWidth: 500,
+        maxHeight: 500,
+        compressFormat: ImageCompressFormat.jpg,
+        cropStyle: CropStyle.rectangle,
+        aspectRatio: const CropAspectRatio(ratioX: 5.5, ratioY: 3.0),
+        uiSettings: <PlatformUiSettings>[
+          AndroidUiSettings(
+            toolbarTitle: 'Recorte de imagen',
+            toolbarColor: Colors.blueGrey,
+            toolbarWidgetColor: Colors.white,
+            // initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: true,
+            hideBottomControls: true,
+            showCropGrid: false,
+          ),
+          IOSUiSettings(
+              rotateClockwiseButtonHidden: true,
+              rectWidth: 500,
+              rectHeight: 500,
+              resetButtonHidden: false,
+              aspectRatioPickerButtonHidden: true,
+              rotateButtonsHidden: false)
+        ],
+      );
+    } catch (err) {
+      print(err);
+    }
+
     if (croppedImage != null) {
       _bytesImage = await croppedImage.readAsBytes();
     }
-
     return _bytesImage;
   }
 }
