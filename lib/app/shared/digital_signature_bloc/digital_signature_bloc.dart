@@ -20,7 +20,7 @@ class DigitalSignatureBloc extends Bloc<DigitalSignatureEvent, DigitalSignatureS
       // TODO: implement event handler
     });
 
-    on<SelectDoctorSignature>((event, emit) async {
+    on<SelectDoctorSignatureEvent>((event, emit) async {
       emit(LoadingDigitalSignatureState());
 
       doctorSignatureBuild =

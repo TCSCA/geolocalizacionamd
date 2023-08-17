@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/shared/digital_signature_bloc/digital_signature_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -106,7 +107,7 @@ class _EditProfileState extends State<EditProfile> {
     genderCtrl = TextEditingController(text: state.profileModel?.gender);
     birthdayCtrl = TextEditingController(
         text:
-            '${state.profileModel?.dayBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.yearBirthday}');
+            '${state.profileModel?.dayBirthday}/${state.profileModel?.monthBirthday}/${state.profileModel?.yearBirthday}');
 
     dateOfBirthSave =
         '${state.profileModel?.yearBirthday}-${state.profileModel?.monthBirthday}-${state.profileModel?.dayBirthday}';
@@ -289,7 +290,9 @@ class _EditProfileState extends State<EditProfile> {
                       );
                     },
                   ),
-
+                  const SizedBox(
+                    height: 30,
+                  ),
                   _fullNameWidget(),
                   _emailWidget(),
                   allGenderList(),
@@ -401,21 +404,20 @@ class _EditProfileState extends State<EditProfile> {
                             child: const Icon(Icons.drive_folder_upload, size: 30, color: Color(0xff2B5178),),
                             onPressed: () {
                               context
-                                  .read<ImageProfileBloc>()
-                                  .add(SelectDoctorSignature());
+                                  .read<DigitalSignatureBloc>().add(SelectDoctorSignatureEvent());
                             }),
                      // ),
                     ],
                   ),
-                  BlocConsumer<ImageProfileBloc, ImageProfileState>(
+                  BlocConsumer<DigitalSignatureBloc, DigitalSignatureState>(
                     listener: (context, state) {
-                      if (state is ImageChangeSuccessState) {
+                      if (state is DigitalSignatureSuccess) {
                         doctorSignaturePath = state.doctorSignaturePath;
                         doctorSignatureBuild = state.doctorSignatureBuild;
                       }
                     },
                     builder: (context, state) {
-                      if (state is ImageChangeSuccessState) {
+                      if (state is DigitalSignatureSuccess) {
                         return Column(
                           children: [
                             _digitalSignatureDoctor(doctorSignatureBuild),
@@ -579,15 +581,7 @@ class _EditProfileState extends State<EditProfile> {
         if (state is GenderDataSuccessState) {
           return Padding(
               padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
-              child: /*Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.appLocalization.labelGender,
-                  style: const TextStyle(
-                      fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
-                ),*/
-                  DropdownButtonFormField(
+              child: DropdownButtonFormField(
                 hint: Text(context.appLocalization.labelGender),
                 decoration: InputDecoration(
                     labelText: '${context.appLocalization.labelGender} (*)',
@@ -637,6 +631,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        maxLength: 50,
         autovalidateMode: AutovalidateMode.always,
         controller: fullNameCtrl,
         readOnly: false,
@@ -659,8 +654,9 @@ class _EditProfileState extends State<EditProfile> {
 
   Widget _emailWidget() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
+      padding: const EdgeInsets.only(bottom: 10.0, right: 20, left: 20),
       child: TextFormField(
+        maxLength: 50,
         autovalidateMode: AutovalidateMode.always,
         controller: emailCtrl,
         readOnly: false,
@@ -757,6 +753,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        maxLength: 80,
         autovalidateMode: AutovalidateMode.always,
         controller: directionCtrl,
         readOnly: false,
@@ -781,6 +778,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        maxLength: 15,
         keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: cmppsCtrl,
@@ -806,6 +804,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        maxLength: 15,
         keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: cmCtrl,
@@ -831,6 +830,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
+        maxLength: 30,
         autovalidateMode: AutovalidateMode.always,
         controller: specialityCtrl,
         readOnly: false,
@@ -909,7 +909,7 @@ class _EditProfileState extends State<EditProfile> {
                 dateDay = '0${int.parse(selectedDate!.day.toString())}';
               }
               birthdayCtrl = TextEditingController(
-                  text: '$dateDay-$dateMonth-${selectedDate!.year}');
+                  text: '$dateDay/$dateMonth/${selectedDate!.year}');
               //date = '$dateDay/$dateMonth/${selectedDate!.year}';
 
               dateOfBirthSave = '${selectedDate!.year}-$dateMonth-$dateDay';

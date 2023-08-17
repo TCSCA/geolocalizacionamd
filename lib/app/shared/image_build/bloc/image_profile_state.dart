@@ -4,9 +4,13 @@ abstract class ImageProfileState extends Equatable {
   const ImageProfileState();
 }
 
-class ImageProfileInitial extends ImageProfileState {
+class InitialImageProfileState extends ImageProfileState {
+  const InitialImageProfileState({this.imageBuild});
+
+  final Uint8List? imageBuild;
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [imageBuild];
 }
 
 class LoadingImageState extends ImageProfileState {
@@ -25,7 +29,6 @@ class ImageChangeSuccessState extends ImageProfileState {
   final String? imagePath;
   final Uint8List? doctorSignatureBuild;
   final String? doctorSignaturePath;
-
 
   @override
   List<Object?> get props =>
@@ -52,5 +55,5 @@ class CameraPermissionSuccessState extends ImageProfileState {
   const CameraPermissionSuccessState({required this.typePermission});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [typePermission];
 }

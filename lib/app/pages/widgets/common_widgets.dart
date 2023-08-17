@@ -140,7 +140,7 @@ class AppCommonWidgets {
                   descriptions: context.appLocalization.messageLogout,
                   isConfirmation: true,
                   dialogAction: () {
-                    BlocProvider.of<ProfileBloc>(context).add(GetProfileInitialEvent());
+
                     BlocProvider.of<ImageProfileBloc>(context).add(CleanImageByProfile());
                     BlocProvider.of<LoginBloc>(context)
                         .add(const ProcessLogoutEvent());
@@ -214,6 +214,7 @@ class AppCommonWidgets {
         LoadingBuilder(context)
             .showLoadingIndicator(context.appLocalization.titleLogoutLoading);
       } else if (state is LogoutSuccessState) {
+
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch = false;
         LoadingBuilder(context).hideOpenDialog();
         context.go(GeoAmdRoutes.login);

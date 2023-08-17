@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocalizacionamd/app/core/controllers/image_profile_controller.dart';
+import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
@@ -87,15 +89,15 @@ class _LoginPageState extends State<LoginPage> {
                       context.appLocalization.titleLoginLoading);
                 }
                 if (state is LoginSuccessState) {
+
+                  Uint8List? image = await ImageProfileController().doConsultDataImageProfile();
+                  BlocProvider.of<ImageProfileBloc>(context).add(ImageProfileInitialEvent(imageBuild: image));
+                  BlocProvider.of<ProfileBloc>(context).add(GetProfileInitialEvent());
+
                   if (checkUserSave) {
                     await prefs.setString('userSave', userController.text);
 
                     await prefs.setBool('checkUserSave', checkUserSave);
-
-                  BlocProvider.of<ImageProfileBloc>(context).add(ConsultPhotoEvent());
-
-                  await BlocProvider.of<ImageProfileBloc>(context);
-
 
                     if (!isUsedFingerprint) {
                       await prefs.setString(

@@ -4,6 +4,17 @@ abstract class ImageProfileEvent extends Equatable {
   const ImageProfileEvent();
 }
 
+class ImageProfileInitialEvent extends ImageProfileEvent {
+
+  final Uint8List? imageBuild;
+
+  const ImageProfileInitialEvent({this.imageBuild});
+
+  @override
+  List<Object?> get props => [imageBuild];
+
+}
+
 class SelectImageByGallery extends ImageProfileEvent {
 
   @override

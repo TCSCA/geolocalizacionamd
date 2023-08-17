@@ -169,7 +169,7 @@ class ListViewProfileWidget extends StatelessWidget {
               const Divider(
                 height: 10,
               ),
-              if (state.profileModel.validateSignature!)
+              if (state.profileModel.validateSignature! !=  false)
                 ListTile(
                   title: const Text('Firma digital',
                       style: TextStyle(fontWeight: FontWeight.bold)),
@@ -186,10 +186,10 @@ class ListViewProfileWidget extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) =>
-                                    BlocProvider(
+                                    /*BlocProvider(
                                       create: (context) => DigitalSignatureBloc(),
-                                      child: DigitalSignatureWidget(),
-                                    ));
+                                      child: */DigitalSignatureWidget());
+                                //    ));
                           }),
                     ],
                   ),
@@ -235,22 +235,25 @@ class ListViewProfileWidget extends StatelessWidget {
 }
 
 class _ImageWidget extends StatelessWidget {
-  Uint8List? _bytesImage;
+  _ImageWidget({this.bytesImage});
+  Uint8List? bytesImage;
 
   @override
   Widget build(BuildContext context) {
+
     return BlocConsumer<ImageProfileBloc, ImageProfileState>(
       listener: (context, state) {
-        if (state is ImageChangeSuccessState) {
-          _bytesImage = state.imageBuild;
+        if (state is InitialImageProfileState) {
+          bytesImage = state.imageBuild;
         }
         // TODO: implement listener
       },
       builder: (context, state) {
+        bytesImage = state is InitialImageProfileState ? state.imageBuild : null;
         return ImageWidget(
           isEdit: false,
           color: Colors.blueGrey,
-          imagePath: state is ImageChangeSuccessState ? state.imageBuild : null,
+          imagePath: bytesImage,
           onClicked: () async {},
         );
       },

@@ -95,7 +95,7 @@ class MainWidgets {
                           return  ImageWidget(
                               onClicked: () {},
                               isEdit: false,
-                              imagePath: state is ImageChangeSuccessState ? state.imageBuild : null,
+                              imagePath: state is InitialImageProfileState ? state.imageBuild : null,
                               color: Colors.blueGrey)/*CircleAvatar(
                             backgroundImage: Image.memory(
                                     Uint8List.fromList(user.photoPerfil))
