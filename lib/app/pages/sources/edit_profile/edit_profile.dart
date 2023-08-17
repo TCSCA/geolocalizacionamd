@@ -208,24 +208,6 @@ class _EditProfileState extends State<EditProfile> {
                 );
               });
 
-/*           showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return CustomDialogBox(
-                  title: AppMessages().getMessageTitle(
-                      context, AppConstants.statusSuccess),
-                  descriptions: 'datos Actualizados correctamente'*/ /*AppMessages().getMessage(
-                      context,
-                      context.appLocalization.appMsg229)*/ /*,
-                  isConfirmation: true,
-                  dialogAction: () {},
-                  type: AppConstants.statusSuccess,
-                  isdialogCancel: false,
-                  dialogCancel: () {
-                  },
-                );
-              });*/
           context.read<ProfileBloc>().add(GetProfileInitialEvent());
           context.go(GeoAmdRoutes.profile, extra: NavigationBloc());
         }
@@ -242,7 +224,7 @@ class _EditProfileState extends State<EditProfile> {
 
               stateList = state.listStates;
               userMainBloc.add(ShowLocationDoctorCitiesEvent(stateCtrl.text));
-              //selectedState = null;
+              selectedState = stateCtrl.text;
             }
             if (state is LocationCitiesSuccessState) {
               LoadingBuilder(context).hideOpenDialog();
@@ -724,7 +706,7 @@ class _EditProfileState extends State<EditProfile> {
             ProfileValidations().otherNumberValidator(context, value ?? ''),
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
-            labelText: context.appLocalization.labelPhone,
+            labelText: context.appLocalization.labelOtherPhone,
             labelStyle: const TextStyle(
                 fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -995,54 +977,57 @@ class _EditProfileState extends State<EditProfile> {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              "Elige una opción",
-              style: TextStyle(color: Colors.blue),
-            ),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: [
-                  const Divider(
-                    height: 1,
-                    color: Colors.blue,
-                  ),
-                  ListTile(
-                    onTap: () {
-                      selectionOption = 1;
-                      context.pop();
-                    },
-                    title: Text('Galeria'),
-                    leading: const Icon(
-                      Icons.account_box,
+          return WillPopScope(
+            onWillPop: () => backButtonActions(),
+            child: AlertDialog(
+              title: const Text(
+                "Elige una opción",
+                style: TextStyle(color: Colors.blue),
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    const Divider(
+                      height: 1,
                       color: Colors.blue,
                     ),
-                  ),
-                  ListTile(
-                    onTap: () {
-                      context.pop();
-                      selectionOption = 2;
-                    },
-                    title: Text('Camara'),
-                    leading: const Icon(
-                      Icons.camera,
-                      color: Colors.blue,
+                    ListTile(
+                      onTap: () {
+                        selectionOption = 1;
+                        context.pop();
+                      },
+                      title: Text('Galeria'),
+                      leading: const Icon(
+                        Icons.account_box,
+                        color: Colors.blue,
+                      ),
                     ),
-                  ),
-                  _bytesImage != null
-                      ? ListTile(
-                          onTap: () {
-                            selectionOption = 3;
-                            context.pop();
-                          },
-                          title: Text('Borrar imagen'),
-                          leading: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        )
-                      : Container(),
-                ],
+                    ListTile(
+                      onTap: () {
+                        context.pop();
+                        selectionOption = 2;
+                      },
+                      title: Text('Camara'),
+                      leading: const Icon(
+                        Icons.camera,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    _bytesImage != null
+                        ? ListTile(
+                            onTap: () {
+                              selectionOption = 3;
+                              context.pop();
+                            },
+                            title: Text('Borrar imagen'),
+                            leading: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
               ),
             ),
           );

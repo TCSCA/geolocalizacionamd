@@ -64,7 +64,7 @@ class DigitalSignatureWidget extends StatelessWidget {
               child: Container(
                   alignment: Alignment.center,
                   width: 300,
-                  height: 200,
+                  height: 250,
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -73,7 +73,7 @@ class DigitalSignatureWidget extends StatelessWidget {
                         Image.memory(
                           signatureBuild!,
                           fit: BoxFit.cover,
-                          width: 200,
+                          height: 140,
                         ),
                       Container(
                           padding: const EdgeInsets.symmetric(horizontal: 7.0),

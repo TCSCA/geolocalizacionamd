@@ -78,8 +78,8 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
 
 
 
-      emit(ImageChangeSuccessState(
-          imageBuild: bytesImage, imagePath: imagePath));
+      emit(InitialImageProfileState(
+          imageBuild: bytesImage));
     });
 
     on<SelectDoctorSignature>((event, emit) async {
