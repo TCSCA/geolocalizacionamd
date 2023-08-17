@@ -11,16 +11,21 @@ part 'image_profile_event.dart';
 part 'image_profile_state.dart';
 
 class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
-  ImageProfileBloc() : super(ImageProfileInitial()) {
-    on<ImageProfileEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+  ImageProfileBloc() : super(const InitialImageProfileState()) {
 
     Uint8List? bytesImage;
     String? imagePath;
 
     Uint8List? doctorSignatureBuild;
     String doctorSignaturePath;
+
+    on<ImageProfileEvent>((event, emit) {
+      // TODO: implement event handler
+    });
+
+    on<ImageProfileInitialEvent>((event, emit) {
+      emit(InitialImageProfileState(imageBuild: event.imageBuild));
+    });
 
     on<SelectImageByCamera>((event, emit) async {
       bytesImage = await ImageProfileController().selectImageByCameraCtrl();

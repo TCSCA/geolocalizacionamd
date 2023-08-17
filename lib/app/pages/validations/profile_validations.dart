@@ -80,7 +80,7 @@ class ProfileValidations {
     } else {
       if (!regExp.hasMatch(event) || event[0] == '0') {
         return context.appLocalization.invalidData;
-      } else if (event.length < 5) {
+      } else if (event.length < 4) {
         return context.appLocalization.invalidLengthField;
       }
     }
@@ -94,7 +94,7 @@ class ProfileValidations {
     } else {
       if (!regExp.hasMatch(event) || event[0] == '0') {
         return context.appLocalization.invalidData;
-      } else if (event.length < 5) {
+      } else if (event.length < 1) {
         return context.appLocalization.invalidLengthField;
       }
     }

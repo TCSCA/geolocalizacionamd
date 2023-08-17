@@ -265,8 +265,9 @@ class ConsultDataServiceImp implements ConsultDataService {
       responseApi = await http.post(urlGetPhotoProfile, headers: headerPhoto);
 
       decodeRespApi = jsonDecode(responseApi.body);
-      imageArray = decodeRespApi["data"]["photoProfile"];
+
       if (decodeRespApi["data"]["photoProfile"] != null) {
+        imageArray = decodeRespApi["data"]["photoProfile"];
         imageProfile = Uint8List.fromList(imageArray.cast<int>());
       }
       else {
@@ -303,8 +304,9 @@ class ConsultDataServiceImp implements ConsultDataService {
       responseApi = await http.post(urlGetDigitalSignature, headers: headerSignature);
 
       decodeRespApi = jsonDecode(responseApi.body);
-      imageArray = decodeRespApi["data"]["digitalSignature"];
+
       if (decodeRespApi["data"]["digitalSignature"] != null) {
+        imageArray = decodeRespApi["data"]["digitalSignature"];
         imageProfile = Uint8List.fromList(imageArray.cast<int>());
       }
       else {
