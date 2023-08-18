@@ -139,11 +139,13 @@ class _LoginPageState extends State<LoginPage> {
                 }
                 if (state is LoginErrorState) {
                   LoadingBuilder(context).hideOpenDialog();
+
                   if (state.message == "recuperar contraseña") {
-                    showDialog(
+                    context.go(GeoAmdRoutes.changePassword,  extra: userController.text);
+                    /*showDialog(
                         context: context,
                         builder: (BuildContext context) =>
-                            ChangePasswordWidget());
+                            ChangePasswordWidget());*/
                   } else {
                     showDialog(
                         context: context,
@@ -474,12 +476,26 @@ class _LoginPageState extends State<LoginPage> {
                         //width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            /*Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RenewPasswordPage()));*/
-                            context.go(GeoAmdRoutes.changePassword,
-                                extra: NavigationBloc());
+
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                    title: AppMessages().getMessageTitle(
+                                        context, AppConstants.statusWarning),
+                                    descriptions:
+                                    AppMessages().getMessage(context, 'Usted ha iniciado el proceso para recuperar su contraseña. ¿Desea continuar?'),
+                                    isConfirmation: true,
+                                    dialogAction: () => context.go(GeoAmdRoutes.renewPassword,
+                                        extra: NavigationBloc()),
+                                    type: AppConstants.statusWarning,
+                                    isdialogCancel: false,
+                                    dialogCancel: () {},
+                                  );
+                                });
+                            /*context.go(GeoAmdRoutes.renewPassword,
+                                extra: NavigationBloc());*/
                           },
                           child: Text(
                             context.appLocalization.forgotPassword,

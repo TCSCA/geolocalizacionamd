@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/renew_password/bloc/renew_password_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ import '../../../shared/loading/loading_builder.dart';
 import '../../constants/app_constants.dart';
 import '../../messages/app_messages.dart';
 import '../../routes/geoamd_route.dart';
+import '../../styles/app_styles.dart';
 import '../navigation/bloc/navigation_bloc.dart';
 
 class RenewPasswordPage extends StatelessWidget {
@@ -40,12 +42,13 @@ class _RenewPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        color: Color(0xff2B5178),
           height: double.infinity,
           width: double.infinity,
           child: CustomPaint(
-            painter: _BackgroundStyle(),
+            //painter: _BackgroundStyle(),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               child: BlocConsumer<RenewPasswordBloc, RenewPasswordState>(
                 listener: (context, state) async {
                   if (state is IsLoadingState) {
@@ -61,7 +64,7 @@ class _RenewPasswordView extends StatelessWidget {
                             title: AppMessages().getMessageTitle(
                                 context, AppConstants.statusSuccess),
                             descriptions: AppMessages().getMessage(
-                                context, state.renewPasswordModel.data),
+                                context, 'El enlace ha sido enviado con éxito. A partir de este momento dispone de 30 minutos, revise su correo electrónico y siga los pasos'),
                             isConfirmation: false,
                             dialogAction: () {},
                             type: AppConstants.statusSuccess,
@@ -101,7 +104,7 @@ class _RenewPasswordView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             /*Expanded(
-                              child:*/ GestureDetector(
+                              child:*/ /*GestureDetector(
                                 onTap: () {
                                   context.go(GeoAmdRoutes.login, extra: NavigationBloc());
                                 },
@@ -111,20 +114,21 @@ class _RenewPasswordView extends StatelessWidget {
                                       Icons.arrow_back_ios,
                                       color: Colors.white,
                                     )),
-                              ),
+                              ),*/
                            // ),
                             Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                               height: 200,
                               child: Image.asset(
                                 'assets/images/telemedicina24_logo_blanco_lineal.png',
-                                width: 280,
-                                height: 90,
+                                width: 320,
                               ),
                             ),
                           ],
                         ),
                         Container(
-                          height: 200,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                          height: 170,
                           child: const Text(
                             "Recuperar Contraseña",
                             style: TextStyle(
@@ -134,68 +138,143 @@ class _RenewPasswordView extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child: Center(
-                            child: TextFormField(
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Campo requerido';
-                                }
-                                if (value.length < 6) {
-                                  return 'Longitud del dato menor a la mínima requerida';
-                                }
-                                return null;
-                              },
-                              key: userFieldKey,
-                              controller: _usernameCtrl,
-                              decoration: const InputDecoration(
-                                  icon: Icon(Icons.person), hintText: "Usuaro"),
+                          child: Container(
+                            decoration:const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                  child: Center(
+                                    child: TextFormField(
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Campo requerido';
+                                        }
+                                        if (value.length < 6) {
+                                          return 'Longitud del dato menor a la mínima requerida';
+                                        }
+                                        return null;
+                                      },
+                                      key: userFieldKey,
+                                      controller: _usernameCtrl,
+                                      decoration: const InputDecoration(
+
+                                          contentPadding:  EdgeInsets.only(bottom: 5),
+                                          labelStyle: TextStyle(
+                                              fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+                                          labelText: 'Usuario (*)',
+                                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                                          //hintText: placeHolder,
+                                          hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
+                                          icon: Icon(Icons.person), hintText: "Ingrese nombre de usuario"),
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Container(
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 7.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.zero,
+                                              elevation: 5,
+                                              side: const BorderSide(
+                                                  width: 2, color: Color(0xffFFFFFF)),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(30))),
+                                          onPressed: () {
+                                            context.go(GeoAmdRoutes.login, extra: NavigationBloc());
+                                            /*showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                builder: (BuildContext context) {
+                                                  return CustomDialogBox(
+                                                      title: context
+                                                          .appLocalization.titleWarning,
+                                                      descriptions:
+                                                      context.appLocalization.alertCancel,
+                                                      isConfirmation: true,
+                                                      dialogAction: () =>  context.go(GeoAmdRoutes.login, extra: NavigationBloc()),
+                                                      type: AppConstants.statusWarning,
+                                                      isdialogCancel: true,
+                                                      dialogCancel: () {});
+                                                });*/
+
+                                          },
+                                          child: Ink(
+                                            decoration: BoxDecoration(
+                                                gradient: const LinearGradient(colors: [
+                                                  Color(0xffF96352),
+                                                  Color(0xffD84835)
+                                                ]),
+                                                borderRadius: BorderRadius.circular(30)),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 15, horizontal: 20),
+                                              child: Text(
+                                                context.appLocalization.nameButtonCancel,
+                                                textAlign: TextAlign.center,
+                                                style: AppStyles.textStyleButton,
+                                              ),
+                                            ),
+                                          ),
+                                        )),
+                                    Container(
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 7.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.zero,
+                                              elevation: 5,
+                                              side: const BorderSide(
+                                                  width: 2, color: Color(0xffFFFFFF)),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(30))),
+                                          onPressed: () {
+                                            if (renewPasswordFormKey.currentState!
+                                                .validate()) {
+                                              context.read<RenewPasswordBloc>().add(
+                                                  SendEmailToRenewPasswordEvent(
+                                                      username: _usernameCtrl.text));
+                                            } else {
+                                              return;
+                                            }
+                                          },
+                                          child: Ink(
+                                            decoration: BoxDecoration(
+                                                gradient: const LinearGradient(colors: [
+                                                  Color(0xff2B5178),
+                                                  Color(0xff273456)
+                                                ]),
+                                                borderRadius: BorderRadius.circular(30)),
+                                            child: Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 15, horizontal: 20),
+                                              child: Text('Guardar',
+                                                textAlign: TextAlign.center,
+                                                style: AppStyles.textStyleButton,
+                                              ),
+                                            ),
+                                          ),
+                                        )),
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                         ),
-                        Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  elevation: 5,
-                                  side: const BorderSide(
-                                      width: 2, color: Color(0xffFFFFFF)),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30))),
-                              onPressed: () {
-                                if (renewPasswordFormKey.currentState!
-                                    .validate()) {
-                                  context.read<RenewPasswordBloc>().add(
-                                      SendEmailToRenewPasswordEvent(
-                                          username: _usernameCtrl.text));
-                                } else {
-                                  return;
-                                }
-                              },
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    gradient: const LinearGradient(colors: [
-                                      Color(0xffF96352),
-                                      Color(0xffD84835)
-                                    ]),
-                                    borderRadius: BorderRadius.circular(30)),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 40),
-                                  child: const Text(
-                                    'Renovar',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 19.0,
-                                        color: Color(0xffFFFFFF),
-                                        fontFamily: 'TitlesHighlight',
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ))
+
                       ],
                     ),
                   );
