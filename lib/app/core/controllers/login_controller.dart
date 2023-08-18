@@ -31,7 +31,7 @@ class LoginController {
 
       cleanDataSession();
       await secureStorageController.writeSecureData(
-          ApiConstants.tokenLabel, responseLogin.data);
+          ApiConstants.tokenLabel, responseLogin.data!);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
@@ -50,7 +50,7 @@ class LoginController {
 
     //  imageProfileBloc.emit(ImageChangeSuccessState(imagePath: imagePath, imageBuild: imageBuild));
       userResponse = UserModel(
-          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
+          user, responseLogin.descriptionEs!, responseLogin.idProfile!, []);
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
@@ -96,14 +96,14 @@ class LoginController {
       var responseLogin = await loginService.resetLogin(user, password);
 
       await secureStorageController.writeSecureData(
-          ApiConstants.tokenLabel, responseLogin.data);
+          ApiConstants.tokenLabel, responseLogin.data!);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
 
       userResponse = UserModel(
-          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
+          user, responseLogin.descriptionEs!, responseLogin.idProfile!, []);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {

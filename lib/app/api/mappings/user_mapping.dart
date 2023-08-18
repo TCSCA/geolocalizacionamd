@@ -1,10 +1,10 @@
 class UserMap {
-  String status;
-  String data;
-  int idProfile;
-  String descriptionEs;
-  int typeProfile;
-  int user;
+  String? status;
+  String? data;
+  int? idProfile;
+  String? descriptionEs;
+  int? typeProfile;
+  int? user;
 
   UserMap(
       {required this.status,

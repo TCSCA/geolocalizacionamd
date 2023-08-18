@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocalizacionamd/app/core/controllers/image_profile_controller.dart';
+import 'package:geolocalizacionamd/app/pages/sources/login/widgets/renew_password_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -89,10 +90,12 @@ class _LoginPageState extends State<LoginPage> {
                       context.appLocalization.titleLoginLoading);
                 }
                 if (state is LoginSuccessState) {
-
-                  Uint8List? image = await ImageProfileController().doConsultDataImageProfile();
-                  BlocProvider.of<ImageProfileBloc>(context).add(ImageProfileInitialEvent(imageBuild: image));
-                  BlocProvider.of<ProfileBloc>(context).add(GetProfileInitialEvent());
+                  Uint8List? image = await ImageProfileController()
+                      .doConsultDataImageProfile();
+                  BlocProvider.of<ImageProfileBloc>(context)
+                      .add(ImageProfileInitialEvent(imageBuild: image));
+                  BlocProvider.of<ProfileBloc>(context)
+                      .add(GetProfileInitialEvent());
 
                   if (checkUserSave) {
                     await prefs.setString('userSave', userController.text);
@@ -136,22 +139,29 @@ class _LoginPageState extends State<LoginPage> {
                 }
                 if (state is LoginErrorState) {
                   LoadingBuilder(context).hideOpenDialog();
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return CustomDialogBox(
-                          title: AppMessages().getMessageTitle(
-                              context, AppConstants.statusError),
-                          descriptions:
-                              AppMessages().getMessage(context, state.message),
-                          isConfirmation: false,
-                          dialogAction: () {},
-                          type: AppConstants.statusError,
-                          isdialogCancel: false,
-                          dialogCancel: () {},
-                        );
-                      });
+                  if (state.message == "recuperar contraseña") {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            ChangePasswordWidget());
+                  } else {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: AppMessages().getMessageTitle(
+                                context, AppConstants.statusError),
+                            descriptions: AppMessages()
+                                .getMessage(context, state.message),
+                            isConfirmation: false,
+                            dialogAction: () {},
+                            type: AppConstants.statusError,
+                            isdialogCancel: false,
+                            dialogCancel: () {},
+                          );
+                        });
+                  }
                 }
                 if (state is LoginActiveState) {
                   LoadingBuilder(context).hideOpenDialog();
@@ -468,7 +478,8 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => RenewPasswordPage()));*/
-                            context.go(GeoAmdRoutes.changePassword, extra: NavigationBloc());
+                            context.go(GeoAmdRoutes.changePassword,
+                                extra: NavigationBloc());
                           },
                           child: Text(
                             context.appLocalization.forgotPassword,
@@ -691,7 +702,8 @@ class _LoginPageState extends State<LoginPage> {
 
 @immutable
 class _BiometricWidget extends StatelessWidget {
- final Function() onTap;
+  final Function() onTap;
+
   const _BiometricWidget({
     required this.onTap,
   });
