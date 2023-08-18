@@ -99,6 +99,14 @@ class _EditProfileState extends State<EditProfile> {
   late MainBloc userMainBloc;
   setData() {
     userMainBloc = BlocProvider.of<MainBloc>(context);
+
+      /*BlocProvider.of<MainBloc>(context)
+        .add(ShowLocationDoctorCitiesEvent(selectedState!));*/
+
+    userMainBloc
+        .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
+
+
     final imageProfile = BlocProvider.of<ImageProfileBloc>(context).state;
 
     final state = BlocProvider.of<ProfileBloc>(context, listen: false);
@@ -143,12 +151,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     setData();
 
-    BlocProvider.of<MainBloc>(context)
-        .add(ShowLocationDoctorCitiesEvent(selectedState!));
-
-    userMainBloc
-        .add(const ShowLocationDoctorStatesEvent(AppConstants.idCountryVzla));
-
+  
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
       child: SafeArea(
@@ -223,9 +226,31 @@ class _EditProfileState extends State<EditProfile> {
               LoadingBuilder(context).hideOpenDialog();
 
               stateList = state.listStates;
-              userMainBloc.add(ShowLocationDoctorCitiesEvent(stateCtrl.text));
-              selectedState = stateCtrl.text;
+              userMainBloc.add(ShowLocationDoctorCitiesEvent(selectedState!));
+
+              //selectedState = stateCtrl.text;
             }
+
+            if (state is LocationErrorState) {
+              LoadingBuilder(context).hideOpenDialog();
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions:
+                      AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  });
+            }
+
             if (state is LocationCitiesSuccessState) {
               LoadingBuilder(context).hideOpenDialog();
 

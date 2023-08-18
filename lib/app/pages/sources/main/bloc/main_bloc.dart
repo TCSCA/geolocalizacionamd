@@ -24,6 +24,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   final DoctorCareController doctorCareController;
   MainBloc({required this.doctorCareController})
       : super(const MainInitial(doctorAvailable: false)) {
+
+
+
     on<ShowLocationDoctorStatesEvent>((event, emit) async {
       List<SelectModel> listAllStates = [];
       try {
@@ -41,6 +44,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
+
+
 
     on<ShowLocationDoctorCitiesEvent>((event, emit) async {
       List<SelectModel> listAllCities = [];
