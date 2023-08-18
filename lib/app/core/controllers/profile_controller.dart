@@ -80,8 +80,16 @@ class ProfileController {
   Future<GenderMap> doGetAllGender() async {
     GenderMap genderMap;
 
+    List<GenderList> genderList;
+    List<GenderList> genderListSort;
+
     try {
       genderMap = await consultDataService.getAllGender();
+
+      genderList = genderMap.genderList;
+       genderList.sort((a, b) => a.descriptionEs.compareTo(b.descriptionEs));
+
+
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {

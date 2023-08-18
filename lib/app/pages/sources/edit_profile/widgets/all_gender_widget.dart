@@ -36,7 +36,7 @@ class AllGenderWidget extends StatelessWidget {
                   validator: (value) {
                     // return genderValidator(value.toString());
                   },
-                  items: state.genderMap.data.map((item) {
+                  items: state.genderMap.genderList.map((item) {
                     return DropdownMenuItem(
                       value: item.idGender,
                       child: Text(item.descriptionEs),

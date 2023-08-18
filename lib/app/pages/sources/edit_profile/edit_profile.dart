@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/shared/digital_signature_bloc/digital_signature_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
@@ -590,7 +591,12 @@ class _EditProfileState extends State<EditProfile> {
   Widget allGenderList() {
     return BlocBuilder<GenderBloc, GenderState>(
       builder: (context, state) {
+
+        List<GenderList> genderList;
+
         if (state is GenderDataSuccessState) {
+
+           state.genderMap.genderList.sort((a, b) => a.descriptionEs.compareTo(b.descriptionEs));
           return Padding(
               padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
               child: DropdownButtonFormField(
@@ -612,7 +618,7 @@ class _EditProfileState extends State<EditProfile> {
                   return ProfileValidations()
                       .genderValidator(context, value.toString());
                 },
-                items: state.genderMap.data.map((item) {
+                items: state.genderMap.genderList.map((item) {
                   return DropdownMenuItem(
                     value: item.idGender,
                     child: Text(item.descriptionEs),
