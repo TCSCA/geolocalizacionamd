@@ -1,17 +1,19 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:go_router/go_router.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/pages/messages/app_messages.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
-import '../../widgets/amd_pending_card_empty_widget.dart';
-import '../../widgets/amd_pending_card_widget.dart';
+import '/app/pages/widgets/amd_pending_card_empty_widget.dart';
+import '/app/pages/widgets/amd_pending_card_widget.dart';
 import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 import '/app/pages/sources/login/bloc/login_bloc.dart';
-import '../../widgets/common_widgets.dart';
+import '/app/pages/widgets/common_widgets.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/core/models/select_model.dart';
 import '/app/pages/styles/app_styles.dart';
@@ -87,12 +89,20 @@ class MainWidgets {
                     radius: 70,
                     child: CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
-                      radius: 90,
-                      child: CircleAvatar(
-                        backgroundImage:
-                            Image.memory(Uint8List.fromList(user.photoPerfil))
+                      radius: 55,
+                      child: BlocBuilder<ImageProfileBloc, ImageProfileState>(
+                        builder: (context, state) {
+                          return  ImageWidget(
+                              onClicked: () {},
+                              isEdit: false,
+                              imagePath: state is InitialImageProfileState ? state.imageBuild : null,
+                              color: Colors.blueGrey)/*CircleAvatar(
+                            backgroundImage: Image.memory(
+                                    Uint8List.fromList(user.photoPerfil))
                                 .image,
-                        radius: 55,
+                            radius: 55,
+                          )*/;
+                        },
                       ),
                     ),
                   ),
@@ -119,17 +129,22 @@ class MainWidgets {
       ),
     );
   }
+}
 
-  Widget serviceAvailabilityDashboard({required BuildContext context}) {
-    /* MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc.add(const ShowLocationDoctorStatesEvent('25'));
-    List<SelectModel> stateList = [];
-    String? selectedState;
-    List<SelectModel> cityList = []; */
+class ServiceAvailabilityDashboard extends StatelessWidget {
+  const ServiceAvailabilityDashboard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    BlocProvider.of<MainBloc>(context).add(const CheckDoctorConnectedEvent());
     bool doctorAvailableSwitch =
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch;
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
+        if (state is MainInitial) {
+          LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = state.doctorAvailable;
+        }
         if (state is DoctorServiceState) {
           //desactivarservicio
           LoadingBuilder(context).hideOpenDialog();
@@ -383,8 +398,13 @@ class MainWidgets {
       },
     );
   }
+}
 
-  Widget amdInformationAssigned({required BuildContext context}) {
+class AmdInformationAssigned extends StatelessWidget {
+  const AmdInformationAssigned({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc.add(const ShowHomeServiceAssignedEvent());
     final GlobalKey<FormState> reasonRejectionFormKey = GlobalKey<FormState>();
@@ -539,7 +559,6 @@ class MainWidgets {
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
-                                          
                                           contentPadding: EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',

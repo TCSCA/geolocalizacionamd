@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/method/back_button_action.dart';
-import '../widgets/common_widgets.dart';
-import '../widgets/title_bar_widget.dart';
+import '/app/pages/widgets/common_widgets.dart';
+import '/app/pages/widgets/title_bar_widget.dart';
 import 'widgets/main_widgets.dart';
 
 class MainPage extends StatefulWidget {
@@ -47,13 +47,11 @@ class _MainPageState extends State<MainPage> with MainWidgets {
                       SizedBox(height: dataSpaceHeight),
                       createDoctorInfo(context: context),
                       SizedBox(height: dataSpaceHeight),
-                      serviceAvailabilityDashboard(context: context),
+                      const ServiceAvailabilityDashboard(),
                       SizedBox(height: dataSpaceHeight),
                       const TitleBar(title: 'Atenciones Pendientes:'),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      amdInformationAssigned(context: context),
+                      const SizedBox(height: 20.0),
+                      const AmdInformationAssigned(),
                       SizedBox(height: dataSpaceHeight),
                     ],
                   ),

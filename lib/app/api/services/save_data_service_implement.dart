@@ -207,4 +207,76 @@ class SaveDataServiceImp implements SaveDataService {
 
     return isComplete;
   }
+
+  @override
+  Future<bool> editProfileService(
+      int idAffiliate,
+      String fullName,
+      String email,
+      String dateOfBirth,
+      int idGender,
+      String phoneNumber,
+      String? otherPhone,
+      int idCountry,
+      int idState,
+      int idCity,
+      String direction,
+      int mpps,
+      int cm,
+      String speciality,
+      String? photoProfile,
+      String? digitalSignature,
+      String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    bool editProfileStatusSuccess = false;
+
+    final Uri urlEditProfile = Uri.parse(ApiConstants.urlApiEditProfileService);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyEditProfile = jsonEncode({
+      "idAffiliate": idAffiliate,
+      "fullName": fullName,
+      "idGender": idGender,
+      "birthday": dateOfBirth,
+      "email": email,
+      "phoneNumber": phoneNumber,
+      "otherNumber": otherPhone,
+      "idCity": idCity,
+      "direction": direction,
+      "speciality": speciality,
+      "medicalLicense": "$mpps|$cm",
+      "photoProfile": photoProfile,
+      "digitalSignature": digitalSignature
+    });
+
+    try {
+      responseApi = await http.post(urlEditProfile,
+          headers: headerEditProfile, body: bodyEditProfile);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        editProfileStatusSuccess = true;
+      } else {
+        final String error =
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        throw ErrorAppException(
+            message:
+            (error.isNotEmpty ? error : ApiConstants.generalErrorCodeApi));
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return editProfileStatusSuccess;
+  }
 }

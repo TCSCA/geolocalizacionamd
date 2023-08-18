@@ -7,6 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/controllers/login_controller.dart';
 import '/app/core/controllers/menu_controller.dart';
@@ -17,6 +19,8 @@ import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import '/app/core/controllers/save_data_storage.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
+import 'app/core/controllers/profile_controller.dart';
+import 'app/shared/digital_signature_bloc/digital_signature_bloc.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest_all.dart' as timezone;
 import 'package:timezone/timezone.dart' as timezone;
@@ -29,8 +33,7 @@ class NotificationApi {
   static void init() {
     _notification.initialize(
       const InitializationSettings(
-        android:
-            AndroidInitializationSettings('ic_launcher_foreground'),
+        android: AndroidInitializationSettings('ic_launcher_foreground'),
         iOS: DarwinInitializationSettings(),
       ),
     );
@@ -137,12 +140,19 @@ class _MyAppState extends State<MyApp> {
               loginController: LoginController(),
               menuController: MenuAppController());
         }),
+        BlocProvider(
+            create: (BuildContext context) =>
+                ProfileBloc(getProfileController: ProfileController())),
         BlocProvider(create: (BuildContext context) {
           return NavigationBloc();
         }),
         BlocProvider(create: (BuildContext context) {
           return MainBloc(doctorCareController: DoctorCareController());
-        })
+        }),
+        BlocProvider(create: (BuildContext context) {
+          return ImageProfileBloc();
+        }),
+        BlocProvider(create: (context) => DigitalSignatureBloc())
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

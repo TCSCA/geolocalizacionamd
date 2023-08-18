@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import '/app/api/services/consult_data_service.dart';
 import '/app/api/services/consult_data_service_implement.dart';
 import '/app/api/constants/api_constants.dart';
@@ -7,6 +11,7 @@ import '/app/api/services/login_service_implement.dart';
 import '/app/errors/error_active_connection.dart';
 import '/app/errors/exceptions.dart';
 import '/app/core/models/user_model.dart';
+import 'image_profile_controller.dart';
 import 'secure_storage_controller.dart';
 
 class LoginController {
@@ -20,8 +25,11 @@ class LoginController {
     late UserModel userResponse;
 
     try {
+      ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+
       var responseLogin = await loginService.doLogin(user, password);
 
+      cleanDataSession();
       await secureStorageController.writeSecureData(
           ApiConstants.tokenLabel, responseLogin.data);
       await secureStorageController.writeSecureData(
@@ -29,6 +37,18 @@ class LoginController {
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
 
+
+
+
+     /* Uint8List? imageBuild = null;
+      String? imagePath;
+
+      imageBuild =
+     await ImageProfileController().doConsultDataImageProfile();
+      imagePath =
+          const Base64Encoder().convert(List.from(imageBuild!));*/
+
+    //  imageProfileBloc.emit(ImageChangeSuccessState(imagePath: imagePath, imageBuild: imageBuild));
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
@@ -63,24 +83,16 @@ class LoginController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     } finally {
-      await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorInAttentionLabel);
-      await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorConnectedLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
+      cleanDataSession();
     }
-
     return respWebSocket;
   }
 
   Future<UserModel> doResetLoginUser(String user, final String password) async {
     late UserModel userResponse;
     try {
+      cleanDataSession();
+
       var responseLogin = await loginService.resetLogin(user, password);
 
       await secureStorageController.writeSecureData(
@@ -89,7 +101,7 @@ class LoginController {
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
-      
+
       userResponse = UserModel(
           user, responseLogin.descriptionEs, responseLogin.idProfile, []);
     } on ErrorAppException {
@@ -128,5 +140,17 @@ class LoginController {
       newBoolValue = connectedDoctor.toLowerCase() != 'false';
     }
     return newBoolValue;
+  }
+
+  Future<void> cleanDataSession() async {
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorInAttentionLabel);
+    await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorConnectedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
   }
 }

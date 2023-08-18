@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
@@ -47,7 +49,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlApiGetActiveAmdOrder =
-        Uri.parse(ApiConstants.urlApiGetActiveAmdOrder);
+    Uri.parse(ApiConstants.urlApiGetActiveAmdOrder);
     final Map<String, String> headerActiveAmdOrder = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
@@ -68,7 +70,7 @@ class ConsultDataServiceImp implements ConsultDataService {
         }
       } else {
         final String error =
-            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
         if (error.isNotEmpty) {
           throw ErrorAppException(message: error);
         } else {
@@ -126,19 +128,19 @@ class ConsultDataServiceImp implements ConsultDataService {
   }
 
   @override
-  Future<void> validateIfOrderIsCompletedOrRejected(
-      String tokenUser, int idHomeServiceAttention) async {
+  Future<void> validateIfOrderIsCompletedOrRejected(String tokenUser,
+      int idHomeServiceAttention) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlValidateIfOrderIsCompletedOrRejected =
-        Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
+    Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
     final Map<String, String> header = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
 
     final String bodyValidateIfOrderIsCompletedOrRejected =
-        jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
+    jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
 
     try {
       responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
@@ -149,7 +151,7 @@ class ConsultDataServiceImp implements ConsultDataService {
           ApiConstants.statusSuccessApi) {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
-        
+
         if (error == ApiConstants.amdPendingAdminFinalizedCodeApi ||
             error == ApiConstants.amdconfirmedAdminFinalizedCodeApi) {
           throw AmdOrderAdminFinalizedException(message: error);
@@ -168,14 +170,15 @@ class ConsultDataServiceImp implements ConsultDataService {
 
 
   @override
-  Future<List<HomeServiceMap>> getHistoryAmdOrderList(String tokenUser, int idDoctorAmd)  async{
-
+  Future<List<HomeServiceMap>> getHistoryAmdOrderList(
+      String tokenUser, int idDoctorAmd) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
+
     ///HomeServiceMap homeServiceMap;
 
     final Uri urlGetHistoryAmdOrder =
-    Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
+        Uri.parse(ApiConstants.urlApiGetHistoryAmdOrder);
 
     final Map<String, String> header = {
       ApiConstants.headerToken: tokenUser,
@@ -183,26 +186,134 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     final String bodyGetHistoryAmdOrder =
-    jsonEncode({'idDoctorAmd': idDoctorAmd});
+        jsonEncode({'idDoctorAmd': idDoctorAmd});
 
     //List<HistoryAmdMap> historyAmdMapList;
     List<HomeServiceMap> homeServiceList;
     try {
-
       responseApi = await http.post(urlGetHistoryAmdOrder,
           headers: header, body: bodyGetHistoryAmdOrder);
-       decodeRespApi = jsonDecode(responseApi.body);
+      decodeRespApi = jsonDecode(responseApi.body);
 
-       if(decodeRespApi[ApiConstants.statusLabelApi] ==
-           ApiConstants.statusSuccessApi) {
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
         // historyAmdMapList = HistoryAmdMap.fromJson(decodeRespApi);
 
-         homeServiceList = List<HomeServiceMap>.from(decodeRespApi[ApiConstants.dataLabelApi]
-             .map((data) => HomeServiceMap.fromJson(data)));
-       } else {
-         throw ErrorAppException(
-             message: decodeRespApi[ApiConstants.dataLabelApi]);
-       }
+        homeServiceList = List<HomeServiceMap>.from(
+            decodeRespApi[ApiConstants.dataLabelApi]
+                .map((data) => HomeServiceMap.fromJson(data)));
+      } else {
+        throw ErrorAppException(
+            message: decodeRespApi[ApiConstants.dataLabelApi]);
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return homeServiceList;
+  }
+
+  @override
+  Future<GenderMap> getAllGender() async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    GenderMap genderMap;
+
+    final Uri urlGetAllGender = Uri.parse(ApiConstants.urlApiGetAllGender);
+
+    final Map<String, String> header = {
+      /*ApiConstants.headerToken: token,*/
+      'BISCOMM_KEY': 'abcd123456',
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    try {
+      responseApi = await http.get(urlGetAllGender, headers: header);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      genderMap = GenderMap.fromJson(decodeRespApi);
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return genderMap;
+  }
+
+  @override
+  Future<Uint8List?> getPhotoService(String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+
+    Uint8List? imageProfile;
+    List<dynamic> imageArray = [];
+    final List bytesImageEmpty = [];
+    //
+    final Uri urlGetPhotoProfile =
+    Uri.parse(ApiConstants.urlApiGetPhotoProfile);
+
+    final Map<String, String> headerPhoto = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.post(urlGetPhotoProfile, headers: headerPhoto);
+
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi["data"]["photoProfile"] != null) {
+        imageArray = decodeRespApi["data"]["photoProfile"];
+        imageProfile = Uint8List.fromList(imageArray.cast<int>());
+      }
+      else {
+        imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return imageProfile;
+  }
+
+  @override
+  Future<Uint8List?> getDigitalSignatureService(String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+
+    Uint8List? imageProfile;
+    List<dynamic> imageArray = [];
+    final List bytesImageEmpty = [];
+
+    final Uri urlGetDigitalSignature =
+    Uri.parse(ApiConstants.urlApiGetDigitalSignature);
+
+    final Map<String, String> headerSignature = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.post(urlGetDigitalSignature, headers: headerSignature);
+
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi["data"]["digitalSignature"] != null) {
+        imageArray = decodeRespApi["data"]["digitalSignature"];
+        imageProfile = Uint8List.fromList(imageArray.cast<int>());
+      }
+      else {
+        imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
+      }
 
     } on EmptyDataException {
       rethrow;
@@ -212,6 +323,40 @@ class ConsultDataServiceImp implements ConsultDataService {
       throw ErrorGeneralException();
     }
 
-    return homeServiceList;
+    return imageProfile;
+  }
+
+  @override
+  Future<String> verifyConnectedDoctorAmd(final String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    late String statusConnected;
+
+    final Uri urlCheckConnected =
+        Uri.parse(ApiConstants.verifyConnectedDoctorAmd);
+
+    final Map<String, String> header = {
+      ApiConstants.headerToken: tokenUser,
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+    };
+
+    try {
+      responseApi = await http.post(urlCheckConnected, headers: header);
+      decodeRespApi = jsonDecode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        statusConnected = decodeRespApi[ApiConstants.dataLabelApi]['code'];
+      } else {
+        statusConnected = decodeRespApi[ApiConstants.dataLabelApi]['code'];
+      }
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return statusConnected;
   }
 }

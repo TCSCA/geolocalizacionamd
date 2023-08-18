@@ -116,3 +116,9 @@ class ValidateConfirmedAmdProcessedAdminEvent extends MainEvent {
   @override
   List<Object> get props => [];
 }
+
+class CheckDoctorConnectedEvent extends MainEvent {
+  const CheckDoctorConnectedEvent();
+  @override
+  List<Object> get props => [];
+}

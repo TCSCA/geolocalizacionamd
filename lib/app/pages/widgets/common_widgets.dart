@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '/app/core/models/menu_model.dart';
 import '/app/extensions/localization_ext.dart';
@@ -137,8 +139,12 @@ class AppCommonWidgets {
                   title: context.appLocalization.titleWarning,
                   descriptions: context.appLocalization.messageLogout,
                   isConfirmation: true,
-                  dialogAction: () => BlocProvider.of<LoginBloc>(context)
-                      .add(const ProcessLogoutEvent()),
+                  dialogAction: () {
+
+                    BlocProvider.of<ImageProfileBloc>(context).add(CleanImageByProfile());
+                    BlocProvider.of<LoginBloc>(context)
+                        .add(const ProcessLogoutEvent());
+                  },
                   type: AppConstants.statusWarning,
                   isdialogCancel: false,
                   dialogCancel: () {});
@@ -208,6 +214,7 @@ class AppCommonWidgets {
         LoadingBuilder(context)
             .showLoadingIndicator(context.appLocalization.titleLogoutLoading);
       } else if (state is LogoutSuccessState) {
+
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch = false;
         LoadingBuilder(context).hideOpenDialog();
         context.go(GeoAmdRoutes.login);
