@@ -42,7 +42,7 @@ class _RenewPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color(0xff2B5178),
+        color: const Color(0xff2B5178),
           height: double.infinity,
           width: double.infinity,
           child: CustomPaint(
@@ -72,7 +72,10 @@ class _RenewPasswordView extends StatelessWidget {
                             isdialogCancel: false,
                           );
                         });
-                    context.go(GeoAmdRoutes.login, extra: NavigationBloc());
+                    if(context.mounted) {
+                      context.go(GeoAmdRoutes.login, extra: NavigationBloc());
+                    }
+
                   } else if (state is ErrorRenewPasswordState) {
                     LoadingBuilder(context).hideOpenDialog();
                     await showDialog(
@@ -194,22 +197,6 @@ class _RenewPasswordView extends StatelessWidget {
                                                   BorderRadius.circular(30))),
                                           onPressed: () {
                                             context.go(GeoAmdRoutes.login, extra: NavigationBloc());
-                                            /*showDialog(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                builder: (BuildContext context) {
-                                                  return CustomDialogBox(
-                                                      title: context
-                                                          .appLocalization.titleWarning,
-                                                      descriptions:
-                                                      context.appLocalization.alertCancel,
-                                                      isConfirmation: true,
-                                                      dialogAction: () =>  context.go(GeoAmdRoutes.login, extra: NavigationBloc()),
-                                                      type: AppConstants.statusWarning,
-                                                      isdialogCancel: true,
-                                                      dialogCancel: () {});
-                                                });*/
-
                                           },
                                           child: Ink(
                                             decoration: BoxDecoration(
@@ -261,7 +248,7 @@ class _RenewPasswordView extends StatelessWidget {
                                             child: Container(
                                               padding: const EdgeInsets.symmetric(
                                                   vertical: 15, horizontal: 20),
-                                              child: Text('Guardar',
+                                              child:  Text(context.appLocalization.nameButtonAccept,
                                                 textAlign: TextAlign.center,
                                                 style: AppStyles.textStyleButton,
                                               ),
@@ -293,7 +280,7 @@ class _BackgroundStyle extends CustomPainter {
 
     final paint = Paint();
 
-    paint.color = Color(0xff2B5178);
+    paint.color = const Color(0xff2B5178);
     paint.style = PaintingStyle.fill;
     paint.strokeWidth = 5;
 

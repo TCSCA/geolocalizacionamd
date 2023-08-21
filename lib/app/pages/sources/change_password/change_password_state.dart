@@ -10,9 +10,9 @@ class ChangePasswordInitial extends ChangePasswordState {
 }
 
 class ChangePasswordSuccessState extends ChangePasswordState {
-  ChangePasswordModel changePasswordModel;
+  final ChangePasswordModel changePasswordModel;
 
-  ChangePasswordSuccessState({required this.changePasswordModel});
+  const ChangePasswordSuccessState({required this.changePasswordModel});
 
   @override
   // TODO: implement props
