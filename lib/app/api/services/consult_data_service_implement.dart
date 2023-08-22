@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:http/http.dart' as http;
+import '../../errors/error_session_expired.dart';
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';
@@ -90,7 +91,7 @@ class ConsultDataServiceImp implements ConsultDataService {
 
   @override
   Future<ProfileMap> getProfile(String tokenUser) async {
-    ProfileMap profileMap;
+    late ProfileMap profileMap;
 
     http.Response responseApi;
 
@@ -108,17 +109,24 @@ class ConsultDataServiceImp implements ConsultDataService {
 
       decodeResApi = json.decode(responseApi.body);
 
-      profileMap = ProfileMap.fromJson(decodeResApi);
-
-      if (decodeResApi[ApiConstants.statusSuccessApi] ==
+      if (decodeResApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
+
+        profileMap = ProfileMap.fromJson(decodeResApi);
         if (decodeResApi[ApiConstants.dataLabelApi] != null) {
+
           // responseGetProfile
+        }
+      } else {
+        if(decodeResApi['data'] == 'Full authentication is required to access this resource') {
+          throw SessionExpiredException(message: "session expired");
         }
       }
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

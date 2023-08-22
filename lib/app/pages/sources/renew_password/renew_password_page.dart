@@ -154,14 +154,20 @@ class _RenewPasswordView extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                   child: Center(
                                     child: TextFormField(
+                                      maxLength: 15,
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
-
                                       validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Campo requerido';
-                                        }
-                                        if (value.length < 6) {
-                                          return 'Longitud del dato menor a la mínima requerida';
+                                        final RegExp regExp = RegExp(r'^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$');
+                                        if (!regExp.hasMatch(value!) && value != '') {
+                                          return context.appLocalization.invalidData;
+                                        } else {
+                                          if (value.length > 15) {
+                                            return 'maxLength';
+                                          } else if (value.length < 6 && value != '') {
+                                            return context.appLocalization.invalidLengthField;
+                                          } else if (value == '') {
+                                            return context.appLocalization.fieldRequired;
+                                          }
                                         }
                                         return null;
                                       },

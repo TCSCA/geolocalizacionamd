@@ -11,6 +11,7 @@ import '../../api/services/consult_data_service.dart';
 import '../../errors/error_active_connection.dart';
 import '../../errors/error_app_exception.dart';
 import '../../errors/error_general_exception.dart';
+import '../../errors/error_session_expired.dart';
 
 class ProfileController {
   final ConsultDataService consultDataService = ConsultDataServiceImp();
@@ -69,6 +70,8 @@ class ProfileController {
     } on ActiveConnectionException {
       rethrow;
     } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

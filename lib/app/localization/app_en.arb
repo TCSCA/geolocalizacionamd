@@ -96,5 +96,6 @@
     "confirmSaveData": "Please confirm that you want to save the data entered.",
     "alertCancel": "Pressing Accept will lose the data entered and you must start the process again. Cancel to return to the previous screen",
     "successUpdateData": "Your information has been successfully updated.",
-    "appMsg012": "You must end home medical care before you sign off."
+    "appMsg012": "You must end home medical care before you sign off.",
+    "sessionExpired": "Session expired, system will be closed"
 }

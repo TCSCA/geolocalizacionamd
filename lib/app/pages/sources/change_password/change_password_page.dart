@@ -249,6 +249,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                     ),
                   ),
                   TextFormField(
+                    maxLength: 12,
                     key: widget.passwordKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
@@ -262,6 +263,10 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                     obscuringCharacter: '*',
                     controller: widget.passwordCtrl,
                     decoration: InputDecoration(
+                        counterStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                            fontFamily: 'TitlesHighlight'),
                         prefix: const SizedBox(
                           width: 15,
                         ),
@@ -316,6 +321,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                     height: 20,
                   ),
                   TextFormField(
+                    maxLength: 12,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     key: widget.passwordConfirmKey,
                     validator: (value) {
@@ -330,6 +336,10 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                     obscureText: !visibilityPasswordConfirm,
                     controller: widget.passwordConfirmCtrl,
                     decoration: InputDecoration(
+                        counterStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15.0,
+                            fontFamily: 'TitlesHighlight'),
                         prefix: const SizedBox(width: 15),
                         hintStyle: const TextStyle(
                             color: Color(0xffFFFFFF),
@@ -441,7 +451,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 20, horizontal: 40),
                                 child: const Text(
-                                  'guardar',
+                                  'Guardar',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 19.0,
