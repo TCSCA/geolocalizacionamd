@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/controllers/image_profile_controller.dart';
 import '../../../shared/image_build/bloc/image_profile_bloc.dart';
+import '../../styles/app_styles.dart';
 import '../login/bloc/login_bloc.dart';
 import '../profile/bloc/profile_bloc.dart';
 import 'change_password_bloc.dart';
@@ -240,7 +241,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                   const SizedBox(
                     height: 150,
                     child: Text(
-                      'Cambio de Contraseña',
+                      'Cambio de Clave',
                       style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -248,151 +249,156 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                           color: Colors.white),
                     ),
                   ),
-                  TextFormField(
-                    maxLength: 12,
-                    key: widget.passwordKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      return PasswordValidation().passwordValidator(value!);
-                    },
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 19.0,
-                        fontFamily: 'TitlesHighlight'),
-                    obscureText: !visibilityPassword,
-                    obscuringCharacter: '*',
-                    controller: widget.passwordCtrl,
-                    decoration: InputDecoration(
-                        counterStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15.0,
-                            fontFamily: 'TitlesHighlight'),
-                        prefix: const SizedBox(
-                          width: 15,
-                        ),
-                        hintStyle: const TextStyle(
-                            color: Color(0xffFFFFFF),
-                            fontSize: 19.0,
-                            fontFamily: 'TitlesHighlight'),
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xffFFFFFF),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xffFFFFFF),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xffE3D3B2),
-                            width: 3,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                          horizontal: 10.0,
-                        ),
-                        errorStyle: const TextStyle(
-                            color: Color(0xffD84835),
-                            fontSize: 14.0,
-                            fontFamily: 'TextsParagraphs'),
-                        hintText: 'Nueva contraseña',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            visibilityPassword
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            visibilityPassword = !visibilityPassword;
-                            setState(() {});
-                          },
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    maxLength: 12,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    key: widget.passwordConfirmKey,
-                    validator: (value) {
-                      return PasswordValidation().confirmPasswordValidator(
-                          value!, widget.passwordCtrl.text);
-                    },
-                    obscuringCharacter: '*',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 19.0,
-                        fontFamily: 'TitlesHighlight'),
-                    obscureText: !visibilityPasswordConfirm,
-                    controller: widget.passwordConfirmCtrl,
-                    decoration: InputDecoration(
-                        counterStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15.0,
-                            fontFamily: 'TitlesHighlight'),
-                        prefix: const SizedBox(width: 15),
-                        hintStyle: const TextStyle(
-                            color: Color(0xffFFFFFF),
-                            fontSize: 19.0,
-                            fontFamily: 'TitlesHighlight'),
-                        border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Color(0xffFFFFFF),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(30.0)),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              color: Color(0xffFFFFFF),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(30.0)),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xffE3D3B2),
-                            width: 3,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 10.0,
-                          horizontal: 10.0,
-                        ),
-                        errorStyle: const TextStyle(
-                            color: Color(0xffD84835),
-                            fontSize: 14.0,
-                            fontFamily: 'TextsParagraphs'),
-                        hintText: 'Confirmar contraseña',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            visibilityPasswordConfirm
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            visibilityPasswordConfirm =
-                                !visibilityPasswordConfirm;
-                            setState(() {});
-                          },
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 100,
-                  ),
-                  Row(
+                  Column(
                     children: [
-                      Container(
+                      TextFormField(
+                        maxLength: 12,
+                        key: widget.passwordKey,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) {
+                          return PasswordValidation().passwordValidator(value!);
+                        },
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 19.0,
+                            fontFamily: 'TitlesHighlight'),
+                        obscureText: !visibilityPassword,
+                        obscuringCharacter: '*',
+                        controller: widget.passwordCtrl,
+                        decoration: InputDecoration(
+                            counterStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.0,
+                                fontFamily: 'TitlesHighlight'),
+                            prefix: const SizedBox(
+                              width: 15,
+                            ),
+                            hintStyle: const TextStyle(
+                                color: Color(0xffFFFFFF),
+                                fontSize: 19.0,
+                                fontFamily: 'TitlesHighlight'),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xffFFFFFF),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xffFFFFFF),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xffE3D3B2),
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal: 10.0,
+                            ),
+                            errorStyle: const TextStyle(
+                                overflow: TextOverflow.visible,
+                                color: Color(0xffD84835),
+                                fontSize: 13.0,
+                                fontFamily: 'TextsParagraphs'),
+                            hintText: 'Nueva clave',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                visibilityPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                visibilityPassword = !visibilityPassword;
+                                setState(() {});
+                              },
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        maxLength: 12,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        key: widget.passwordConfirmKey,
+                        // expands: true,
+                        validator: (value) {
+                          return PasswordValidation().confirmPasswordValidator(
+                              value!, widget.passwordCtrl.text);
+                        },
+                        obscuringCharacter: '*',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 19.0,
+                            fontFamily: 'TitlesHighlight'),
+                        obscureText: !visibilityPasswordConfirm,
+                        controller: widget.passwordConfirmCtrl,
+                        decoration: InputDecoration(
+                            counterStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 15.0,
+                                fontFamily: 'TitlesHighlight'),
+                            prefix: const SizedBox(width: 15),
+                            hintStyle: const TextStyle(
+                                color: Color(0xffFFFFFF),
+                                fontSize: 19.0,
+                                fontFamily: 'TitlesHighlight'),
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xffFFFFFF),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(30.0)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xffFFFFFF),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(30.0)),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color(0xffE3D3B2),
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal: 10.0,
+                            ),
+                            errorStyle: const TextStyle(
+                                color: Color(0xffD84835),
+                                fontSize: 13.0,
+                                fontFamily: 'TextsParagraphs'),
+                            hintText: 'Confirmar clave',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                visibilityPasswordConfirm
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                visibilityPasswordConfirm =
+                                !visibilityPasswordConfirm;
+                                setState(() {});
+                              },
+                            )),
+                      ),
+                      const SizedBox(
+                        height: 100,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          /* Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -426,8 +432,41 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                 ),
                               ),
                             ),
-                          )),
-                      Container(
+                          )),*/
+                          Container(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 7.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    elevation: 5,
+                                    side: const BorderSide(
+                                        width: 2, color: Color(0xffFFFFFF)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(30))),
+                                onPressed: () {
+                                  context.go(GeoAmdRoutes.login, extra: NavigationBloc());
+                                },
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      gradient: const LinearGradient(colors: [
+                                        Color(0xffF96352),
+                                        Color(0xffD84835)
+                                      ]),
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20),
+                                    child: Text(
+                                      context.appLocalization.nameButtonCancel,
+                                      textAlign: TextAlign.center,
+                                      style: AppStyles.textStyleButton,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          /*Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -461,7 +500,41 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                 ),
                               ),
                             ),
-                          )),
+                          )),*/
+                          Container(
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 7.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    elevation: 5,
+                                    side: const BorderSide(
+                                        width: 2, color: Color(0xffFFFFFF)),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(30))),
+                                onPressed: () {
+                                  validateAndSave(context);
+                                },
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      gradient: const LinearGradient(colors: [
+                                        Color(0xff2B5178),
+                                        Color(0xff273456)
+                                      ]),
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 20),
+                                    child:  Text('Guardar',
+                                      textAlign: TextAlign.center,
+                                      style: AppStyles.textStyleButton,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      )
                     ],
                   )
                 ],

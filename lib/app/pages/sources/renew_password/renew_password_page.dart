@@ -41,14 +41,15 @@ class _RenewPasswordView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
-        color: const Color(0xff2B5178),
+          //  color: const Color(0xff2B5178),
           height: double.infinity,
           width: double.infinity,
           child: CustomPaint(
-            //painter: _BackgroundStyle(),
+            painter: _BackgroundStyle(),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
               child: BlocConsumer<RenewPasswordBloc, RenewPasswordState>(
                 listener: (context, state) async {
                   if (state is IsLoadingState) {
@@ -63,8 +64,8 @@ class _RenewPasswordView extends StatelessWidget {
                           return CustomDialogBox(
                             title: AppMessages().getMessageTitle(
                                 context, AppConstants.statusSuccess),
-                            descriptions: AppMessages().getMessage(
-                                context, 'El enlace ha sido enviado con éxito. A partir de este momento dispone de 30 minutos, revise su correo electrónico y siga los pasos'),
+                            descriptions: AppMessages().getMessage(context,
+                                'El enlace ha sido enviado con éxito. A partir de este momento dispone de 30 minutos, revise su correo electrónico y siga los pasos'),
                             isConfirmation: false,
                             dialogAction: () {},
                             type: AppConstants.statusSuccess,
@@ -72,10 +73,9 @@ class _RenewPasswordView extends StatelessWidget {
                             isdialogCancel: false,
                           );
                         });
-                    if(context.mounted) {
+                    if (context.mounted) {
                       context.go(GeoAmdRoutes.login, extra: NavigationBloc());
                     }
-
                   } else if (state is ErrorRenewPasswordState) {
                     LoadingBuilder(context).hideOpenDialog();
                     await showDialog(
@@ -100,174 +100,194 @@ class _RenewPasswordView extends StatelessWidget {
                   return Form(
                     key: renewPasswordFormKey,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            /*Expanded(
-                              child:*/ /*GestureDetector(
-                                onTap: () {
-                                  context.go(GeoAmdRoutes.login, extra: NavigationBloc());
-                                },
-                                child: Container(
-                                    height: 80,
-                                    child: const Icon(
-                                      Icons.arrow_back_ios,
-                                      color: Colors.white,
-                                    )),
-                              ),*/
-                           // ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                              height: 200,
-                              child: Image.asset(
-                                'assets/images/telemedicina24_logo_blanco_lineal.png',
-                                width: 320,
-                              ),
-                            ),
-                          ],
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 30),
+                          child: Image.asset(
+                            'assets/images/telemedicina24_logo_blanco_lineal.png',
+                            width: 320,
+                          ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                          height: 170,
-                          child: const Text(
-                            "Recuperar Contraseña",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration:const BoxDecoration(
+                          //margin: EdgeInsets.all(30),
+                          decoration: const BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                                  child: Center(
-                                    child: TextFormField(
-                                      maxLength: 15,
-                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                      validator: (value) {
-                                        final RegExp regExp = RegExp(r'^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$');
-                                        if (!regExp.hasMatch(value!) && value != '') {
-                                          return context.appLocalization.invalidData;
-                                        } else {
-                                          if (value.length > 15) {
-                                            return 'maxLength';
-                                          } else if (value.length < 6 && value != '') {
-                                            return context.appLocalization.invalidLengthField;
-                                          } else if (value == '') {
-                                            return context.appLocalization.fieldRequired;
-                                          }
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(40),
+                                  topRight: Radius.circular(40),
+                                  bottomLeft: Radius.circular(40),
+                                  bottomRight: Radius.circular(40)),
+                              boxShadow: [
+                                BoxShadow(color: Colors.black, blurRadius: 5),
+                              ]),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 30, bottom: 10),
+                                child: const Text(
+                                  "Recuperar Contraseña",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Divider(),
+                              SizedBox(
+                                height: 40,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 30),
+                                child: Center(
+                                  child: TextFormField(
+                                    maxLength: 15,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    validator: (value) {
+                                      final RegExp regExp = RegExp(
+                                          r'^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$');
+                                      if (!regExp.hasMatch(value!) &&
+                                          value != '') {
+                                        return context
+                                            .appLocalization.invalidData;
+                                      } else {
+                                        if (value.length > 15) {
+                                          return 'maxLength';
+                                        } else if (value.length < 6 &&
+                                            value != '') {
+                                          return context.appLocalization
+                                              .invalidLengthField;
+                                        } else if (value == '') {
+                                          return context
+                                              .appLocalization.fieldRequired;
                                         }
-                                        return null;
-                                      },
-                                      key: userFieldKey,
-                                      controller: _usernameCtrl,
-                                      decoration: const InputDecoration(
-
-                                          contentPadding:  EdgeInsets.only(bottom: 5),
-                                          labelStyle: TextStyle(
-                                              fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
-                                          labelText: 'Usuario (*)',
-                                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                                          //hintText: placeHolder,
-                                          hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
-                                          icon: Icon(Icons.person), hintText: "Ingrese nombre de usuario"),
-                                    ),
+                                      }
+                                      return null;
+                                    },
+                                    key: userFieldKey,
+                                    controller: _usernameCtrl,
+                                    decoration: const InputDecoration(
+                                        contentPadding:
+                                            EdgeInsets.only(bottom: 5),
+                                        labelStyle: TextStyle(
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                        labelText: 'Usuario (*)',
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.always,
+                                        //hintText: placeHolder,
+                                        hintStyle: TextStyle(
+                                            fontSize: 16, color: Colors.grey),
+                                        icon: Icon(Icons.person),
+                                        hintText: "Ingrese nombre de usuario"),
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(horizontal: 7.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.zero,
-                                              elevation: 5,
-                                              side: const BorderSide(
-                                                  width: 2, color: Color(0xffFFFFFF)),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(30))),
-                                          onPressed: () {
-                                            context.go(GeoAmdRoutes.login, extra: NavigationBloc());
-                                          },
-                                          child: Ink(
-                                            decoration: BoxDecoration(
-                                                gradient: const LinearGradient(colors: [
-                                                  Color(0xffF96352),
-                                                  Color(0xffD84835)
-                                                ]),
-                                                borderRadius: BorderRadius.circular(30)),
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 15, horizontal: 20),
-                                              child: Text(
-                                                context.appLocalization.nameButtonCancel,
-                                                textAlign: TextAlign.center,
-                                                style: AppStyles.textStyleButton,
-                                              ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 7.0),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                            elevation: 5,
+                                            side: const BorderSide(
+                                                width: 2,
+                                                color: Color(0xffFFFFFF)),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30))),
+                                        onPressed: () {
+                                          context.go(GeoAmdRoutes.login,
+                                              extra: NavigationBloc());
+                                        },
+                                        child: Ink(
+                                          decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xffF96352),
+                                                    Color(0xffD84835)
+                                                  ]),
+                                              borderRadius:
+                                                  BorderRadius.circular(30)),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 15, horizontal: 20),
+                                            child: Text(
+                                              context.appLocalization
+                                                  .nameButtonCancel,
+                                              textAlign: TextAlign.center,
+                                              style: AppStyles.textStyleButton,
                                             ),
                                           ),
-                                        )),
-                                    Container(
-                                        padding:
-                                        const EdgeInsets.symmetric(horizontal: 7.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.zero,
-                                              elevation: 5,
-                                              side: const BorderSide(
-                                                  width: 2, color: Color(0xffFFFFFF)),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                  BorderRadius.circular(30))),
-                                          onPressed: () {
-                                            if (renewPasswordFormKey.currentState!
-                                                .validate()) {
-                                              context.read<RenewPasswordBloc>().add(
-                                                  SendEmailToRenewPasswordEvent(
-                                                      username: _usernameCtrl.text));
-                                            } else {
-                                              return;
-                                            }
-                                          },
-                                          child: Ink(
-                                            decoration: BoxDecoration(
-                                                gradient: const LinearGradient(colors: [
-                                                  Color(0xff2B5178),
-                                                  Color(0xff273456)
-                                                ]),
-                                                borderRadius: BorderRadius.circular(30)),
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 15, horizontal: 20),
-                                              child:  Text(context.appLocalization.nameButtonAccept,
-                                                textAlign: TextAlign.center,
-                                                style: AppStyles.textStyleButton,
-                                              ),
+                                        ),
+                                      )),
+                                  Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 7.0),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                            elevation: 5,
+                                            side: const BorderSide(
+                                                width: 2,
+                                                color: Color(0xffFFFFFF)),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30))),
+                                        onPressed: () {
+                                          if (renewPasswordFormKey.currentState!
+                                              .validate()) {
+                                            context.read<RenewPasswordBloc>().add(
+                                                SendEmailToRenewPasswordEvent(
+                                                    username:
+                                                        _usernameCtrl.text));
+                                          } else {
+                                            return;
+                                          }
+                                        },
+                                        child: Ink(
+                                          decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xff2B5178),
+                                                    Color(0xff273456)
+                                                  ]),
+                                              borderRadius:
+                                                  BorderRadius.circular(30)),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 15, horizontal: 20),
+                                            child: Text(
+                                              context.appLocalization
+                                                  .nameButtonAccept,
+                                              textAlign: TextAlign.center,
+                                              style: AppStyles.textStyleButton,
                                             ),
                                           ),
-                                        )),
-                                  ],
-                                )
-                              ],
-                            ),
+                                        ),
+                                      )),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 30,
+                              )
+                            ],
                           ),
                         ),
-
+                        SizedBox(
+                          height: 50,
+                        )
                       ],
                     ),
                   );

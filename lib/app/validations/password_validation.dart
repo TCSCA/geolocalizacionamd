@@ -15,7 +15,7 @@ class PasswordValidation {
       } else if (event.length < 6 && event != '') {
         return 'El Campo debe ser mayor a 6 caracteres';
       } else if (event == '') {
-        return 'El campo es reuerido';
+        return 'Campo requerido';
       }
     }
     return null;
