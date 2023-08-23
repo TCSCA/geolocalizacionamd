@@ -89,10 +89,14 @@ class _LoginPageState extends State<LoginPage> {
                       context.appLocalization.titleLoginLoading);
                 }
                 if (state is LoginSuccessState) {
-
-                  Uint8List? image = await ImageProfileController().doConsultDataImageProfile();
-                  BlocProvider.of<ImageProfileBloc>(context).add(ImageProfileInitialEvent(imageBuild: image));
-                  BlocProvider.of<ProfileBloc>(context).add(GetProfileInitialEvent());
+                  Uint8List? image = await ImageProfileController()
+                      .doConsultDataImageProfile();
+                  if(context.mounted) {
+                    BlocProvider.of<ImageProfileBloc>(context)
+                        .add(ImageProfileInitialEvent(imageBuild: image));
+                    BlocProvider.of<ProfileBloc>(context)
+                        .add(GetProfileInitialEvent());
+                  }
 
                   if (checkUserSave) {
                     await prefs.setString('userSave', userController.text);
@@ -130,9 +134,10 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     }
                   }
-
-                  LoadingBuilder(context).hideOpenDialog();
-                  context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  if (context.mounted) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  }
                 }
                 if (state is LoginErrorState) {
                   LoadingBuilder(context).hideOpenDialog();
@@ -690,7 +695,8 @@ class _LoginPageState extends State<LoginPage> {
 
 @immutable
 class _BiometricWidget extends StatelessWidget {
- final Function() onTap;
+  final Function() onTap;
+
   const _BiometricWidget({
     required this.onTap,
   });

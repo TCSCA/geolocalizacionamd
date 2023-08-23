@@ -34,7 +34,10 @@ class AllGenderWidget extends StatelessWidget {
                   // style: fontTextBlack,
                   // key: _genderKey,
                   validator: (value) {
-                    // return genderValidator(value.toString());
+                    if(value != null) {
+                     return context.appLocalization.fieldRequired;
+                    }
+                    return null;
                   },
                   items: state.genderMap.genderList.map((item) {
                     return DropdownMenuItem(
@@ -43,14 +46,9 @@ class AllGenderWidget extends StatelessWidget {
                     );
                   }).toList(),
                   onChanged: (newVal) {
-                    /*_genderKey.currentState!.validate();
-                    _mySelectionGender = newVal.toString();*/
 
                   },
-                  onTap: () {
-                   /* _genderValid = _genderKey.currentState!.validate();
-                    _saveButtonEnable = _isFormValid();*/
-                  },
+                  onTap: () {},
                   value: null,
                 )
               ],

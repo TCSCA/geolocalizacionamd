@@ -7,7 +7,6 @@ import 'package:geolocalizacionamd/app/shared/digital_signature_bloc/digital_sig
 import 'package:go_router/go_router.dart';
 
 import '../../../../shared/dialog/custom_dialog_box.dart';
-import '../../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../../shared/loading/loading_builder.dart';
 import '../../../../shared/method/back_button_action.dart';
 import '../../../constants/app_constants.dart';

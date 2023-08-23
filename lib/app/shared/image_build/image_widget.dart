@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class ImageWidget extends StatelessWidget {
-  Uint8List? imagePath;
+   Uint8List? imagePath;
   final VoidCallback onClicked;
   final bool isEdit;
   final Color color;
@@ -50,7 +50,7 @@ class _ImageBuildWidget extends StatelessWidget {
   final bool isEdit;
 
   const _ImageBuildWidget(
-      {super.key, required this.context, this.imagePath, required this.isEdit});
+      {required this.context, this.imagePath, required this.isEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +81,7 @@ class _ImageBuildWidget extends StatelessWidget {
 
 class _IconEditorWidget extends StatelessWidget {
   const _IconEditorWidget(
-      {super.key,
+      {
       required this.color,
       required this.isEdit,
       required this.onClicked});
@@ -115,7 +115,7 @@ class _IconEditorWidget extends StatelessWidget {
 
 class _CircleEdit extends StatelessWidget {
   const _CircleEdit(
-      {super.key,
+      {
       required this.child,
       required this.color,
       required this.paddingAll});

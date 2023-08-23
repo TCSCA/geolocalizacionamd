@@ -18,9 +18,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   ProfileBloc({required this.getProfileController, this.profileModel})
       : super(ProfileInitial()) {
-    on<ProfileEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<ProfileEvent>((event, emit) {});
 
     on<GetProfileInitialEvent>((event, emit) {
       emit(ProfileInitial());
@@ -69,7 +67,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     if(updateProfileSuccess) {
 
-      imageProfileBloc.add(ConsultPhotoEvent());
+      imageProfileBloc.add(const ConsultPhotoEvent());
 
       emit(ProfileUpdateSuccessState());
     }

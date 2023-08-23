@@ -124,8 +124,6 @@ class ImageProfileController {
         photoPermission == PermissionStatus.restricted) {
       if (invalidatePermissionStorage) {
         validate = validateType[2];
-
-        ///TODO: MSG - La plataforma requiere que usted de los permisos
         // _importantPermission(S.current.important, S.current.MSG_181, context);
       }
       if (!invalidatePermissionStorage) {
@@ -144,13 +142,9 @@ class ImageProfileController {
 
     image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image != null) {
-      final _path = image!.path.toLowerCase();
-     /* final _imageCheck = _path.endsWith('.jpg') ||
-          _path.endsWith('.jpeg') ||
-          _path.endsWith('.png');*/
-      //final _imageSize = (await imagee!.length()) / 1000;
+    
       bytesImage = await _cropImage(image!.path);
-      //imageRaw = await imagee!.readAsBytes();
+
       print(await image!.length());
     }
 
@@ -162,14 +156,10 @@ class ImageProfileController {
 
     image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      //final _path = image!.path;
-      /*final _imageCheck = _path.endsWith('.jpg') ||
-          _path.endsWith('.jpeg') ||
-          _path.endsWith('.png');*/
+
 
       bytesImage = await _cropImage(image!.path);
-      //imageRaw = await image!.readAsBytes();
-      print(await image!.length());
+
     }
     return bytesImage;
   }
@@ -189,7 +179,7 @@ class ImageProfileController {
   }
 
   _cropImage(filePath) async {
-    Uint8List? _bytesImage;
+    Uint8List? bytesImage;
 
     final imgCrop = ImageCropper();
     CroppedFile? croppedImage = await imgCrop.cropImage(
@@ -220,14 +210,14 @@ class ImageProfileController {
       ],
     );
     if (croppedImage != null) {
-      _bytesImage = await croppedImage.readAsBytes();
+      bytesImage = await croppedImage.readAsBytes();
     }
 
-    return _bytesImage;
+    return bytesImage;
   }
 
   _cropSignature(filePath) async {
-    Uint8List? _bytesImage;
+    Uint8List? bytesImage;
     final imgCrop = ImageCropper();
     CroppedFile? croppedImage;
     try {
@@ -244,7 +234,6 @@ class ImageProfileController {
             toolbarTitle: 'Recorte de imagen',
             toolbarColor: Colors.blueGrey,
             toolbarWidgetColor: Colors.white,
-            // initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: true,
             hideBottomControls: true,
             showCropGrid: false,
@@ -259,12 +248,12 @@ class ImageProfileController {
         ],
       );
     } catch (err) {
-      print(err);
+     // print(err);
     }
 
     if (croppedImage != null) {
-      _bytesImage = await croppedImage.readAsBytes();
+      bytesImage = await croppedImage.readAsBytes();
     }
-    return _bytesImage;
+    return bytesImage;
   }
 }

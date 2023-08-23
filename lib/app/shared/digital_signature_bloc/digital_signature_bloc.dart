@@ -18,9 +18,7 @@ class DigitalSignatureBloc
     Uint8List? doctorSignatureBuild;
     String doctorSignaturePath;
 
-    on<DigitalSignatureEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<DigitalSignatureEvent>((event, emit) {});
 
     on<SelectDoctorSignatureEvent>((event, emit) async {
       emit(LoadingDigitalSignatureState());

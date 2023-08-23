@@ -5,18 +5,15 @@ abstract class ImageProfileEvent extends Equatable {
 }
 
 class ImageProfileInitialEvent extends ImageProfileEvent {
-
   final Uint8List? imageBuild;
 
   const ImageProfileInitialEvent({this.imageBuild});
 
   @override
   List<Object?> get props => [imageBuild];
-
 }
 
 class SelectImageByGallery extends ImageProfileEvent {
-
   @override
   List<Object?> get props => [];
 }
@@ -39,25 +36,21 @@ class ValidatePermissionCameraEvent extends ImageProfileEvent {
 class ValidatePermissionGalleryEvent extends ImageProfileEvent {
   @override
   List<Object?> get props => [];
-
 }
 
 class SelectDoctorSignature extends ImageProfileEvent {
   @override
-  // TODO: implement props
   List<Object?> get props => [];
-
 }
 
 class ConsultPhotoEvent extends ImageProfileEvent {
+  const ConsultPhotoEvent();
+
   @override
-  // TODO: implement props
   List<Object?> get props => [];
 }
 
 class ConsultDigitalSignatureEvent extends ImageProfileEvent {
-
   @override
   List<Object?> get props => [];
-
 }

@@ -30,7 +30,7 @@ class GeoAmdRoutes {
         path: medicalCareHistory,
         builder: (context, state) => const AmdHistoryPage()),
     GoRoute(path: profile, builder: (context, state) => const ProfilePage()),
-    GoRoute(path: editProfile, builder: (context, state) => EditProfile())
+    GoRoute(path: editProfile, builder: (context, state) =>const EditProfile())
   ]);
 
   static GoRouter get routerConfig => router;

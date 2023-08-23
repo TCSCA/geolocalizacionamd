@@ -21,7 +21,6 @@ class AmdHistorySuccessDataState extends AmdHistoryState{
 
 class AmdHistoryLoadingState extends AmdHistoryState {
   @override
-  // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
 }
 

@@ -81,7 +81,6 @@ class ProfileController {
     GenderMap genderMap;
 
     List<GenderList> genderList;
-    List<GenderList> genderListSort;
 
     try {
       genderMap = await consultDataService.getAllGender();
