@@ -84,9 +84,9 @@ class _RenewPasswordView extends StatelessWidget {
                         builder: (BuildContext context) {
                           return CustomDialogBox(
                             title: AppMessages().getMessageTitle(
-                                context, AppConstants.statusWarning),
+                                context, AppConstants.statusError),
                             descriptions: AppMessages()
-                                .getMessage(context, state.messageError),
+                                .getMessage(context,  AppMessages().getMessage(context, state.messageError)),
                             isConfirmation: false,
                             dialogAction: () {},
                             type: AppConstants.statusError,
@@ -161,8 +161,7 @@ class _RenewPasswordView extends StatelessWidget {
                                           return 'maxLength';
                                         } else if (value.length < 6 &&
                                             value != '') {
-                                          return context.appLocalization
-                                              .invalidLengthField;
+                                          return 'Longitud del dato menor a la \nmínima requerida.';
                                         } else if (value == '') {
                                           return context
                                               .appLocalization.fieldRequired;

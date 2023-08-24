@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:flutter/services.dart';
 import 'package:geolocalizacionamd/app/api/mappings/renew_password_mapping.dart';
 import 'package:geolocalizacionamd/app/api/services/renew_password_service.dart';
 
@@ -15,7 +14,7 @@ class RenewPasswordServiceImp implements RenewPasswordService {
     const headerLogger = 'ListsService.getMenu';
     Map<String, dynamic> decodeResp;
     http.Response responseApi;
-    RenewPasswordMap renewPasswordData;
+    late RenewPasswordMap renewPasswordData;
 
     final Uri urlApiLogin = Uri.parse(ApiConstants.urlApiLogin);
 
@@ -34,9 +33,22 @@ class RenewPasswordServiceImp implements RenewPasswordService {
           body: bodyRenewPassword
       );
 
-      decodeResp = json.decode(responseApi.body);
 
-      renewPasswordData = RenewPasswordMap.fromJson(decodeResp);
+      decodeResp = json.decode(responseApi.body);
+      if(decodeResp[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        renewPasswordData = RenewPasswordMap.fromJson(decodeResp);
+      } else {
+        if(decodeResp[ApiConstants.dataLabelApi] == 'MSG-033') {
+          throw ErrorAppException(message: decodeResp[ApiConstants.dataLabelApi]);
+        } else {
+          final String error =
+          decodeResp[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+          throw ErrorAppException(message: error);
+        }
+
+      }
+
 
     } on ErrorAppException catch (errorapp) {
       rethrow;

@@ -241,7 +241,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                   const SizedBox(
                     height: 150,
                     child: Text(
-                      'Cambio de Clave',
+                      'Cambio de Contraseña',
                       style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -305,9 +305,9 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                             errorStyle: const TextStyle(
                                 overflow: TextOverflow.visible,
                                 color: Color(0xffD84835),
-                                fontSize: 13.0,
+                                fontSize: 14.0,
                                 fontFamily: 'TextsParagraphs'),
-                            hintText: 'Nueva clave',
+                            hintText: 'Nueva contraseña',
                             suffixIcon: IconButton(
                               icon: Icon(
                                 visibilityPassword
@@ -375,9 +375,9 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                             ),
                             errorStyle: const TextStyle(
                                 color: Color(0xffD84835),
-                                fontSize: 13.0,
+                                fontSize: 14.0,
                                 fontFamily: 'TextsParagraphs'),
-                            hintText: 'Confirmar clave',
+                            hintText: 'Confirmar contraseña',
                             suffixIcon: IconButton(
                               icon: Icon(
                                 visibilityPasswordConfirm
