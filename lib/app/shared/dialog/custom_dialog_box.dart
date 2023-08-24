@@ -94,6 +94,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                   if (widget.isConfirmation) ...[
                     TextButton(
                         style: ButtonStyle(
+                            padding: MaterialStateProperty.all<EdgeInsets>(
+                                const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 18)),
                             backgroundColor: MaterialStateProperty.all(
                                 AppStyles.colorRedPrimary),
                             shape: MaterialStateProperty.all<
@@ -122,6 +125,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                         )),
                     TextButton(
                         style: ButtonStyle(
+                            padding: MaterialStateProperty.all<EdgeInsets>(
+                                const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20)),
                             backgroundColor: MaterialStateProperty.all(
                                 AppStyles.colorBluePrimary),
                             shape: MaterialStateProperty.all<
@@ -147,6 +153,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                   ] else ...[
                     TextButton(
                       style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20)),
                         backgroundColor: MaterialStateProperty.all(
                             AppStyles.colorBluePrimary),
                         shape:

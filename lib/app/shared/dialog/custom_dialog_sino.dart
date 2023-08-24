@@ -91,6 +91,9 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                 children: [
                   TextButton(
                       style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20)),
                           backgroundColor: MaterialStateProperty.all(
                               AppStyles.colorBluePrimary),
                           shape:
@@ -108,14 +111,16 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                       },
                       child: Text(
                         context.appLocalization.nameButtonYes,
-                        style: const TextStyle(
-                            fontSize: AppStyles.textSizeParagraph,
-                            color: AppStyles.colorWhite,
-                            fontFamily: AppStyles.fontTitlesHighlight,
-                            fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       )),
                   TextButton(
                       style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20)),
                           backgroundColor: MaterialStateProperty.all(
                               AppStyles.colorRedPrimary),
                           shape:
@@ -133,11 +138,10 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                       },
                       child: Text(
                         context.appLocalization.nameButtonNo,
-                        style: const TextStyle(
-                            fontSize: AppStyles.textSizeParagraph,
-                            color: AppStyles.colorWhite,
-                            fontFamily: AppStyles.fontTitlesHighlight,
-                            fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ))
                 ],
               ),
