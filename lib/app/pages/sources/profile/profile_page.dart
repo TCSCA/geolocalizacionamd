@@ -130,9 +130,7 @@ class ListViewProfileWidget extends StatelessWidget {
             children: [
               Center(
                 child: Stack(
-                  children: [
-                    _ImageWidget()
-                  ],
+                  children: [_ImageWidget()],
                 ),
               ),
               const SizedBox(
@@ -145,49 +143,53 @@ class ListViewProfileWidget extends StatelessWidget {
               _ProfileDataWidget(
                   title: context.appLocalization.labelIdentificationDocument,
                   subtitle:
-                  '${state.profileModel.documentType}-${state.profileModel
-                      .identificationDocument}' ??
-                      ''),
+                      '${state.profileModel.documentType}-${state.profileModel.identificationDocument}' ??
+                          ''),
               const Divider(),
               _ProfileDataWidget(
                   title: context.appLocalization.labelEmail,
                   subtitle: state.profileModel.email ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Género', subtitle: state.profileModel.gender ?? ''),
+                  title: context.appLocalization.labelGender,
+                  subtitle: state.profileModel.gender ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Fecha de Nacimiento',
+                  title: context.appLocalization.labelDateOfBirth,
                   subtitle:
-                  '${state.profileModel.dayBirthday}-${state.profileModel
-                      .monthBirthday}-${state.profileModel.yearBirthday}'),
+                      '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}'),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Número de Teléfono',
+                  title: context.appLocalization.labelPhone,
                   subtitle: state.profileModel.phoneNumber ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Otro teléfono',
+                  title: context.appLocalization.labelOtherPhone,
                   subtitle: state.profileModel.otherNumber ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'País', subtitle: state.profileModel.country ?? ''),
+                  title: context.appLocalization.labelCountry,
+                  subtitle: state.profileModel.country ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Estado', subtitle: state.profileModel.state ?? ''),
+                  title: context.appLocalization.labelState,
+                  subtitle: state.profileModel.state ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Ciudad', subtitle: state.profileModel.city ?? ''),
+                  title: context.appLocalization.labelCity,
+                  subtitle: state.profileModel.city ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'Dirección',
+                  title: context.appLocalization.labelDirection,
                   subtitle: state.profileModel.direction ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'M.P.P.S', subtitle: state.profileModel.mpps ?? ''),
+                  title: context.appLocalization.labelMPPS,
+                  subtitle: state.profileModel.mpps ?? ''),
               const Divider(),
               _ProfileDataWidget(
-                  title: 'C.M', subtitle: state.profileModel.mc ?? ''),
+                  title: context.appLocalization.labelCM,
+                  subtitle: state.profileModel.mc ?? ''),
               const Divider(),
               _ProfileDataWidget(
                   title: 'Especialidad',
@@ -206,16 +208,17 @@ class ListViewProfileWidget extends StatelessWidget {
                         'Firma digital cargada',
                       ),
                       MaterialButton(
-                          child: const Icon(Icons.file_present, size: 30,
-                              color: Color(0xff2B5178)),
+                          child: const Icon(Icons.file_present,
+                              size: 30, color: Color(0xff2B5178)),
                           onPressed: () {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) =>
                                     /*BlocProvider(
                                       create: (context) => DigitalSignatureBloc(),
-                                      child: */DigitalSignatureWidget());
-                                //    ));
+                                      child: */
+                                    DigitalSignatureWidget());
+                            //    ));
                           }),
                     ],
                   ),
@@ -227,7 +230,7 @@ class ListViewProfileWidget extends StatelessWidget {
                   subtitle: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                       Text(
+                      Text(
                         'Sin firma',
                       ),
                       /*MaterialButton(
@@ -263,9 +266,10 @@ class ListViewProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget buildTextField({required String labelText,
-    required String placeHolder,
-    required bool isReadOnly}) {
+  Widget buildTextField(
+      {required String labelText,
+      required String placeHolder,
+      required bool isReadOnly}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextField(
@@ -286,21 +290,21 @@ class ListViewProfileWidget extends StatelessWidget {
 }
 
 class _ImageWidget extends StatelessWidget {
-  _ImageWidget({this.bytesImage});
+  _ImageWidget();
+
   Uint8List? bytesImage;
 
   @override
   Widget build(BuildContext context) {
-
     return BlocConsumer<ImageProfileBloc, ImageProfileState>(
       listener: (context, state) {
         if (state is InitialImageProfileState) {
           bytesImage = state.imageBuild;
         }
-        // TODO: implement listener
       },
       builder: (context, state) {
-        bytesImage = state is InitialImageProfileState ? state.imageBuild : null;
+        bytesImage =
+            state is InitialImageProfileState ? state.imageBuild : null;
         return ImageWidget(
           isEdit: false,
           color: Colors.blueGrey,

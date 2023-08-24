@@ -12,6 +12,5 @@ class ConsultDigitalSignatureeEvent extends DigitalSignatureEvent {
 
 class SelectDoctorSignatureEvent extends DigitalSignatureEvent {
   @override
-  // TODO: implement props
   List<Object?> get props => [];
 }

@@ -17,7 +17,6 @@ class DigitalSignatureSuccess extends DigitalSignatureState {
   const DigitalSignatureSuccess({this.doctorSignatureBuild, this.doctorSignaturePath});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [doctorSignatureBuild, doctorSignaturePath];
 
 }

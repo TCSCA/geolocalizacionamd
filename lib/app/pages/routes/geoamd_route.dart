@@ -45,6 +45,7 @@ class GeoAmdRoutes {
 
           return ChangedPasswordPage(username: sample);
         } ),
+    GoRoute(path: editProfile, builder: (context, state) =>const EditProfile())
   ]);
 
   static GoRouter get routerConfig => router;

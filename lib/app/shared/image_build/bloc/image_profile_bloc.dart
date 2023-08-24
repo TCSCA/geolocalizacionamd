@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -20,7 +19,6 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
 
   ImageProfileBloc() : super(const InitialImageProfileState()) {
     on<ImageProfileEvent>((event, emit) {
-      // TODO: implement event handler
     });
 
     on<ImageProfileInitialEvent>((event, emit) {

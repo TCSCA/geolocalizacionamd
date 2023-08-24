@@ -94,7 +94,7 @@ class ProfileValidations {
     } else {
       if (!regExp.hasMatch(event) || event[0] == '0') {
         return context.appLocalization.invalidData;
-      } else if (event.length < 1) {
+      } else if (event.isEmpty) {
         return context.appLocalization.invalidLengthField;
       }
     }

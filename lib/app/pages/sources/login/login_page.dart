@@ -109,9 +109,10 @@ class _LoginPageState extends State<LoginPage> {
                           'password', passwordController.text);
                     }
                   }
-
-                  LoadingBuilder(context).hideOpenDialog();
-                  context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  if (context.mounted) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  }
                 }
                 if (state is LoginErrorState) {
                   LoadingBuilder(context).hideOpenDialog();
