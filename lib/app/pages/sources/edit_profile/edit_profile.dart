@@ -1106,7 +1106,21 @@ class _EditProfileState extends State<EditProfile> {
                               color: Colors.red,
                             ),
                           )
-                        : Container(),
+                        : const SizedBox(),
+                    const Divider(),
+                    ListTile(
+
+                      minVerticalPadding: 0.0,
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        context.pop();
+                      },
+                      title: const Text('Cerrar'),
+                      leading: const Icon(
+                        Icons.clear,
+                        color: Colors.red,
+                      ),
+                    ),
                   ],
                 ),
               ),
