@@ -32,6 +32,7 @@ class ConsultDataServiceImp implements ConsultDataService {
           ApiConstants.statusSuccessApi) {
         responsePhotos = PhotoMap.fromJson(decodeRespApi);
       } else {
+
         throw ErrorAppException(
             message: decodeRespApi[ApiConstants.dataLabelApi]);
       }
@@ -228,7 +229,7 @@ class ConsultDataServiceImp implements ConsultDataService {
   Future<GenderMap> getAllGender() async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
-    GenderMap genderMap;
+    late GenderMap genderMap;
 
     final Uri urlGetAllGender = Uri.parse(ApiConstants.urlApiGetAllGender);
 
@@ -242,11 +243,21 @@ class ConsultDataServiceImp implements ConsultDataService {
       responseApi = await http.get(urlGetAllGender, headers: header);
       decodeRespApi = jsonDecode(responseApi.body);
 
-      genderMap = GenderMap.fromJson(decodeRespApi);
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        genderMap = GenderMap.fromJson(decodeRespApi);
+      } else {
+        if(decodeRespApi['data'] == 'Full authentication is required to access this resource') {
+          throw SessionExpiredException(message: "session expired");
+        }
+      }
+
     } on EmptyDataException {
       rethrow;
-    } on ErrorAppException {
+    } on SessionExpiredException {
       rethrow;
+    } on ErrorAppException {
+        rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }

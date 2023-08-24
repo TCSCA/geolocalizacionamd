@@ -91,11 +91,11 @@ class ProfileController {
 
       genderList = genderMap.genderList;
        genderList.sort((a, b) => a.descriptionEs.compareTo(b.descriptionEs));
-
-
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } on ErrorGeneralException {
       rethrow;

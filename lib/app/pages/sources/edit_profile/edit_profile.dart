@@ -22,6 +22,7 @@ import '../../routes/geoamd_route.dart';
 import '../../styles/app_styles.dart';
 import '../../validations/profile_validations.dart';
 import '../../widgets/common_widgets.dart';
+import '../login/bloc/login_bloc.dart';
 import '../main/bloc/main_bloc.dart';
 import '../navigation/bloc/navigation_bloc.dart';
 
@@ -589,7 +590,32 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget allGenderList() {
-    return BlocBuilder<GenderBloc, GenderState>(
+    return BlocConsumer<GenderBloc, GenderState>(
+      listener: (context, state) {
+
+        if(state is GenderDataErrorState) {
+          if(state.messageError == 'session expired') {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                    AppMessages().getMessage(context, context.appLocalization.sessionExpired),
+                    isConfirmation: true,
+                    dialogAction: () {
+                      BlocProvider.of<LoginBloc>(context).add(const ProcessLogoutEvent());
+                    },
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
+        }
+      },
       builder: (context, state) {
 
         List<GenderList> genderList;

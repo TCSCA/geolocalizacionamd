@@ -20,6 +20,9 @@ class GenderDataSuccessState extends GenderState {
 }
 
 class GenderDataErrorState extends GenderState {
+  const GenderDataErrorState({required this.messageError});
+
+   final String messageError;
   @override
   List<Object?> get props => [];
 }
