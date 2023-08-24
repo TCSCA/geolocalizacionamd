@@ -85,6 +85,7 @@
     "appMsg011": "You have previously confirmed service, press the 'See Service' button to end it.",
     "appMsg088": "To register biometric authentication, you previously require effective authentication with your password to the system through the device.",
     "appMsg137": "No recorded data found",
+    "appMsg181": "The platform requires that you allow the use of peripherals or devices. By clicking OK you can configure the permissions, otherwise Cancel",
     "appMsg229": "Do you want the fingerprint option to be shown as an alternative for future log-in?",
     "appMsg234": "You are available to attend, in order to close the session you must disconnect.",
     "changePasswordAction": "Changing password",

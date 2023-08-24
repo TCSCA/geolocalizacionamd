@@ -12,6 +12,10 @@ import 'package:image_picker/image_picker.dart';
 import '../../api/constants/api_constants.dart';
 import '../../api/services/consult_data_service.dart';
 import '../../api/services/consult_data_service_implement.dart';
+import '../../errors/error_app_exception.dart';
+import '../../errors/error_empty_data.dart';
+import '../../errors/error_general_exception.dart';
+import '../../errors/error_session_expired.dart';
 
 class ImageProfileController {
   final SecureStorageController secureStorageController =
@@ -55,42 +59,52 @@ class ImageProfileController {
     var cameraPermission = await Permission.camera.request();
     String validate = '';
 
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
-      int androidVersion = androidInfo.version.sdkInt;
+    try {
+     /* if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+        int androidVersion = androidInfo.version.sdkInt;
 
-      if (androidVersion < 33) {
-        // For Android versions earlier than 12
-        cameraPermission = await Permission.storage.request();
-        // return await Permission.storage.isGranted;
+        if (androidVersion < 33) {
+          // For Android versions earlier than 12
+          cameraPermission = await Permission.storage.request();
+          // return await Permission.storage.isGranted;
+        } else {
+          // For Android 12 and later
+          cameraPermission = await Permission.photos.request();
+          //  return await Permission.manageExternalStorage.isGranted;
+        }
       } else {
-        // For Android 12 and later
         cameraPermission = await Permission.photos.request();
-        //  return await Permission.manageExternalStorage.isGranted;
+      }*/
+
+      if (cameraPermission == PermissionStatus.permanentlyDenied ||
+          cameraPermission == PermissionStatus.restricted) {
+        if (invalidatePermissionCamera) {
+          validate = validateType[2];
+          throw ErrorAppException(message: 'MSGAPP-181');
+          //  _importantPermission(S.current.important, S.current.MSG_181, context);
+        }
+        if (invalidatePermissionCamera == false) {
+          invalidatePermissionCamera = true;
+        }
+      } else if (cameraPermission == PermissionStatus.granted) {
+        validate = validateType[1];
+        // Either the permission was already granted before or the user just granted it.
+      } else if (cameraPermission == PermissionStatus.denied) {
+        invalidatePermissionCamera = false;
+        validate = validateType[2];
       }
-    } else {
-      cameraPermission = await Permission.photos.request();
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
     }
 
-    if (cameraPermission == PermissionStatus.permanentlyDenied ||
-        cameraPermission == PermissionStatus.restricted) {
-      if (invalidatePermissionCamera) {
-        validate = validateType[2];
-        //  _importantPermission(S.current.important, S.current.MSG_181, context);
-      }
-      if (invalidatePermissionCamera == false) {
-        invalidatePermissionCamera = true;
-      }
-    } else if (cameraPermission == PermissionStatus.granted) {
-      validate = validateType[1];
-      //BlocProvider.of<ImageProfileBloc>(context).add(SelectImageByCamera());
-      //context.read<ImageProfileBloc>().add(CleanImageByProfile());
-      ///_showChoiceDialog(context);
-      // Either the permission was already granted before or the user just granted it.
-    } else if (cameraPermission == PermissionStatus.denied) {
-      invalidatePermissionCamera = false;
-      validate = validateType[2];
-    }
+
 
     return validate;
   }
@@ -100,40 +114,51 @@ class ImageProfileController {
 
     String validate = '';
 
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
-      int androidVersion = androidInfo.version.sdkInt;
+    try{
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+        int androidVersion = androidInfo.version.sdkInt;
 
-      if (androidVersion < 33) {
-        // For Android versions earlier than 12
-        photoPermission = await Permission.storage.request();
-        // return await Permission.storage.isGranted;
+        if (androidVersion < 33) {
+          // For Android versions earlier than 12
+          photoPermission = await Permission.storage.request();
+          // return await Permission.storage.isGranted;
+        } else {
+          // For Android 12 and later
+          photoPermission = await Permission.photos.request();
+          //  return await Permission.manageExternalStorage.isGranted;
+        }
       } else {
-        // For Android 12 and later
         photoPermission = await Permission.photos.request();
-        //  return await Permission.manageExternalStorage.isGranted;
       }
-    } else {
-      photoPermission = await Permission.photos.request();
-    }
 
-    if (photoPermission == PermissionStatus.granted ||
-        photoPermission == PermissionStatus.limited) {
-      validate = validateType[1];
-    } else if (photoPermission == PermissionStatus.permanentlyDenied ||
-        photoPermission == PermissionStatus.restricted) {
-      if (invalidatePermissionStorage) {
-        validate = validateType[2];
-        // _importantPermission(S.current.important, S.current.MSG_181, context);
+      if (photoPermission == PermissionStatus.granted ||
+          photoPermission == PermissionStatus.limited) {
+        validate = validateType[1];
+      } else if (photoPermission == PermissionStatus.permanentlyDenied ||
+          photoPermission == PermissionStatus.restricted) {
+        if (invalidatePermissionStorage) {
+          validate = validateType[2];
+          throw ErrorAppException(message: 'MSGAPP-181');
+          // _importantPermission(S.current.important, S.current.MSG_181, context);
+        }
+        if (!invalidatePermissionStorage) {
+          invalidatePermissionStorage = true;
+        }
+      } else if (photoPermission == PermissionStatus.denied) {
+        invalidatePermissionStorage = false;
+        validate = validateType[0];
       }
-      if (!invalidatePermissionStorage) {
-        invalidatePermissionStorage = true;
-      }
-    } else if (photoPermission == PermissionStatus.denied) {
-      invalidatePermissionStorage = false;
-      validate = validateType[0];
-    }
 
+    } on EmptyDataException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
     return validate;
   }
 

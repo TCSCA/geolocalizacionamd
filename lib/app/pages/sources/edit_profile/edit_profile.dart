@@ -8,6 +8,7 @@ import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.d
 import 'package:go_router/go_router.dart';
 
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/controllers/profile_controller.dart';
 import '../../../core/models/select_model.dart';
 import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
@@ -290,6 +291,23 @@ class _EditProfileState extends State<EditProfile> {
                               .read<ImageProfileBloc>()
                               .add(SelectImageByCamera());
                         }
+                      } else if(state is ImageErrorState) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusError),
+                                descriptions: AppMessages()
+                                    .getMessage(context, state.messageError),
+                                isConfirmation: true,
+                                dialogAction: () => openAppSettings(),
+                                type: AppConstants.statusError,
+                                isdialogCancel: false,
+                                dialogCancel: () {},
+                              );
+                            });
                       }
                     },
                     builder: (context, state) {

@@ -301,8 +301,6 @@ class _RenewPasswordView extends StatelessWidget {
 class _BackgroundStyle extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
-
     final paint = Paint();
 
     paint.color = const Color(0xff2B5178);
@@ -322,7 +320,6 @@ class _BackgroundStyle extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
     throw true;
   }
 }

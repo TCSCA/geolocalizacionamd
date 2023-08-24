@@ -5,6 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geolocalizacionamd/app/core/controllers/image_profile_controller.dart';
 
+import '../../../errors/error_app_exception.dart';
+import '../../../errors/error_general_exception.dart';
+import '../../../errors/error_session_expired.dart';
+import '../../../pages/constants/app_constants.dart';
+
 part 'image_profile_event.dart';
 
 part 'image_profile_state.dart';
@@ -16,10 +21,8 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
   Uint8List? doctorSignatureBuild;
   String? doctorSignaturePath;
 
-
   ImageProfileBloc() : super(const InitialImageProfileState()) {
-    on<ImageProfileEvent>((event, emit) {
-    });
+    on<ImageProfileEvent>((event, emit) {});
 
     on<ImageProfileInitialEvent>((event, emit) {
       emit(InitialImageProfileState(imageBuild: event.imageBuild));
@@ -50,11 +53,23 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       emit(LoadingImageState());
 
       String validateStatus;
-      validateStatus =
-          await ImageProfileController().doValidatePermissionGallery();
 
-      if (validateStatus == "isGranted") {
-        emit(const CameraPermissionSuccessState(typePermission: "gallery"));
+      try {
+        validateStatus =
+            await ImageProfileController().doValidatePermissionGallery();
+
+        if (validateStatus == "isGranted") {
+          emit(const CameraPermissionSuccessState(typePermission: "gallery"));
+        }
+      } on ErrorAppException catch (exapp) {
+        emit(ImageErrorState(messageError: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(ImageErrorState(messageError: exgen.message));
+      } on SessionExpiredException catch (exgen) {
+        emit(ImageErrorState(messageError: exgen.message));
+      } catch (unknowerror) {
+        emit(const ImageErrorState(
+            messageError: AppConstants.codeGeneralErrorMessage));
       }
     });
 
@@ -62,22 +77,31 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       emit(LoadingImageState());
       String validateStatus;
 
-      validateStatus =
-          await ImageProfileController().doValidatePermissionCamera();
+      try {
+        validateStatus =
+        await ImageProfileController().doValidatePermissionCamera();
 
-      if (validateStatus == "isGranted") {
-        emit(const CameraPermissionSuccessState(typePermission: "camera"));
+        if (validateStatus == "isGranted") {
+          emit(const CameraPermissionSuccessState(typePermission: "camera"));
+        }
+      } on ErrorAppException catch (exapp) {
+        emit(ImageErrorState(messageError: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(ImageErrorState(messageError: exgen.message));
+      } on SessionExpiredException catch (exgen) {
+        emit(ImageErrorState(messageError: exgen.message));
+      } catch (unknowerror) {
+        emit(const ImageErrorState(
+            messageError: AppConstants.codeGeneralErrorMessage));
       }
+
     });
 
     on<ConsultPhotoEvent>((event, emit) async {
       bytesImage = await ImageProfileController().doConsultDataImageProfile();
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
-
-
-      emit(InitialImageProfileState(
-          imageBuild: bytesImage));
+      emit(InitialImageProfileState(imageBuild: bytesImage));
     });
 
     on<SelectDoctorSignature>((event, emit) async {
@@ -94,7 +118,6 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     });
 
     on<ConsultDigitalSignatureEvent>((event, emit) async {
-
       bytesImage = const ImageChangeSuccessState().imageBuild;
       imagePath = const ImageChangeSuccessState().imagePath;
 

@@ -87,8 +87,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
       listeners: [
         BlocListener<ChangePasswordBloc, ChangePasswordState>(
             listener: (context, state) async {
-          // TODO: implement listener
-
+  
           if (state is ChangePasswordLoadingState) {
             LoadingBuilder(context).showLoadingIndicator(
                 context.appLocalization.changePasswordAction);

@@ -85,6 +85,7 @@
     "appMsg088": "Para registrar la autenticación biométrica, previamente requiere una autenticación efectiva con su contraseña al sistema a través del dispositivo.",
     "apiMsg057": "Ya existe una conexión activa con sus credenciales. ¿Desea cerrarla?",
     "appMsg137": "No se encontraron datos registrados",
+    "appMsg181": "La plataforma requiere que usted permita el uso de periféricos o dispositivos. Al pulsar Aceptar podrá configurar los permisos, en caso contrario, Cancelar",
     "appMsg229": "¿Desea que la opción huella dactilar se muestre como alternativa para iniciar sesión a futuro?",
     "appMsg234": "Usted se encuentra disponible para atender, para poder cerrar sesión debe desconectarse.",
     "changePasswordAction": "Cambiando contraseña",

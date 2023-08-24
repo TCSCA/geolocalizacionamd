@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocalizacionamd/app/core/controllers/image_profile_controller.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/widgets/renew_password_widget.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -358,7 +357,6 @@ class _LoginPageState extends State<LoginPage> {
                                 fillColor: MaterialStateProperty.all<Color>(
                                     Colors.white),
                                 onChanged: (value) async {
-                                  ///TODO: Falta guardar usuario
                                   checkUserSave = value!;
 
                                   if (checkUserSave == false) {
@@ -444,7 +442,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 50.0),
                       Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
                         //width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
@@ -472,11 +470,11 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Text(
                             context.appLocalization.forgotPassword,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-                      SizedBox(
+                     const SizedBox(
                         height: 20,
                       ),
                       InkWell(
@@ -689,9 +687,8 @@ class _LoginPageState extends State<LoginPage> {
                             dialogCancel: () {},
                           );
                         })
-                    : print('');
+                    : null;
 
-        // logger.e("😢 Error loger show ${e.code}");
       }
     } else {
       showDialog(
