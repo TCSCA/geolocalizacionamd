@@ -159,10 +159,10 @@ class ListViewHistoryAmd extends StatelessWidget {
           ),
           Text(
             context.appLocalization.appMsg137,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'TitlesHighlight',
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(

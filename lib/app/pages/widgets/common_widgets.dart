@@ -76,7 +76,7 @@ class AppCommonWidgets {
               ),
               Text(
                 menuOpTitle,
-                style: const TextStyle(fontSize: 20.0, color: Colors.white),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ],
           )
@@ -91,16 +91,16 @@ class AppCommonWidgets {
     final List<MenuModel> opcionesMenu =
         BlocProvider.of<LoginBloc>(context).listMenu;
 
-    listaMenu.add(const Row(
+    listaMenu.add(Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           "MENÚ DE OPCIONES",
-          style: TextStyle(
-              fontStyle: FontStyle.italic,
-              letterSpacing: 0.4,
-              fontWeight: FontWeight.w600),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontWeight: FontWeight.w600),
         )
       ],
     ));
@@ -114,10 +114,14 @@ class AppCommonWidgets {
               .add(NavigationPageEvent(page: index, pagesMenu: opcionesMenu));
         },
         leading: getIcon(opcion.icon),
-        horizontalTitleGap: 0.0,
+        horizontalTitleGap: 10.0,
         title: Text(
           opcion.descripcion,
-          style: AppStyles.textStyleMenuDynamic,
+          textAlign: TextAlign.start,
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontSize: 18.0),
         ),
         hoverColor: AppStyles.colorRedPrimary,
       );
@@ -145,9 +149,12 @@ class AppCommonWidgets {
             });
       },
       leading: getIcon('logout'),
-      horizontalTitleGap: 0.0,
+      horizontalTitleGap: 5.0,
       title: Text(context.appLocalization.titleLogout,
-          style: AppStyles.textStyleMenuDynamic),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontSize: 18.0)),
       hoverColor: AppStyles.colorRedPrimary,
     );
     listaMenu.add(opcionMenu);
@@ -173,10 +180,13 @@ class AppCommonWidgets {
             context.pop();
           },
           leading: getIcon('closeMenu'),
-          horizontalTitleGap: 0.0,
+          horizontalTitleGap: 3.0,
           title: Text(
             context.appLocalization.titleCloseMenu,
-            style: AppStyles.textStyleMenuStatic,
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: Colors.black, fontSize: 18.0),
           ),
           hoverColor: AppStyles.colorRedPrimary,
           focusColor: AppStyles.colorRedPrimary,
@@ -190,6 +200,7 @@ class AppCommonWidgets {
   static Icon getIcon(String nombreIcono) {
     return Icon(
       AppConstants.iconsMenu[nombreIcono],
+      size: 22.0,
     );
   }
 

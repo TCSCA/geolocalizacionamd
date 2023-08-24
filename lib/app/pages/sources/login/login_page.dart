@@ -211,15 +211,15 @@ class _LoginPageState extends State<LoginPage> {
                           child: Image.asset(
                         'assets/images/gps_doctor_image.png',
                         width: 250,
-                        height: 200,
+                              height: 200
                       )),
                       Flexible(
                           child: Image.asset(
                         'assets/images/telemedicina24_logo_blanco_lineal.png',
-                        width: 370,
+                        width: 270,
                         height: 80,
                       )),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 10.0),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
@@ -229,17 +229,15 @@ class _LoginPageState extends State<LoginPage> {
                             maxLength: 15,
                             decoration: InputDecoration(
                                 errorMaxLines: 2,
-                                fillColor:
-                                    const Color(0xffD84835).withAlpha(50),
-                                counterStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withAlpha(50),
+                                counterStyle:
+                                    Theme.of(context).textTheme.labelSmall,
                                 hintText: 'Usuario',
-                                hintStyle: const TextStyle(
-                                    color: Color(0xffFFFFFF),
-                                    fontSize: 19.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                hintStyle:
+                                    Theme.of(context).textTheme.labelLarge,
                                 prefixIcon: const Icon(
                                   FontAwesomeIcons.userDoctor,
                                   color: Color(0xffFFFFFF),
@@ -258,14 +256,14 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(30.0)),
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 10.0),
-                                errorStyle: const TextStyle(
-                                    color: Color(0xffD84835),
-                                    fontSize: 14.0,
-                                    fontFamily: 'TextsParagraphs')),
-                            style: const TextStyle(
-                                color: Color(0xffFFFFFF),
-                                fontSize: 19.0,
-                                fontFamily: 'TitlesHighlight'),
+                                errorStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                            style: Theme.of(context).textTheme.labelLarge,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
@@ -278,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             }),
                       ),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 10.0),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
@@ -298,20 +296,21 @@ class _LoginPageState extends State<LoginPage> {
                                       _visiblePasswordOff
                                           ? Icons.visibility_off
                                           : Icons.visibility,
-                                      color: Colors.white,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     )),
                                 errorMaxLines: 2,
                                 fillColor:
-                                    const Color(0xffD84835).withAlpha(50),
-                                counterStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                    Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withAlpha(50),
+                                counterStyle:
+                                    Theme.of(context).textTheme.labelSmall,
                                 hintText: 'Contraseña',
-                                hintStyle: const TextStyle(
-                                    color: Color(0xffFFFFFF),
-                                    fontSize: 19.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                hintStyle:
+                                    Theme.of(context).textTheme.labelLarge,
                                 prefixIcon: const Icon(
                                   FontAwesomeIcons.lock,
                                   color: Color(0xffFFFFFF),
@@ -330,14 +329,14 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(30.0)),
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 10.0),
-                                errorStyle: const TextStyle(
-                                    color: Color(0xffD84835),
-                                    fontSize: 14.0,
-                                    fontFamily: 'TextsParagraphs')),
-                            style: const TextStyle(
-                                color: Color(0xffFFFFFF),
-                                fontSize: 19.0,
-                                fontFamily: 'TitlesHighlight'),
+                                errorStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                            style: Theme.of(context).textTheme.labelLarge,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
@@ -350,18 +349,20 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             }),
                       ),
-                      const SizedBox(height: 20.0),
+                      //const SizedBox(height: 10.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
                           children: <Widget>[
                             Checkbox(
                                 value: checkUserSave,
-                                checkColor: const Color(0xffd84835),
+                                checkColor:
+                                    Theme.of(context).colorScheme.secondary,
                                 shape: const CircleBorder(),
-                                activeColor: Colors.white,
+                                activeColor:
+                                    Theme.of(context).colorScheme.onSecondary,
                                 fillColor: MaterialStateProperty.all<Color>(
-                                    Colors.white),
+                                    Theme.of(context).colorScheme.onSecondary),
                                 onChanged: (value) async {
                                   ///TODO: Falta guardar usuario
                                   checkUserSave = value!;
@@ -382,15 +383,14 @@ class _LoginPageState extends State<LoginPage> {
 
                                   setState(() {});
                                 }),
-                            const Text(
+                            Text(
                               'Recordar Usuario',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 40.0),
+                      const SizedBox(height: 20.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -427,15 +427,14 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 40),
-                                  child: const Text(
+                                      vertical: 10, horizontal: 40),
+                                  child: Text(
                                     'Ingresar',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 19.0,
-                                        color: Color(0xffFFFFFF),
-                                        fontFamily: 'TitlesHighlight',
-                                        fontWeight: FontWeight.bold),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -443,12 +442,12 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 20.0),
                       if (_canCheckBiometric &&
                           (prefs.getBool('checkUserSave') ?? false) &&
                           denyFingerprint == 'Y')
                         _BiometricWidget(onTap: () => _authenticate(context)),
-                      const SizedBox(height: 50.0),
+                      const SizedBox(height: 20.0),
                       /*Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(horizontal: 40),
@@ -475,31 +474,45 @@ class _LoginPageState extends State<LoginPage> {
                               'https://telemedicina24ca.com/politica-de-privacidad-alojose/'),
                           mode: LaunchMode.externalApplication,
                         ),
-                        child: const Text.rich(
+                        child: Text.rich(
                           TextSpan(
                             text: 'Al pulsar ingresar, acepta los ',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: Theme.of(context).textTheme.labelLarge,
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    'Términos de\nUso y Políticas de Privacidad',
-                                style: TextStyle(
-                                    color: Color(0xffd84835),
-                                    decoration: TextDecoration.underline),
+                                    'Términos de Uso \ny Políticas de Privacidad',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                               ),
                               TextSpan(
                                 text: ' de Telemedicina24',
-                                style: TextStyle(
-                                  color: Color(0xffd84835),
-                                  decoration: TextDecoration.underline,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                               ),
                             ],
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10.0),
                     ],
                   ),
                 ),

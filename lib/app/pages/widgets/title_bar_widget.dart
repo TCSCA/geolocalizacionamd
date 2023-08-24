@@ -13,7 +13,10 @@ class TitleBar extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         TextButton.icon(
             onPressed: () {
@@ -25,9 +28,12 @@ class TitleBar extends StatelessWidget {
               size: 25,
               color: Colors.black,
             ),
-            label: const Text(
+            label: Text(
               'Actualizar',
-              style: TextStyle(fontSize: 15, color: Colors.black),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(color: Colors.black),
             ))
         /* IconButton(
             onPressed: () {

@@ -17,6 +17,7 @@ import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
 import '/app/core/controllers/save_data_storage.dart';
 import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
+import 'app/themes/geoamd_theme.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest_all.dart' as timezone;
 import 'package:timezone/timezone.dart' as timezone;
@@ -146,6 +147,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
+        theme: AppThemes().themedata,
         title: Environment().config.appName,
         localizationsDelegates: const [
           AppLocalizations.delegate,

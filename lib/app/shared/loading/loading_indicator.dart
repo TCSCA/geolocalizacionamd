@@ -17,7 +17,7 @@ class LoadingIndicator extends StatelessWidget {
         children: [
           _getLoadingIndicator(),
           _getHeading(context),
-          _getText(menssage)
+          _getText(menssage, context)
         ],
       ),
     );
@@ -40,16 +40,22 @@ class LoadingIndicator extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Text(
         context.appLocalization.titleHeadingLoading,
-        style: AppStyles.textStyleLoading,
+        style: Theme.of(context)
+            .textTheme
+            .labelLarge
+            ?.copyWith(fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Text _getText(final String displayedText) {
+  Text _getText(final String displayedText, BuildContext context) {
     return Text(
       displayedText,
-      style: AppStyles.textStyleLoading,
+      style: Theme.of(context)
+          .textTheme
+          .labelLarge
+          ?.copyWith(fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
     );
   }

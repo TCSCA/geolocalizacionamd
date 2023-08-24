@@ -47,7 +47,7 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.only(
-              left: 10, top: 45 + 10, right: 10, bottom: 10),
+              left: 10, top: 45, right: 10, bottom: 10),
           margin: const EdgeInsets.only(top: 45),
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -96,7 +96,7 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(30.0),
                                 side: BorderSide(
                                     style: BorderStyle.solid,
                                     color:
@@ -121,7 +121,7 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(30.0),
                                 side: BorderSide(
                                     style: BorderStyle.solid,
                                     color:

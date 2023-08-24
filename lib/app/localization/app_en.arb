@@ -38,6 +38,7 @@
     "fieldRequired": "Required field.",
     "nameButtonCancel": "Cancel",
     "nameButtonAccept": "Accept",
+    "nameButtonClose": "Close",
     "invalidLengthField": "Data length less than the minimum required.",
     "messageLogout": "Are you sure you want to logout?",
     "messagePatientCare": "Our patients must receive dignified and respectful treatment at any time and under any circumstances.",
