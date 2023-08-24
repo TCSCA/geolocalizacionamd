@@ -3,21 +3,21 @@ import 'package:url_launcher/url_launcher.dart';
 import '/app/pages/styles/app_styles.dart';
 
 class ExpansionTitleWidget extends StatelessWidget {
-  String? orderNumber;
-  int? dateOrderDay;
-  int? dateOrderMonth;
-  int? dateOrderYear;
-  String? fullNamePatient;
-  String? identificationDocument;
-  String? phoneNumberPatient;
-  String? address;
-  String? applicantDoctor;
-  String? phoneNumberDoctor;
-  String? typeService;
-  String? linkAmd;
-  String? statusHomeService;
+final  String? orderNumber;
+final   int? dateOrderDay;
+final   int? dateOrderMonth;
+final   int? dateOrderYear;
+final   String? fullNamePatient;
+final   String? identificationDocument;
+final   String? phoneNumberPatient;
+final   String? address;
+final   String? applicantDoctor;
+final   String? phoneNumberDoctor;
+final   String? typeService;
+final   String? linkAmd;
+final   String? statusHomeService;
 
-  ExpansionTitleWidget(
+const  ExpansionTitleWidget(
       {super.key,
       this.orderNumber,
       this.dateOrderDay,
@@ -33,9 +33,9 @@ class ExpansionTitleWidget extends StatelessWidget {
       this.linkAmd,
       this.statusHomeService});
 
-  double interlineado = 7.0;
-  double tamanioLetra = 15.0;
-  double tamanioTitulo = 16.0;
+final  double interlineado = 7.0;
+final   double tamanioLetra = 15.0;
+final   double tamanioTitulo = 16.0;
 
   @override
   Widget build(BuildContext context) {

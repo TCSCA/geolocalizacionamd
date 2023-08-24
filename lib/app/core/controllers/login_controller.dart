@@ -20,6 +20,8 @@ class LoginController {
     late UserModel userResponse;
 
     try {
+     // ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+
       var responseLogin = await loginService.doLogin(user, password);
 
       cleanDataSession();
@@ -66,7 +68,6 @@ class LoginController {
     } finally {
       cleanDataSession();
     }
-
     return respWebSocket;
   }
 

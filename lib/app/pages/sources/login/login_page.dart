@@ -1,7 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocalizacionamd/app/core/controllers/image_profile_controller.dart';
+import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +20,7 @@ import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 
 import 'package:local_auth_android/local_auth_android.dart';
-import 'package:local_auth/error_codes.dart' as authError;
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 import 'bloc/login_bloc.dart';
 
@@ -85,6 +89,15 @@ class _LoginPageState extends State<LoginPage> {
                       context.appLocalization.titleLoginLoading);
                 }
                 if (state is LoginSuccessState) {
+                  Uint8List? image = await ImageProfileController()
+                      .doConsultDataImageProfile();
+                  if(context.mounted) {
+                    BlocProvider.of<ImageProfileBloc>(context)
+                        .add(ImageProfileInitialEvent(imageBuild: image));
+                    BlocProvider.of<ProfileBloc>(context)
+                        .add(GetProfileInitialEvent());
+                  }
+
                   if (checkUserSave) {
                     await prefs.setString('userSave', userController.text);
 
@@ -121,9 +134,10 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     }
                   }
-
-                  LoadingBuilder(context).hideOpenDialog();
-                  context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  if (context.mounted) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  }
                 }
                 if (state is LoginErrorState) {
                   LoadingBuilder(context).hideOpenDialog();
@@ -211,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Image.asset(
                         'assets/images/gps_doctor_image.png',
                         width: 250,
-                              height: 200
+                        height: 200,
                       )),
                       Flexible(
                           child: Image.asset(
@@ -538,7 +552,9 @@ class _LoginPageState extends State<LoginPage> {
     try {
       canCheckBiometric = await auth.canCheckBiometrics;
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     if (!mounted) return;
@@ -552,9 +568,7 @@ class _LoginPageState extends State<LoginPage> {
     List<BiometricType> availableBiometric = [];
 
     /* bool? autoStart = await isAutoStartAvailable;
-
     if(autoStart != null && autoStart) {
-
       await showDialog(
           context: context,
           barrierDismissible: false,
@@ -571,14 +585,15 @@ class _LoginPageState extends State<LoginPage> {
               dialogCancel: () {},
             );
           });
-
       await getAutoStartPermission();
     }*/
 
     try {
       availableBiometric = await auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -616,7 +631,9 @@ class _LoginPageState extends State<LoginPage> {
         BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
             userSave, prefs.getString('password')!, languageCode));
       } else {
-        print('ERROR');
+        if (kDebugMode) {
+          print('ERROR');
+        }
       }
     } on PlatformException catch (e) {
       /// _authorized = "Error - ${e.code}";
@@ -637,7 +654,7 @@ class _LoginPageState extends State<LoginPage> {
                   dialogCancel: () {},
                 );
               })
-          : e.code == authError.notAvailable
+          : e.code == auth_error.notAvailable
               ? showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -687,15 +704,13 @@ class _LoginPageState extends State<LoginPage> {
     userController = TextEditingController(text: userSave);
     setState(() {});
   }
-
-  _callShowDialog() {}
 }
 
+@immutable
 class _BiometricWidget extends StatelessWidget {
-  Function() onTap;
+  final Function() onTap;
 
-  _BiometricWidget({
-    super.key,
+  const _BiometricWidget({
     required this.onTap,
   });
 

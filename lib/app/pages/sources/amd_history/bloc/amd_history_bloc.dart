@@ -16,9 +16,7 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
  List<HomeServiceModel> homeServiceModel = [];
   AmdHistoryBloc({required this.amdHistoryController})
       : super(AmdHistoryInitial()) {
-    on<AmdHistoryEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<AmdHistoryEvent>((event, emit) {});
 
     on<GetAmdHistoryEvent>((event, emit) async {
       emit(AmdHistoryLoadingState());

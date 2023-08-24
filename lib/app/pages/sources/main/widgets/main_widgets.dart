@@ -1,6 +1,7 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:go_router/go_router.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/pages/messages/app_messages.dart';
@@ -87,12 +88,24 @@ class MainWidgets {
                     radius: 70,
                     child: CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
-                      radius: 90,
-                      child: CircleAvatar(
-                        backgroundImage:
-                            Image.memory(Uint8List.fromList(user.photoPerfil))
+                      radius: 55,
+                      child: BlocBuilder<ImageProfileBloc, ImageProfileState>(
+                        builder: (context, state) {
+                          return ImageWidget(
+                                  onClicked: () {},
+                                  isEdit: false,
+                                  imagePath: state is InitialImageProfileState
+                                      ? state.imageBuild
+                                      : null,
+                                  color: Colors
+                                      .blueGrey) /*CircleAvatar(
+                            backgroundImage: Image.memory(
+                                    Uint8List.fromList(user.photoPerfil))
                                 .image,
-                        radius: 55,
+                            radius: 55,
+                          )*/
+                              ;
+                        },
                       ),
                     ),
                   ),
@@ -566,6 +579,7 @@ class AmdInformationAssigned extends StatelessWidget {
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: AppStyles.colorBluePrimary,
+                                          fontFamily: 'TextsParagraphs',
                                         ),
                                       ),
                                     ),
@@ -583,28 +597,33 @@ class AmdInformationAssigned extends StatelessWidget {
                                         hint:
                                             const Text("Seleccione una opción"),
                                         key: reasonFieldKey,
-                                        decoration: const InputDecoration(
-                                          focusedBorder: UnderlineInputBorder(
+                                        decoration: InputDecoration(
+                                          focusedBorder:
+                                              const UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
-                                          contentPadding: EdgeInsets.symmetric(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',
                                           hintText: 'Seleccione una opción',
-                                          labelStyle: TextStyle(
-                                              fontSize: 27.0,
-                                              color: Colors.black,
-                                              fontFamily: 'TitlesHighlight'),
+                                          labelStyle: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge
+                                              ?.copyWith(
+                                                  color: Colors.black,
+                                                  fontSize: 22.0),
                                         ),
-                                        style: const TextStyle(
-                                            fontSize: 18.0,
-                                            color: Colors.black,
-                                            fontFamily: 'TextsParagraphs'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(color: Colors.black),
                                         items: state.listReasonRejection
                                             .map((SelectModel selectiveReason) {
                                           return DropdownMenuItem(
@@ -677,15 +696,16 @@ class AmdInformationAssigned extends StatelessWidget {
                                                 BorderRadius.circular(30)),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 40),
-                                          child: const Text(
+                                              vertical: 10, horizontal: 20),
+                                          child: Text(
                                             'Aceptar',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 19.0,
-                                                color: Color(0xffFFFFFF),
-                                                fontFamily: 'TitlesHighlight',
-                                                fontWeight: FontWeight.bold),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelLarge
+                                                ?.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                           ),
                                         ),
                                       ),

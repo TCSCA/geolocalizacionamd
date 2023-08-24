@@ -111,6 +111,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                               FontWeight.bold,
                                                           color: AppStyles
                                                               .colorBluePrimary,
+                                                            fontFamily:
+                                                                'TextsParagraphs'
                                                         ),
                                                       ),
                                                     ),
@@ -133,35 +135,39 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                             "Seleccione una opción"),
                                                         key: reasonFieldKey,
                                                         decoration:
-                                                            const InputDecoration(
-                                                          focusedBorder: UnderlineInputBorder(
+                                                            InputDecoration(
+                                                          focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: AppStyles
                                                                       .colorBluePrimary)),
-                                                          enabledBorder: UnderlineInputBorder(
+                                                          enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: AppStyles
                                                                       .colorBluePrimary)),
                                                           contentPadding:
-                                                              EdgeInsets
+                                                              const EdgeInsets
                                                                   .symmetric(
                                                                       vertical:
                                                                           18),
                                                           labelText: 'Motivo:',
                                                           hintText:
                                                               'Seleccione una opción',
-                                                          labelStyle: TextStyle(
-                                                              fontSize: 27.0,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  'TitlesHighlight'),
+                                                          labelStyle: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .labelLarge
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      22.0),
                                                         ),
-                                                        style: const TextStyle(
-                                                            fontSize: 18.0,
-                                                            color: Colors.black,
-                                                            fontFamily:
-                                                                'TextsParagraphs'),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .labelLarge
+                                                            ?.copyWith(
+                                                                color: Colors
+                                                                    .black),
                                                         items: state
                                                             .listReasonComplete
                                                             .map((SelectModel
@@ -267,7 +273,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                                       .symmetric(
                                                                   vertical: 10,
                                                                   horizontal:
-                                                                      40),
+                                                                      20),
                                                           child: Text(
                                                             'Aceptar',
                                                             textAlign: TextAlign
