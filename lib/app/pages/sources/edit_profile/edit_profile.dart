@@ -218,6 +218,50 @@ class _EditProfileState extends State<EditProfile> {
             context.read<ProfileBloc>().add(GetProfileInitialEvent());
             context.go(GeoAmdRoutes.profile, extra: NavigationBloc());
           }
+        } if(state is ProfileErrorState) {
+          if (context.mounted) {
+            LoadingBuilder(context).hideOpenDialog();
+
+            if(state.messageError == "session expired") {
+             return showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions:
+                      AppMessages().getMessage(context, context.appLocalization.sessionExpired),
+                      isConfirmation: false,
+                      dialogAction: () {
+
+                      },
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  });
+             BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
+            } else {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions:
+                      AppMessages().getMessage(context, state.messageError),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  });
+            }
+          }
+
         }
       },
       builder: (context, state) {
@@ -1106,7 +1150,18 @@ class _EditProfileState extends State<EditProfile> {
                               color: Colors.red,
                             ),
                           )
-                        : Container(),
+                        : const SizedBox(),
+                    const Divider(),
+                    ListTile(
+                      onTap: () {
+                        context.pop();
+                      },
+                      title: const Text('Cerrar'),
+                      leading: const Icon(
+                        Icons.clear,
+                        color: Colors.blue,
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -96,36 +96,6 @@ class TabBarViewWidget extends StatelessWidget {
               ListViewHistoryAmd(
                 homeService: state.homeServiceP,
               ),
-              /*ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                itemCount: state.homeService.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if(state.homeService[index].idStatusHomeService == 3) {
-                    return ExpansionTitleWidget(
-                      orderNumber: state.homeService[index].orderNumber,
-                      dateOrderDay:
-                      state.homeService[index].registerDate.day,
-                      dateOrderMonth:
-                      state.homeService[index].registerDate.month,
-                      dateOrderYear:
-                      state.homeService[index].registerDate.year,
-                      fullNamePatient: state.homeService[index].fullNamePatient,
-                      identificationDocument:
-                      state.homeService[index].identificationDocument,
-                      phoneNumberPatient:
-                      state.homeService[index].phoneNumberPatient,
-                      address: state.homeService[index].address,
-                      applicantDoctor: state.homeService[index].applicantDoctor,
-                      phoneNumberDoctor:
-                      state.homeService[index].phoneNumberDoctor,
-                      typeService: state.homeService[index].typeService,
-                      linkAmd: '',
-                    );
-                  } else {
-                    return SizedBox();
-                  }
-                },
-              )*/
             ],
           );
         } else {
@@ -189,6 +159,7 @@ class ListViewHistoryAmd extends StatelessWidget {
             typeService: homeService?[index].typeService,
             linkAmd: homeService?[index].linkAmd,
             statusHomeService: homeService?[index].statusHomeService,
+              statusLinkAmd: homeService?[index].statusLinkAmd
           );
         },
       );

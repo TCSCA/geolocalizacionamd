@@ -140,7 +140,6 @@ class ImageProfileController {
         if (invalidatePermissionStorage) {
           validate = validateType[2];
           throw ErrorAppException(message: 'MSGAPP-181');
-          // _importantPermission(S.current.important, S.current.MSG_181, context);
         }
         if (!invalidatePermissionStorage) {
           invalidatePermissionStorage = true;

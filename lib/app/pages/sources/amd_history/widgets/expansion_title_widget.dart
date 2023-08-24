@@ -3,21 +3,22 @@ import 'package:url_launcher/url_launcher.dart';
 import '/app/pages/styles/app_styles.dart';
 
 class ExpansionTitleWidget extends StatelessWidget {
-final  String? orderNumber;
-final   int? dateOrderDay;
-final   int? dateOrderMonth;
-final   int? dateOrderYear;
-final   String? fullNamePatient;
-final   String? identificationDocument;
-final   String? phoneNumberPatient;
-final   String? address;
-final   String? applicantDoctor;
-final   String? phoneNumberDoctor;
-final   String? typeService;
-final   String? linkAmd;
-final   String? statusHomeService;
+  final String? orderNumber;
+  final int? dateOrderDay;
+  final int? dateOrderMonth;
+  final int? dateOrderYear;
+  final String? fullNamePatient;
+  final String? identificationDocument;
+  final String? phoneNumberPatient;
+  final String? address;
+  final String? applicantDoctor;
+  final String? phoneNumberDoctor;
+  final String? typeService;
+  final String? linkAmd;
+  final String? statusHomeService;
+  final String? statusLinkAmd;
 
-const  ExpansionTitleWidget(
+  const ExpansionTitleWidget(
       {super.key,
       this.orderNumber,
       this.dateOrderDay,
@@ -31,20 +32,21 @@ const  ExpansionTitleWidget(
       this.phoneNumberDoctor,
       this.typeService,
       this.linkAmd,
-      this.statusHomeService});
+      this.statusHomeService,
+      this.statusLinkAmd});
 
-final  double interlineado = 7.0;
-final   double tamanioLetra = 15.0;
-final   double tamanioTitulo = 16.0;
+  final double interlineado = 7.0;
+  final double tamanioLetra = 15.0;
+  final double tamanioTitulo = 16.0;
 
   @override
   Widget build(BuildContext context) {
-
     final String day;
     final String month;
 
     day = dateOrderDay! < 10 ? '0$dateOrderDay' : dateOrderDay.toString();
-    month = dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
+    month =
+        dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
 
     return Column(
       children: <Widget>[
@@ -207,18 +209,33 @@ final   double tamanioTitulo = 16.0;
                           fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
                 ],
               ),
-              Row(
-                children: [
-                  const SizedBox(width: 20.0),
-                  InkWell(
-                    onTap: () => launchUrl(
-                      Uri.parse(linkAmd!),
-                      mode: LaunchMode.externalApplication,
+              if (statusLinkAmd == 'Generado' || statusLinkAmd == 'Expirado')
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    InkWell(
+                      onTap: () {
+                        if (statusLinkAmd == 'Generado') {
+                          launchUrl(
+                            Uri.parse(linkAmd!),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        } else {}
+                      },
+                      child: const Text('Ver formulario'),
                     ),
-                    child: const Text('Ver formulario'),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              if (statusLinkAmd == 'Consumido')
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    InkWell(
+                      onTap: () {},
+                      child: const Text('Ver PDF'),
+                    ),
+                  ],
+                ),
               SizedBox(height: interlineado),
             ]
           ],

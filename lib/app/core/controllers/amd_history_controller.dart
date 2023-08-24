@@ -58,7 +58,8 @@ class AmdHistoryController {
                   ? ''
                   : optionhistory.linkAmd),
             optionhistory.idStatusHomeService,
-            optionhistory.statusHomeService
+            optionhistory.statusHomeService,
+            optionhistory.statusLinkAmd
           );
 
           homeServiceModelList.add(homeServiceModel);
