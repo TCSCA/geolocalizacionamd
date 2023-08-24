@@ -188,7 +188,7 @@ class _EditProfileState extends State<EditProfile> {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) async {
         if (state is ProfileUpdateLoadingState) {
-          LoadingBuilder(context).showLoadingIndicator('Cardando perfil');
+          LoadingBuilder(context).showLoadingIndicator('Cargando perfil');
         }
         if (state is ProfileSuccessState) {
           LoadingBuilder(context).hideOpenDialog();
