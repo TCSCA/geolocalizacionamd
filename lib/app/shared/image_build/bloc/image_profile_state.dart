@@ -5,8 +5,9 @@ abstract class ImageProfileState extends Equatable {
 }
 
 class InitialImageProfileState extends ImageProfileState {
-  const InitialImageProfileState({this.imageBuild});
+  const InitialImageProfileState({this.imageBuild, this.imagePath});
   final Uint8List? imageBuild;
+  final String? imagePath;
   @override
   List<Object?> get props => [imageBuild];
 }
