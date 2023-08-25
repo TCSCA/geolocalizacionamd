@@ -90,7 +90,6 @@ class _EditProfileState extends State<EditProfile> {
   Uint8List? doctorSignatureBuild = null;
   String? doctorSignaturePath;
 
-
   final maskPhoneNumber = MaskTextInputFormatter(
       mask: '(###)###-####', filter: {"#": RegExp(r'[0-9]')});
   final maskPhoneNumber2 = MaskTextInputFormatter(
@@ -191,12 +190,13 @@ class _EditProfileState extends State<EditProfile> {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) async {
         if (state is ProfileUpdateLoadingState) {
-          LoadingBuilder(context).showLoadingIndicator('Cardando perfil');
+          LoadingBuilder(context).showLoadingIndicator('Cargando perfil');
         }
         if (state is ProfileSuccessState) {
           LoadingBuilder(context).hideOpenDialog();
         } else if (state is ProfileUpdateSuccessState) {
-          BlocProvider.of<ImageProfileBloc>(context).add(const ConsultPhotoEvent());
+          BlocProvider.of<ImageProfileBloc>(context)
+              .add(const ConsultPhotoEvent());
           LoadingBuilder(context).hideOpenDialog();
           await showDialog(
               context: context,
@@ -385,12 +385,18 @@ class _EditProfileState extends State<EditProfile> {
                           hintText: context.appLocalization.labelSelect,
                           labelText:
                               '${context.appLocalization.labelState} (*)',
-                          labelStyle: const TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
+                          labelStyle: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold),
                           errorStyle: AppStyles.textFormFieldError),
-                      style: AppStyles.textStyleOptionSelect,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: Colors.black),
                       items: stateList.map((SelectModel selectiveState) {
                         return DropdownMenuItem(
                           value: selectiveState.id,
@@ -426,12 +432,18 @@ class _EditProfileState extends State<EditProfile> {
                       decoration: InputDecoration(
                           labelText: '${context.appLocalization.labelCity} (*)',
                           hintText: context.appLocalization.labelSelect,
-                          labelStyle: const TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
+                          labelStyle: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold),
                           errorStyle: AppStyles.textFormFieldError),
-                      style: AppStyles.textStyleOptionSelect,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: Colors.black),
                       items: cityList.map((SelectModel selectiveCity) {
                         return DropdownMenuItem(
                           value: selectiveCity.id,
@@ -564,7 +576,7 @@ class _EditProfileState extends State<EditProfile> {
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20),
+                                        vertical: 10, horizontal: 20),
                                     child: Text(
                                       context.appLocalization.nameButtonCancel,
                                       textAlign: TextAlign.center,
@@ -640,7 +652,7 @@ class _EditProfileState extends State<EditProfile> {
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20),
+                                        vertical: 10, horizontal: 20),
                                     child: const Text(
                                       'Guardar',
                                       textAlign: TextAlign.center,
@@ -694,15 +706,26 @@ class _EditProfileState extends State<EditProfile> {
           return Padding(
               padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
               child: DropdownButtonFormField(
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(color: Colors.black),
                 hint: Text(context.appLocalization.labelGender),
                 decoration: InputDecoration(
                     labelText: '${context.appLocalization.labelGender} (*)',
                     hintText: context.appLocalization.labelSelect,
-                    labelStyle: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                    errorStyle: AppStyles.textFormFieldError),
+                    labelStyle: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(
+                            color: Colors.black,
+                            fontSize: 21.0,
+                            fontWeight: FontWeight.bold),
+                    errorStyle: Theme.of(context)
+                        .textTheme
+                        .labelSmall
+                        ?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary)),
                 autovalidateMode: AutovalidateMode.always,
                 isExpanded: true,
                 dropdownColor: Colors.white,
@@ -755,8 +778,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelFullName} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -780,8 +805,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelEmail} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -806,8 +833,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelPhone} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -832,8 +861,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: context.appLocalization.labelOtherPhone,
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -852,8 +883,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelCountry} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -877,8 +910,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelDirection} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -903,8 +938,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelMPPS} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -929,8 +966,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelCM} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -954,8 +993,10 @@ class _EditProfileState extends State<EditProfile> {
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.only(bottom: 5),
             labelText: '${context.appLocalization.labelSpeciality} (*)',
-            labelStyle: const TextStyle(
-                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+            labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 21.0,
+                fontWeight: FontWeight.bold),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             //hintText: placeHolder,
             hintStyle: const TextStyle(fontSize: 16, color: Colors.grey)),
@@ -971,8 +1012,10 @@ class _EditProfileState extends State<EditProfile> {
         children: [
           Text(
             '${context.appLocalization.labelDateOfBirth} (*)',
-            style: const TextStyle(
-                fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           TextFormField(
             readOnly: true,
@@ -1105,26 +1148,29 @@ class _EditProfileState extends State<EditProfile> {
           return WillPopScope(
             onWillPop: () => backButtonActions(),
             child: AlertDialog(
-              title: const Text(
+              title: Text(
                 "Elige una opción",
-                style: TextStyle(color: Colors.blue),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: const Color(0xff2B5178)),
               ),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: [
                     const Divider(
                       height: 1,
-                      color: Colors.blue,
+                      color: Color(0xff2B5178),
                     ),
                     ListTile(
                       onTap: () {
                         selectionOption = 1;
                         context.pop();
                       },
-                      title: const Text('Galeria'),
+                      title: const Text('Galería'),
                       leading: const Icon(
                         Icons.account_box,
-                        color: Colors.blue,
+                        color: Color(0xff2B5178),
                       ),
                     ),
                     ListTile(
@@ -1132,10 +1178,10 @@ class _EditProfileState extends State<EditProfile> {
                         context.pop();
                         selectionOption = 2;
                       },
-                      title: const Text('Camara'),
+                      title: const Text('Cámara'),
                       leading: const Icon(
                         Icons.camera,
-                        color: Colors.blue,
+                        color: Color(0xff2B5178),
                       ),
                     ),
                     _bytesImage != null
@@ -1153,13 +1199,16 @@ class _EditProfileState extends State<EditProfile> {
                         : const SizedBox(),
                     const Divider(),
                     ListTile(
+
+                      minVerticalPadding: 0.0,
+                      contentPadding: EdgeInsets.zero,
                       onTap: () {
                         context.pop();
                       },
                       title: const Text('Cerrar'),
                       leading: const Icon(
                         Icons.clear,
-                        color: Colors.blue,
+                        color: Colors.red,
                       ),
                     ),
                   ],

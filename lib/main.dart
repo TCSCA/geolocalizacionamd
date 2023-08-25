@@ -21,6 +21,7 @@ import '/app/pages/routes/geoamd_route.dart';
 import '/app/pages/sources/main/bloc/main_bloc.dart';
 import 'app/core/controllers/profile_controller.dart';
 import 'app/shared/digital_signature_bloc/digital_signature_bloc.dart';
+import 'app/themes/geoamd_theme.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest_all.dart' as timezone;
 import 'package:timezone/timezone.dart' as timezone;
@@ -155,6 +156,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => DigitalSignatureBloc())
       ],
       child: MaterialApp.router(
+        theme: AppThemes().themedata,
         debugShowCheckedModeBanner: false,
         title: Environment().config.appName,
         localizationsDelegates: const [

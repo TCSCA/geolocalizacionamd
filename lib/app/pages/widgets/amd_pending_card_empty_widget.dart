@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/pages/routes/geoamd_route.dart';
+import 'common_widgets.dart';
 
 class AmdPendingCardEmpty extends StatelessWidget {
   final String title;
@@ -32,13 +34,24 @@ class AmdPendingCardEmpty extends StatelessWidget {
             children: <Widget>[
               ListTile(
                   leading: Image.asset('assets/images/gps_doctor_image.png'),
-                  title: Text(title),
+                  title: Text(title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: Colors.black)),
                   subtitle: Column(
                     children: [
                       const SizedBox(height: 8.0),
                       Row(
                         children: [
-                          Flexible(child: Text(message)),
+                          Flexible(
+                              child: Text(
+                            message,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.copyWith(color: Colors.black),
+                          )),
                         ],
                       ),
                       const SizedBox(height: 10.0),
@@ -66,14 +79,13 @@ class AmdPendingCardEmpty extends StatelessWidget {
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 20),
-                                  child: const Text(
+                                  child: Text(
                                     'Ver Atención',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Color(0xffFFFFFF),
-                                        fontFamily: 'TitlesHighlight',
-                                        fontWeight: FontWeight.bold),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ))
