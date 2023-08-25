@@ -1,3 +1,7 @@
+import 'dart:typed_data';
+
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
+import 'package:geolocalizacionamd/app/core/models/file_amd_form_model.dart';
 import 'package:geolocalizacionamd/app/errors/error_amd_admin_finalized.dart';
 
 import '/app/api/constants/api_constants.dart';
@@ -345,11 +349,12 @@ class DoctorCareController {
         ApiConstants.idAmdconfirmedLabel, idAmdconfirmed);
   }
 
-  Future<void> renewAmdForm(int idMedicalOrder) async {
+  Future<String> renewAmdForm(int idMedicalOrder) async {
     final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    String urlRenew = '';
     try {
-      await saveDataService.renewAmdFormService(
+     urlRenew = await saveDataService.renewAmdFormService(
           idMedicalOrder, tokenUser);
     } on AmdOrderAdminFinalizedException {
       rethrow;
@@ -360,5 +365,38 @@ class DoctorCareController {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
+
+    return urlRenew;
+  }
+
+  Future<FileAmdFormModel> viewFormAMD(int idMedicalOrder) async {
+    final tokenUser =
+    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    String urlRenew = '';
+
+    FileAmdFormMap fileAmdFormMap;
+    FileAmdFormModel fileAmdFormModel;
+
+
+    try {
+     fileAmdFormMap = await saveDataService.viewAmdFormService(
+          idMedicalOrder, tokenUser);
+     //imageArray.cast<int>())
+
+     fileAmdFormModel = FileAmdFormModel(
+         fileName: fileAmdFormMap.data!.fileName,
+         file: Uint8List.fromList(fileAmdFormMap.data!.file));
+
+    } on AmdOrderAdminFinalizedException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return fileAmdFormModel;
   }
 }

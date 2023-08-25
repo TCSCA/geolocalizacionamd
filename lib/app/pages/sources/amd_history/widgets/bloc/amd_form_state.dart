@@ -15,8 +15,11 @@ class AmdFormLoading extends AmdFormState {
 }
 
 class AmdRenewFormSuccessState extends AmdFormState {
+  const AmdRenewFormSuccessState({required this.urlFormRenew});
+  final String urlFormRenew;
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [urlFormRenew];
 }
 
 class AmdRenewFormErrorState extends AmdFormState {
@@ -25,8 +28,11 @@ class AmdRenewFormErrorState extends AmdFormState {
 }
 
 class AmdViewFormArchiveSuccessState extends AmdFormState {
+  const AmdViewFormArchiveSuccessState({required this.fileAmdFormModel});
+  final FileAmdFormModel fileAmdFormModel;
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [fileAmdFormModel];
 }
 
 class AmdViewFormArchiveErrorState extends AmdFormState {

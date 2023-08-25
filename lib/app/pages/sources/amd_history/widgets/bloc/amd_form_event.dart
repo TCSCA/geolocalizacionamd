@@ -9,12 +9,15 @@ class AmdRenewFormEvent extends AmdFormEvent {
 
   final int idMedicalOrder;
 
-
   @override
   List<Object?> get props => [];
 }
 
 class AmdViewFormEvent extends AmdFormEvent {
+  const AmdViewFormEvent({required this.idMedicalOrder});
+
+  final int idMedicalOrder;
+
   @override
   List<Object?> get props => [];
 }

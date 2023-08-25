@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '/app/pages/styles/app_styles.dart';
 import 'bloc/amd_form_bloc.dart';
+import 'dart:io' as io;
 
 class ExpansionTitleWidget extends StatelessWidget {
   final String? orderNumber;
@@ -21,23 +23,22 @@ class ExpansionTitleWidget extends StatelessWidget {
   final String? statusHomeService;
   final String? statusLinkAmd;
 
-  const ExpansionTitleWidget(
-      {super.key,
-      this.orderNumber,
-      this.idMedicalOrder,
-      this.dateOrderDay,
-      this.dateOrderMonth,
-      this.dateOrderYear,
-      this.fullNamePatient,
-      this.identificationDocument,
-      this.phoneNumberPatient,
-      this.address,
-      this.applicantDoctor,
-      this.phoneNumberDoctor,
-      this.typeService,
-      this.linkAmd,
-      this.statusHomeService,
-      this.statusLinkAmd});
+  const ExpansionTitleWidget({super.key,
+    this.orderNumber,
+    this.idMedicalOrder,
+    this.dateOrderDay,
+    this.dateOrderMonth,
+    this.dateOrderYear,
+    this.fullNamePatient,
+    this.identificationDocument,
+    this.phoneNumberPatient,
+    this.address,
+    this.applicantDoctor,
+    this.phoneNumberDoctor,
+    this.typeService,
+    this.linkAmd,
+    this.statusHomeService,
+    this.statusLinkAmd});
 
   final double interlineado = 7.0;
   final double tamanioLetra = 15.0;
@@ -50,11 +51,13 @@ class ExpansionTitleWidget extends StatelessWidget {
 
     day = dateOrderDay! < 10 ? '0$dateOrderDay' : dateOrderDay.toString();
     month =
-        dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
+    dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
 
-    return BlocConsumer<AmdFormBloc, AmdFormState>(
-      listener: (context, state) {},
-      builder: (context, state) {
+    /*return BlocConsumer<AmdFormBloc, AmdFormState>(
+      listener: (context, state) {
+
+      },
+      builder: (context, state) {*/
         return Column(
           children: <Widget>[
             ExpansionTile(
@@ -228,24 +231,43 @@ class ExpansionTitleWidget extends StatelessWidget {
                   ),
                   if (statusLinkAmd == 'Generado' ||
                       statusLinkAmd == 'Expirado')
-                    Row(
-                      children: [
-                        const SizedBox(width: 20.0),
-                        InkWell(
-                          onTap: () {
-                            if (statusLinkAmd == 'Generado') {
-                              launchUrl(
-                                Uri.parse(linkAmd!),
-                                mode: LaunchMode.externalApplication,
-                              );
-                            } else {
-                              BlocProvider.of<AmdFormBloc>(context)
-                                  .add(AmdRenewFormEvent(idMedicalOrder: idMedicalOrder!));
-                            }
-                          },
-                          child: const Text('Ver formulario'),
-                        ),
-                      ],
+                    BlocConsumer<AmdFormBloc, AmdFormState>(
+                      listener: (context, state) async {
+                        if (state is AmdRenewFormSuccessState) {
+                           launchUrl(
+                            Uri.parse(state.urlFormRenew),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                        if (state is AmdViewFormArchiveSuccessState) {
+                          io.Directory root = await getTemporaryDirectory();
+                          var filePath;
+
+                          print(state.fileAmdFormModel);
+                        }
+                      },
+                      builder: (context, state) {
+                        return Row(
+                          children: [
+                            const SizedBox(width: 20.0),
+                            InkWell(
+                              onTap: () {
+                                if (statusLinkAmd == 'Generado') {
+                                  launchUrl(
+                                    Uri.parse(linkAmd!),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                } else {
+                                  BlocProvider.of<AmdFormBloc>(context)
+                                      .add(AmdRenewFormEvent(
+                                      idMedicalOrder: idMedicalOrder!));
+                                }
+                              },
+                              child: const Text('Ver formulario'),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   if (statusLinkAmd == 'Consumido')
                     Row(
@@ -254,7 +276,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             BlocProvider.of<AmdFormBloc>(context)
-                                .add(AmdViewFormEvent());
+                                .add(AmdViewFormEvent(idMedicalOrder: idMedicalOrder!));
                           },
                           child: const Text('Ver PDF'),
                         ),
@@ -266,7 +288,7 @@ class ExpansionTitleWidget extends StatelessWidget {
             ),
           ],
         );
-      },
-    );
+      /*},
+    );*/
   }
 }

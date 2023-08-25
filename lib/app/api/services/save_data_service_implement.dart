@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/core/models/connect_doctor_model.dart';
@@ -282,11 +283,11 @@ class SaveDataServiceImp implements SaveDataService {
 
 
   @override
-  Future<void> renewAmdFormService(int idMedicalOrder, String tokenUser) async {
+  Future<String> renewAmdFormService(int idMedicalOrder, String tokenUser) async {
 
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
-    //bool editProfileStatusSuccess = false;
+    String urlRenew = '';
 
     final Uri urlOrderToken = Uri.parse(ApiConstants.urlApiRenewUrlOrderToken);
 
@@ -301,11 +302,15 @@ class SaveDataServiceImp implements SaveDataService {
 
 
     try {
-
       responseApi = await http.post(urlOrderToken,
           headers: headerEditProfile, body: bodyUrlOrderToken);
 
       decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+       urlRenew = decodeRespApi[ApiConstants.dataLabelApi];
+      }
 
 
     } on ErrorAppException {
@@ -313,5 +318,43 @@ class SaveDataServiceImp implements SaveDataService {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
+    return urlRenew;
+  }
+
+  @override
+  Future<FileAmdFormMap> viewAmdFormService(int idMedicalOrder, String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    String urlRenew = '';
+    late FileAmdFormMap fileAmdFormMap;
+
+    final Uri getResultAmdOrder = Uri.parse(ApiConstants.urlApiGetResultAmdOrder);
+
+    final Map<String, String> headerGetResultAmdOrder = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyGetResultAmdOrder = jsonEncode({
+      "idMedicalOrder": idMedicalOrder
+    });
+
+    try {
+      responseApi = await http.post(getResultAmdOrder,
+          headers: headerGetResultAmdOrder, body: bodyGetResultAmdOrder);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        fileAmdFormMap = FileAmdFormMap.fromJson(decodeRespApi);
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return fileAmdFormMap;
   }
 }

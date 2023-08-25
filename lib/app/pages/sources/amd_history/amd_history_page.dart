@@ -151,6 +151,7 @@ class ListViewHistoryAmd extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return ExpansionTitleWidget(
                 orderNumber: homeService?[index].orderNumber,
+                idMedicalOrder: homeService?[index].idMedicalOerder,
                 dateOrderDay: homeService?[index].registerDate.day,
                 dateOrderMonth: homeService?[index].registerDate.month,
                 dateOrderYear: homeService?[index].registerDate.year,
