@@ -116,6 +116,7 @@ class DoctorCareController {
           await saveDataService.onConfirmHomeService(tokenUser, idHomeService);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -188,6 +189,7 @@ class DoctorCareController {
           await consultDataService.getActiveAmdOrder(tokenUser);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -341,5 +343,22 @@ class DoctorCareController {
   Future<void> changeIdAmdConfirmed(final String idAmdconfirmed) async {
     await secureStorageController.writeSecureData(
         ApiConstants.idAmdconfirmedLabel, idAmdconfirmed);
+  }
+
+  Future<void> renewAmdForm(int idMedicalOrder) async {
+    final tokenUser =
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    try {
+      await saveDataService.renewAmdFormService(
+          idMedicalOrder, tokenUser);
+    } on AmdOrderAdminFinalizedException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
   }
 }

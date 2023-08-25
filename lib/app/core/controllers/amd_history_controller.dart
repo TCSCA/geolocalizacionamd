@@ -43,6 +43,7 @@ class AmdHistoryController {
 
           homeServiceModel = HomeServiceModel(
             optionhistory.idHomeService,
+            optionhistory.idMedicalOrder,
             optionhistory.orderNumber,
             DateTime.parse(
                 '${optionhistory.registerDate.dateTime.date.year}-$month-$day'),

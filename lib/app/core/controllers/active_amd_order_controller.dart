@@ -21,6 +21,7 @@ class ActiveAmdOrderCOntroller {
           await consultDataService.getActiveAmdOrder(tokenUser);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,

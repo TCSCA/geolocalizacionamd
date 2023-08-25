@@ -279,4 +279,39 @@ class SaveDataServiceImp implements SaveDataService {
 
     return editProfileStatusSuccess;
   }
+
+
+  @override
+  Future<void> renewAmdFormService(int idMedicalOrder, String tokenUser) async {
+
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    //bool editProfileStatusSuccess = false;
+
+    final Uri urlOrderToken = Uri.parse(ApiConstants.urlApiRenewUrlOrderToken);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyUrlOrderToken = jsonEncode({
+      "idMedicalOrder": idMedicalOrder
+    });
+
+
+    try {
+
+      responseApi = await http.post(urlOrderToken,
+          headers: headerEditProfile, body: bodyUrlOrderToken);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+  }
 }

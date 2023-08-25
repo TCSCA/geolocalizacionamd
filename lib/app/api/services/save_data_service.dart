@@ -35,4 +35,7 @@ abstract class SaveDataService {
       String? photoProfile,
       String? digitalSignature,
       String tokenUser);
+
+  Future<void> renewAmdFormService(int idMedicalOrder, String tokenUser);
 }
+

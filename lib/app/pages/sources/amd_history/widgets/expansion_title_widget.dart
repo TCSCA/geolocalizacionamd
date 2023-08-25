@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '/app/pages/styles/app_styles.dart';
+import 'bloc/amd_form_bloc.dart';
 
 class ExpansionTitleWidget extends StatelessWidget {
   final String? orderNumber;
+  final int? idMedicalOrder;
   final int? dateOrderDay;
   final int? dateOrderMonth;
   final int? dateOrderYear;
@@ -21,6 +24,7 @@ class ExpansionTitleWidget extends StatelessWidget {
   const ExpansionTitleWidget(
       {super.key,
       this.orderNumber,
+      this.idMedicalOrder,
       this.dateOrderDay,
       this.dateOrderMonth,
       this.dateOrderYear,
@@ -48,199 +52,221 @@ class ExpansionTitleWidget extends StatelessWidget {
     month =
         dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
 
-    return Column(
-      children: <Widget>[
-        ExpansionTile(
-          iconColor: AppStyles.colorBluePrimary,
-          collapsedIconColor: AppStyles.colorBlack,
-          textColor: AppStyles.colorBluePrimary,
-          collapsedTextColor: AppStyles.colorBlack,
-          leading: CircleAvatar(
-              backgroundColor: AppStyles.colorBluePrimary,
-              radius: 25.0,
-              child: Image.asset(
-                "assets/images/gps_doctor_image.png",
-                width: 42.0,
-                height: 42.0,
-              )),
-          title: Row(
-            children: [
-              Text('Nro. de Orden: ',
-                  style: TextStyle(
-                      fontSize: tamanioTitulo, fontWeight: FontWeight.bold)),
-              Text(
-                orderNumber!,
-                style: TextStyle(fontSize: tamanioTitulo),
-              )
-            ],
-          ),
-          subtitle: Row(
-            children: [
-              Text('Fecha: ',
-                  style: TextStyle(
-                      fontSize: tamanioTitulo, fontWeight: FontWeight.bold)),
-              Flexible(
-                child: Text(
-                  '$day-$month-$dateOrderYear',
-                  style: TextStyle(fontSize: tamanioTitulo),
-                ),
-              )
-            ],
-          ),
-          children: [
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Nombre del Paciente: ',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Flexible(
-                  child: Text(
-                    fullNamePatient!,
-                    style: TextStyle(fontSize: tamanioLetra),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Documento de identidad: ',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-                Text(
-                  identificationDocument!,
-                  style: TextStyle(fontSize: tamanioLetra),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Teléfono: ',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-                Text(
-                  phoneNumberPatient!,
-                  style: TextStyle(fontSize: tamanioLetra),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Dirección del paciente:',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20.0),
-                Flexible(
-                  child:
-                      Text(address!, style: TextStyle(fontSize: tamanioLetra)),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Doctor Solicitante:',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Flexible(
-                  child: Text(
-                    applicantDoctor!,
-                    style: TextStyle(fontSize: tamanioLetra),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Teléfono del Doctor: ',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-                Text(
-                  phoneNumberDoctor!,
-                  style: TextStyle(fontSize: tamanioLetra),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            Row(
-              children: [
-                const SizedBox(width: 20.0),
-                Text('Tipo de Servicio: ',
-                    style: TextStyle(
-                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-                Text(
-                  typeService!,
-                  style: TextStyle(fontSize: tamanioLetra),
-                )
-              ],
-            ),
-            SizedBox(height: interlineado),
-            if (linkAmd!.isNotEmpty) ...[
-              Row(
+    return BlocConsumer<AmdFormBloc, AmdFormState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Column(
+          children: <Widget>[
+            ExpansionTile(
+              iconColor: AppStyles.colorBluePrimary,
+              collapsedIconColor: AppStyles.colorBlack,
+              textColor: AppStyles.colorBluePrimary,
+              collapsedTextColor: AppStyles.colorBlack,
+              leading: CircleAvatar(
+                  backgroundColor: AppStyles.colorBluePrimary,
+                  radius: 25.0,
+                  child: Image.asset(
+                    "assets/images/gps_doctor_image.png",
+                    width: 42.0,
+                    height: 42.0,
+                  )),
+              title: Row(
                 children: [
-                  const SizedBox(width: 20.0),
-                  Text('Formulario AMD: ',
+                  Text('Nro. de Orden: ',
                       style: TextStyle(
-                          fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
+                          fontSize: tamanioTitulo,
+                          fontWeight: FontWeight.bold)),
+                  Text(
+                    orderNumber!,
+                    style: TextStyle(fontSize: tamanioTitulo),
+                  )
                 ],
               ),
-              if (statusLinkAmd == 'Generado' || statusLinkAmd == 'Expirado')
+              subtitle: Row(
+                children: [
+                  Text('Fecha: ',
+                      style: TextStyle(
+                          fontSize: tamanioTitulo,
+                          fontWeight: FontWeight.bold)),
+                  Flexible(
+                    child: Text(
+                      '$day-$month-$dateOrderYear',
+                      style: TextStyle(fontSize: tamanioTitulo),
+                    ),
+                  )
+                ],
+              ),
+              children: [
                 Row(
                   children: [
                     const SizedBox(width: 20.0),
-                    InkWell(
-                      onTap: () {
-                        if (statusLinkAmd == 'Generado') {
-                          launchUrl(
-                            Uri.parse(linkAmd!),
-                            mode: LaunchMode.externalApplication,
-                          );
-                        } else {}
-                      },
-                      child: const Text('Ver formulario'),
-                    ),
+                    Text('Nombre del Paciente: ',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
-              if (statusLinkAmd == 'Consumido')
                 Row(
                   children: [
                     const SizedBox(width: 20.0),
-                    InkWell(
-                      onTap: () {},
-                      child: const Text('Ver PDF'),
-                    ),
+                    Flexible(
+                      child: Text(
+                        fullNamePatient!,
+                        style: TextStyle(fontSize: tamanioLetra),
+                      ),
+                    )
                   ],
                 ),
-              SizedBox(height: interlineado),
-            ]
+                SizedBox(height: interlineado),
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Text('Documento de identidad: ',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
+                    Text(
+                      identificationDocument!,
+                      style: TextStyle(fontSize: tamanioLetra),
+                    )
+                  ],
+                ),
+                SizedBox(height: interlineado),
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Text('Teléfono: ',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
+                    Text(
+                      phoneNumberPatient!,
+                      style: TextStyle(fontSize: tamanioLetra),
+                    )
+                  ],
+                ),
+                SizedBox(height: interlineado),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Text('Dirección del paciente:',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Flexible(
+                      child: Text(address!,
+                          style: TextStyle(fontSize: tamanioLetra)),
+                    )
+                  ],
+                ),
+                SizedBox(height: interlineado),
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Text('Doctor Solicitante:',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Flexible(
+                      child: Text(
+                        applicantDoctor!,
+                        style: TextStyle(fontSize: tamanioLetra),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: interlineado),
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Text('Teléfono del Doctor: ',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
+                    Text(
+                      phoneNumberDoctor!,
+                      style: TextStyle(fontSize: tamanioLetra),
+                    )
+                  ],
+                ),
+                SizedBox(height: interlineado),
+                Row(
+                  children: [
+                    const SizedBox(width: 20.0),
+                    Text('Tipo de Servicio: ',
+                        style: TextStyle(
+                            fontSize: tamanioLetra,
+                            fontWeight: FontWeight.bold)),
+                    Text(
+                      typeService!,
+                      style: TextStyle(fontSize: tamanioLetra),
+                    )
+                  ],
+                ),
+                SizedBox(height: interlineado),
+                if (linkAmd!.isNotEmpty) ...[
+                  Row(
+                    children: [
+                      const SizedBox(width: 20.0),
+                      Text('Formulario AMD: ',
+                          style: TextStyle(
+                              fontSize: tamanioLetra,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  if (statusLinkAmd == 'Generado' ||
+                      statusLinkAmd == 'Expirado')
+                    Row(
+                      children: [
+                        const SizedBox(width: 20.0),
+                        InkWell(
+                          onTap: () {
+                            if (statusLinkAmd == 'Generado') {
+                              launchUrl(
+                                Uri.parse(linkAmd!),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            } else {
+                              BlocProvider.of<AmdFormBloc>(context)
+                                  .add(AmdRenewFormEvent(idMedicalOrder: idMedicalOrder!));
+                            }
+                          },
+                          child: const Text('Ver formulario'),
+                        ),
+                      ],
+                    ),
+                  if (statusLinkAmd == 'Consumido')
+                    Row(
+                      children: [
+                        const SizedBox(width: 20.0),
+                        InkWell(
+                          onTap: () {
+                            BlocProvider.of<AmdFormBloc>(context)
+                                .add(AmdViewFormEvent());
+                          },
+                          child: const Text('Ver PDF'),
+                        ),
+                      ],
+                    ),
+                  SizedBox(height: interlineado),
+                ]
+              ],
+            ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }
