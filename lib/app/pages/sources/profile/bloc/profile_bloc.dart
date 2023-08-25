@@ -5,6 +5,7 @@ import 'package:geolocalizacionamd/app/core/models/profile_model.dart';
 import '../../../../core/controllers/profile_controller.dart';
 import '../../../../errors/error_app_exception.dart';
 import '../../../../errors/error_general_exception.dart';
+import '../../../../errors/error_session_expired.dart';
 import '../../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../constants/app_constants.dart';
 
@@ -33,6 +34,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       } on ErrorAppException catch (exapp) {
         emit(ProfileErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {
+        emit(ProfileErrorState(messageError: exgen.message));
+      } on SessionExpiredException catch (exgen ){
         emit(ProfileErrorState(messageError: exgen.message));
       } catch (unknowerror) {
         emit(const ProfileErrorState(
@@ -76,7 +79,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(ProfileErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(ProfileErrorState(messageError: exgen.message));
-      } catch (unknowerror) {
+      } on SessionExpiredException catch (exgen ){
+        emit(ProfileErrorState(messageError: exgen.message));
+      }  catch (unknowerror) {
         emit(const ProfileErrorState(
             messageError: AppConstants.codeGeneralErrorMessage));
       }

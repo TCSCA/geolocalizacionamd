@@ -28,7 +28,11 @@ class LoginServiceImp implements LoginService {
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-        responseUser = UserMap.fromJson(decodeRespApi);
+        if (decodeRespApi['data'] == 'recuperar contraseña') {
+          throw ErrorAppException(message: decodeRespApi['data']);
+        } else {
+          responseUser = UserMap.fromJson(decodeRespApi);
+        }
       } else {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];

@@ -91,20 +91,16 @@ class MainWidgets {
                       radius: 55,
                       child: BlocBuilder<ImageProfileBloc, ImageProfileState>(
                         builder: (context, state) {
-                          return ImageWidget(
-                                  onClicked: () {},
-                                  isEdit: false,
-                                  imagePath: state is InitialImageProfileState
-                                      ? state.imageBuild
-                                      : null,
-                                  color: Colors
-                                      .blueGrey) /*CircleAvatar(
+                          return  ImageWidget(
+                              onClicked: () {},
+                              isEdit: false,
+                              imagePath: state is InitialImageProfileState ? state.imageBuild : null,
+                              color: Colors.blueGrey)/*CircleAvatar(
                             backgroundImage: Image.memory(
                                     Uint8List.fromList(user.photoPerfil))
                                 .image,
                             radius: 55,
-                          )*/
-                              ;
+                          )*/;
                         },
                       ),
                     ),
@@ -338,6 +334,9 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
                         Text('Disponible para atender:',
                             style: Theme.of(context).textTheme.labelLarge),
                       ],
+                    ),
+                    SizedBox(
+                      width: 8.0,
                     ),
                   ],
                 ),

@@ -25,7 +25,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         emit(const LoginShowLoadingState());
         var userLogin =
-            await loginController.doLoginUser(event.user, event.password);
+            await loginController.doLoginUser(
+            event.user.trim(), event.password.trim());
         final ByteData bytes =
             await rootBundle.load(AppConstants.profileDefaultImage);
         userLogin.photoPerfil = bytes.buffer.asUint8List();
@@ -75,7 +76,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         emit(const LoginShowLoadingState());
         var userLogin =
-            await loginController.doResetLoginUser(event.user, event.password);
+            await loginController.doResetLoginUser(
+            event.user.trim(), event.password.trim());
         final ByteData bytes =
             await rootBundle.load(AppConstants.profileDefaultImage);
         userLogin.photoPerfil = bytes.buffer.asUint8List();

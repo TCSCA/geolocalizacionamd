@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/profile/widgets/digital_signature.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
@@ -27,6 +28,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
+
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
       child: SafeArea(
@@ -82,22 +85,46 @@ class ListViewProfileWidget extends StatelessWidget {
           LoadingBuilder(context).hideOpenDialog();
         } else if (state is ProfileErrorState) {
           LoadingBuilder(context).hideOpenDialog();
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return CustomDialogBox(
-                  title: AppMessages()
-                      .getMessageTitle(context, AppConstants.statusError),
-                  descriptions:
-                      AppMessages().getMessage(context, state.messageError),
-                  isConfirmation: false,
-                  dialogAction: () {},
-                  type: AppConstants.statusError,
-                  isdialogCancel: false,
-                  dialogCancel: () {},
-                );
-              });
+
+          if(state.messageError == "session expired") {
+             showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                    AppMessages().getMessage(context, context.appLocalization.sessionExpired),
+                    isConfirmation: true,
+                    dialogAction: () {
+                      BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
+                    },
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+
+          } else {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                    AppMessages().getMessage(context, state.messageError),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
+
         }
       },
       builder: (context, state) {
@@ -216,9 +243,9 @@ class ListViewProfileWidget extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) =>
-                                */ /*BlocProvider(
+                                *//*BlocProvider(
                                       create: (context) => DigitalSignatureBloc(),
-                                      child: */ /*DigitalSignatureWidget());
+                                      child: *//*DigitalSignatureWidget());
                             //    ));
                           }),*/
                     ],
@@ -233,7 +260,7 @@ class ListViewProfileWidget extends StatelessWidget {
             ],
           );
         } else if (state is ProfileInitial) {
-          BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
+
           return Container();
         } else {
           return Container();

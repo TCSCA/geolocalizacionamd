@@ -8,6 +8,7 @@ import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.d
 import 'package:go_router/go_router.dart';
 
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../core/controllers/profile_controller.dart';
 import '../../../core/models/select_model.dart';
 import '../../../shared/bloc_shared/bloc_gender/gender_bloc.dart';
@@ -21,6 +22,7 @@ import '../../routes/geoamd_route.dart';
 import '../../styles/app_styles.dart';
 import '../../validations/profile_validations.dart';
 import '../../widgets/common_widgets.dart';
+import '../login/bloc/login_bloc.dart';
 import '../main/bloc/main_bloc.dart';
 import '../navigation/bloc/navigation_bloc.dart';
 
@@ -289,6 +291,23 @@ class _EditProfileState extends State<EditProfile> {
                               .read<ImageProfileBloc>()
                               .add(SelectImageByCamera());
                         }
+                      } else if(state is ImageErrorState) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusError),
+                                descriptions: AppMessages()
+                                    .getMessage(context, state.messageError),
+                                isConfirmation: true,
+                                dialogAction: () => openAppSettings(),
+                                type: AppConstants.statusError,
+                                isdialogCancel: false,
+                                dialogCancel: () {},
+                              );
+                            });
                       }
                     },
                     builder: (context, state) {
@@ -610,7 +629,32 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget allGenderList() {
-    return BlocBuilder<GenderBloc, GenderState>(
+    return BlocConsumer<GenderBloc, GenderState>(
+      listener: (context, state) {
+
+        if(state is GenderDataErrorState) {
+          if(state.messageError == 'session expired') {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                    AppMessages().getMessage(context, context.appLocalization.sessionExpired),
+                    isConfirmation: true,
+                    dialogAction: () {
+                      BlocProvider.of<LoginBloc>(context).add(const ProcessLogoutEvent());
+                    },
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
+        }
+      },
       builder: (context, state) {
         if (state is GenderDataSuccessState) {
           state.genderMap.genderList
@@ -1108,7 +1152,21 @@ class _EditProfileState extends State<EditProfile> {
                               color: Colors.red,
                             ),
                           )
-                        : Container(),
+                        : const SizedBox(),
+                    const Divider(),
+                    ListTile(
+
+                      minVerticalPadding: 0.0,
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        context.pop();
+                      },
+                      title: const Text('Cerrar'),
+                      leading: const Icon(
+                        Icons.clear,
+                        color: Colors.red,
+                      ),
+                    ),
                   ],
                 ),
               ),
