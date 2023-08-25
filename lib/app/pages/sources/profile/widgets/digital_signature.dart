@@ -96,11 +96,14 @@ class DigitalSignatureWidget extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(30)),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20),
+                                    vertical: 10, horizontal: 20),
                                 child: Text(
                                   context.appLocalization.nameButtonReturn,
                                   textAlign: TextAlign.center,
-                                  style: AppStyles.textStyleButton,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelLarge
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),

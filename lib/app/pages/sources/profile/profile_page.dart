@@ -53,7 +53,10 @@ class _ProfilePageState extends State<ProfilePage> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: const Color(0xff2B5178),
             heroTag: 'button-edit-profile',
-            child: const Icon(Icons.edit),
+            child: const Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
             onPressed: () {
               context.go(GeoAmdRoutes.editProfile, extra: NavigationBloc());
             },

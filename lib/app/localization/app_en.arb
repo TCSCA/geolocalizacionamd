@@ -50,6 +50,7 @@
     "fieldRequired": "Required field.",
     "nameButtonCancel": "Cancel",
     "nameButtonAccept": "Accept",
+    "nameButtonClose": "Close",
     "invalidData": "Invalid data",
     "invalidLengthField": "Data length less than the minimum required.",
     "messageLogout": "Are you sure you want to logout?",

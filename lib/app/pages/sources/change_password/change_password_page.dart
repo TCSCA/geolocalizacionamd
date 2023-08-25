@@ -238,13 +238,13 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                     ),
                   ),
                   const SizedBox(
-                    height: 150,
+                    height: 50,
                     child: Text(
                       'Cambio de Contraseña',
                       style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'TitlesHighlight',
+                          fontFamily: 'TextsParagraphs',
                           color: Colors.white),
                     ),
                   ),
@@ -259,23 +259,24 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                         },
                         style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 19.0,
-                            fontFamily: 'TitlesHighlight'),
+                            fontSize: 16.0,
+                            fontFamily: 'TextsParagraphs'),
                         obscureText: !visibilityPassword,
                         obscuringCharacter: '*',
                         controller: widget.passwordCtrl,
                         decoration: InputDecoration(
+                            errorMaxLines: 12,
                             counterStyle: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 15.0,
-                                fontFamily: 'TitlesHighlight'),
+                                fontSize: 14.0,
+                                fontFamily: 'TextsParagraphs'),
                             prefix: const SizedBox(
                               width: 15,
                             ),
                             hintStyle: const TextStyle(
                                 color: Color(0xffFFFFFF),
-                                fontSize: 19.0,
-                                fontFamily: 'TitlesHighlight'),
+                                fontSize: 16.0,
+                                fontFamily: 'TextsParagraphs'),
                             border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color(0xffFFFFFF),
@@ -321,7 +322,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                             )),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       TextFormField(
                         maxLength: 12,
@@ -335,20 +336,21 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                         obscuringCharacter: '*',
                         style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 19.0,
-                            fontFamily: 'TitlesHighlight'),
+                            fontSize: 16.0,
+                            fontFamily: 'TextsParagraphs'),
                         obscureText: !visibilityPasswordConfirm,
                         controller: widget.passwordConfirmCtrl,
                         decoration: InputDecoration(
+                            errorMaxLines: 12,
                             counterStyle: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 15.0,
-                                fontFamily: 'TitlesHighlight'),
+                                fontSize: 14.0,
+                                fontFamily: 'TextsParagraphs'),
                             prefix: const SizedBox(width: 15),
                             hintStyle: const TextStyle(
                                 color: Color(0xffFFFFFF),
-                                fontSize: 19.0,
-                                fontFamily: 'TitlesHighlight'),
+                                fontSize: 16.0,
+                                fontFamily: 'TextsParagraphs'),
                             border: OutlineInputBorder(
                                 borderSide: const BorderSide(
                                   color: Color(0xffFFFFFF),
@@ -456,11 +458,15 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20),
+                                        vertical: 10, horizontal: 20),
                                     child: Text(
                                       context.appLocalization.nameButtonCancel,
                                       textAlign: TextAlign.center,
-                                      style: AppStyles.textStyleButton,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
@@ -524,10 +530,14 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 20),
+                                        vertical: 10, horizontal: 20),
                                     child:  Text('Guardar',
                                       textAlign: TextAlign.center,
-                                      style: AppStyles.textStyleButton,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),

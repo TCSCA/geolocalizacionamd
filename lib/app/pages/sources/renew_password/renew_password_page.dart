@@ -134,12 +134,14 @@ class _RenewPasswordView extends StatelessWidget {
                                   "Recuperar Contraseña",
                                   style: TextStyle(
                                       fontSize: 20,
-                                      fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.bold,
+                                      color: AppStyles.colorBluePrimary,
+                                      fontFamily: 'TextsParagraphs'),
                                 ),
                               ),
                               Divider(),
                               SizedBox(
-                                height: 40,
+                                height: 10,
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
@@ -171,20 +173,25 @@ class _RenewPasswordView extends StatelessWidget {
                                     },
                                     key: userFieldKey,
                                     controller: _usernameCtrl,
-                                    decoration: const InputDecoration(
+                                    decoration: InputDecoration(
                                         contentPadding:
-                                            EdgeInsets.only(bottom: 5),
-                                        labelStyle: TextStyle(
-                                            fontSize: 19,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
+                                            const EdgeInsets.only(bottom: 5),
+                                        labelStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(
+                                                color: Colors.black,
+                                                fontSize: 22.0,
+                                                fontWeight: FontWeight.bold),
                                         labelText: 'Usuario (*)',
                                         floatingLabelBehavior:
                                             FloatingLabelBehavior.always,
                                         //hintText: placeHolder,
-                                        hintStyle: TextStyle(
-                                            fontSize: 16, color: Colors.grey),
-                                        icon: Icon(Icons.person),
+                                        hintStyle: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(color: Colors.grey),
+                                        icon: const Icon(Icons.person),
                                         hintText: "Ingrese nombre de usuario"),
                                   ),
                                 ),
@@ -221,12 +228,17 @@ class _RenewPasswordView extends StatelessWidget {
                                                   BorderRadius.circular(30)),
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
-                                                vertical: 15, horizontal: 20),
+                                                vertical: 10, horizontal: 20),
                                             child: Text(
                                               context.appLocalization
                                                   .nameButtonCancel,
                                               textAlign: TextAlign.center,
-                                              style: AppStyles.textStyleButton,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelLarge
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                             ),
                                           ),
                                         ),
@@ -266,12 +278,17 @@ class _RenewPasswordView extends StatelessWidget {
                                                   BorderRadius.circular(30)),
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(
-                                                vertical: 15, horizontal: 20),
+                                                vertical: 10, horizontal: 20),
                                             child: Text(
                                               context.appLocalization
                                                   .nameButtonAccept,
                                               textAlign: TextAlign.center,
-                                              style: AppStyles.textStyleButton,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelLarge
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                             ),
                                           ),
                                         ),

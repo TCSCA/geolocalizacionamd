@@ -111,6 +111,8 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                               FontWeight.bold,
                                                           color: AppStyles
                                                               .colorBluePrimary,
+                                                            fontFamily:
+                                                                'TextsParagraphs'
                                                         ),
                                                       ),
                                                     ),
@@ -133,35 +135,39 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                             "Seleccione una opción"),
                                                         key: reasonFieldKey,
                                                         decoration:
-                                                            const InputDecoration(
-                                                          focusedBorder: UnderlineInputBorder(
+                                                            InputDecoration(
+                                                          focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: AppStyles
                                                                       .colorBluePrimary)),
-                                                          enabledBorder: UnderlineInputBorder(
+                                                          enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: AppStyles
                                                                       .colorBluePrimary)),
                                                           contentPadding:
-                                                              EdgeInsets
+                                                              const EdgeInsets
                                                                   .symmetric(
                                                                       vertical:
                                                                           18),
                                                           labelText: 'Motivo:',
                                                           hintText:
                                                               'Seleccione una opción',
-                                                          labelStyle: TextStyle(
-                                                              fontSize: 27.0,
-                                                              color:
-                                                                  Colors.black,
-                                                              fontFamily:
-                                                                  'TitlesHighlight'),
+                                                          labelStyle: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .labelLarge
+                                                              ?.copyWith(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      22.0),
                                                         ),
-                                                        style: const TextStyle(
-                                                            fontSize: 18.0,
-                                                            color: Colors.black,
-                                                            fontFamily:
-                                                                'TextsParagraphs'),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .labelLarge
+                                                            ?.copyWith(
+                                                                color: Colors
+                                                                    .black),
                                                         items: state
                                                             .listReasonComplete
                                                             .map((SelectModel
@@ -265,22 +271,21 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                                           padding:
                                                               const EdgeInsets
                                                                       .symmetric(
-                                                                  vertical: 15,
+                                                                  vertical: 10,
                                                                   horizontal:
-                                                                      40),
-                                                          child: const Text(
+                                                                      20),
+                                                          child: Text(
                                                             'Aceptar',
                                                             textAlign: TextAlign
                                                                 .center,
-                                                            style: TextStyle(
-                                                                fontSize: 19.0,
-                                                                color: Color(
-                                                                    0xffFFFFFF),
-                                                                fontFamily:
-                                                                    'TitlesHighlight',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .labelLarge
+                                                                ?.copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
                                                           ),
                                                         ),
                                                       ),
@@ -416,12 +421,14 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                     const SizedBox(
                                       height: 30,
                                     ),
-                                    const Text(
+                                    Text(
                                       'No tienes atención médica confirmada en estos momentos',
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontFamily: 'TitlesHighlight',
-                                          fontWeight: FontWeight.bold),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
                                     const SizedBox(
@@ -454,13 +461,13 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
           mainAxisSize: MainAxisSize.max,
           children: [
             const SizedBox(height: 20.0),
-            const Row(
+            Row(
               children: [
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 Text(
                   "Datos de Orden Médica:",
-                  style: TextStyle(
-                      fontSize: 18,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline),
                 ),
@@ -470,13 +477,16 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Fecha y Hora:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Fecha y Hora:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
                   DateFormat("dd-MM-yyyy hh:mm a")
                       .format(homeServiceConfirmed.registerDate),
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.black),
                 )
               ],
             ),
@@ -484,23 +494,26 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Nro. de Orden:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Nro. de Orden:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
                   homeServiceConfirmed.orderNumber,
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.black),
                 )
               ],
             ),
             const SizedBox(height: 20.0),
-            const Row(
+            Row(
               children: [
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 Text(
                   "Datos del Paciente:",
-                  style: TextStyle(
-                      fontSize: 18,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline),
                 ),
@@ -510,13 +523,16 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Nombre del Paciente:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Nombre del Paciente:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Flexible(
                   child: Text(
                     homeServiceConfirmed.fullNamePatient,
-                    style: const TextStyle(fontSize: 16),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: Colors.black),
                   ),
                 )
               ],
@@ -525,12 +541,15 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Documento de identidad:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Documento de identidad:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
                   homeServiceConfirmed.identificationDocument,
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.black),
                 )
               ],
             ),
@@ -538,12 +557,15 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Teléfono:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Teléfono:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
                   homeServiceConfirmed.phoneNumberPatient,
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.black),
                 )
               ],
             ),
@@ -552,23 +574,26 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Dirección :',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Dirección :',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Flexible(
                   child: Text(homeServiceConfirmed.address,
-                      style: const TextStyle(fontSize: 16)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelLarge
+                          ?.copyWith(color: Colors.black)),
                 )
               ],
             ),
             const SizedBox(height: 20.0),
-            const Row(
+            Row(
               children: [
-                SizedBox(width: 20.0),
+                const SizedBox(width: 20.0),
                 Text(
                   "Datos del Doctor:",
-                  style: TextStyle(
-                      fontSize: 18,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline),
                 ),
@@ -578,13 +603,16 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Doctor Solicitante:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Doctor Solicitante:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Flexible(
                   child: Text(
                     homeServiceConfirmed.applicantDoctor,
-                    style: const TextStyle(fontSize: 16),
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(color: Colors.black),
                   ),
                 )
               ],
@@ -593,12 +621,15 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Teléfono del Doctor:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Teléfono del Doctor:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
                   homeServiceConfirmed.phoneNumberDoctor,
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.black),
                 )
               ],
             ),
@@ -606,12 +637,15 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
             Row(
               children: [
                 const SizedBox(width: 20.0),
-                const Text('Tipo de Servicio:',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Tipo de Servicio:',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
                   homeServiceConfirmed.typeService,
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.black),
                 )
               ],
             ),
@@ -645,15 +679,14 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                               borderRadius: BorderRadius.circular(30)),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 21),
-                            child: const Text(
+                                vertical: 10, horizontal: 21),
+                            child: Text(
                               'Finalizar AMD',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Color(0xffFFFFFF),
-                                  fontFamily: 'TitlesHighlight',
-                                  fontWeight: FontWeight.bold),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -683,15 +716,14 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                               borderRadius: BorderRadius.circular(30)),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 15),
-                            child: const Text(
+                                vertical: 10, horizontal: 15),
+                            child: Text(
                               'Formulario AMD',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 17.0,
-                                  color: Color(0xffFFFFFF),
-                                  fontFamily: 'TitlesHighlight',
-                                  fontWeight: FontWeight.bold),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
