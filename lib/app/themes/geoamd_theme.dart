@@ -10,6 +10,11 @@ class AppThemes {
 
   ThemeData themedata = ThemeData(
       useMaterial3: true,
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: Colors.blue,
+        selectionColor: Colors.blue,
+        selectionHandleColor: Colors.blue,
+      ),
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.white,
         primary: const Color(0xff2B5178),
