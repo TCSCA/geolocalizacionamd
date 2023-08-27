@@ -140,6 +140,7 @@ class _EditProfileState extends State<EditProfile> {
     _imgByDatabase = imageProfile is InitialImageProfileState
         ? imageProfile.imageBuild
         : null;
+    pathImage = imageProfile is InitialImageProfileState ? imageProfile.imagePath : '';
 
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);

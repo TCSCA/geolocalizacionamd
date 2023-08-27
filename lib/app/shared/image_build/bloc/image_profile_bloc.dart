@@ -25,7 +25,8 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     on<ImageProfileEvent>((event, emit) {});
 
     on<ImageProfileInitialEvent>((event, emit) {
-      emit(InitialImageProfileState(imageBuild: event.imageBuild));
+       String imagePathSave = const Base64Encoder().convert(List.from(event.imageBuild!));
+      emit(InitialImageProfileState(imageBuild: event.imageBuild, imagePath: imagePathSave));
     });
 
     on<SelectImageByCamera>((event, emit) async {
@@ -101,7 +102,7 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
       bytesImage = await ImageProfileController().doConsultDataImageProfile();
       imagePath = const Base64Encoder().convert(List.from(bytesImage!));
 
-      emit(InitialImageProfileState(imageBuild: bytesImage));
+      emit(InitialImageProfileState(imageBuild: bytesImage, imagePath: imagePath));
     });
 
     on<SelectDoctorSignature>((event, emit) async {
