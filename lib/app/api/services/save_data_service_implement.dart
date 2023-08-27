@@ -310,6 +310,8 @@ class SaveDataServiceImp implements SaveDataService {
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
        urlRenew = decodeRespApi[ApiConstants.dataLabelApi];
+      } else {
+        throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
       }
 
 
@@ -348,6 +350,8 @@ class SaveDataServiceImp implements SaveDataService {
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
         fileAmdFormMap = FileAmdFormMap.fromJson(decodeRespApi);
+      } else {
+        throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
       }
 
     } on ErrorAppException {

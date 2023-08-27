@@ -23,6 +23,10 @@ class AmdRenewFormSuccessState extends AmdFormState {
 }
 
 class AmdRenewFormErrorState extends AmdFormState {
+
+const AmdRenewFormErrorState({required this.messageError});
+ final String messageError;
+
   @override
   List<Object?> get props => [];
 }
@@ -36,6 +40,8 @@ class AmdViewFormArchiveSuccessState extends AmdFormState {
 }
 
 class AmdViewFormArchiveErrorState extends AmdFormState {
+  const AmdViewFormArchiveErrorState({required this.messageError});
+  final String messageError;
   @override
   List<Object?> get props => [];
 }

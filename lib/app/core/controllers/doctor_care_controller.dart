@@ -356,13 +356,9 @@ class DoctorCareController {
     try {
      urlRenew = await saveDataService.renewAmdFormService(
           idMedicalOrder, tokenUser);
-    } on AmdOrderAdminFinalizedException {
-      rethrow;
     } on ErrorAppException {
       rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
+    }  catch (unknowerror) {
       throw ErrorGeneralException();
     }
 
@@ -387,13 +383,9 @@ class DoctorCareController {
          fileName: fileAmdFormMap.data!.fileName,
          file: fileAmdFormMap.data!.file);
 
-    } on AmdOrderAdminFinalizedException {
-      rethrow;
     } on ErrorAppException {
       rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
+    }  catch (unknowerror) {
       throw ErrorGeneralException();
     }
 

@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../shared/dialog/custom_dialog_box.dart';
+import '../../../../shared/loading/loading_builder.dart';
+import '../../../constants/app_constants.dart';
+import '../../../messages/app_messages.dart';
 import '/app/pages/styles/app_styles.dart';
 import 'bloc/amd_form_bloc.dart';
 import 'dart:io' as io;
@@ -240,13 +244,18 @@ class ExpansionTitleWidget extends StatelessWidget {
               ),
               BlocConsumer<AmdFormBloc, AmdFormState>(
                 listener: (context, state) async {
+                  if(state is AmdFormLoading) {
+                    LoadingBuilder(context).showLoadingIndicator('Procesando su solicitud');
+                  }
                   if (state is AmdRenewFormSuccessState) {
+                    LoadingBuilder(context).hideOpenDialog();
                     launchUrl(
                       Uri.parse(state.urlFormRenew),
                       mode: LaunchMode.externalApplication,
                     );
                   }
                   if (state is AmdViewFormArchiveSuccessState) {
+                    LoadingBuilder(context).hideOpenDialog();
                     final io.Directory root = await getTemporaryDirectory();
                     final io.File filePath;
 
@@ -255,8 +264,49 @@ class ExpansionTitleWidget extends StatelessWidget {
 
                     await filePath.writeAsBytes(state.fileAmdFormModel.file);
                     final result = await OpenFile.open(filePath.path);
+                  }
 
-                    print(state.fileAmdFormModel);
+                  if( state is AmdRenewFormErrorState) {
+                    if(context.mounted) {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                              title: AppMessages().getMessageTitle(
+                                  context, AppConstants.statusError),
+                              descriptions: AppMessages()
+                                  .getMessage(context, state.messageError),
+                              isConfirmation: false,
+                              dialogAction: () {},
+                              type: AppConstants.statusError,
+                              isdialogCancel: false,
+                              dialogCancel: () {},
+                            );
+                          });
+                    }
+                  }
+
+                  if(state is AmdViewFormArchiveErrorState) {
+                    if(context.mounted) {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                              title: AppMessages().getMessageTitle(
+                                  context, AppConstants.statusError),
+                              descriptions: AppMessages()
+                                  .getMessage(context, state.messageError),
+                              isConfirmation: false,
+                              dialogAction: () {},
+                              type: AppConstants.statusError,
+                              isdialogCancel: false,
+                              dialogCancel: () {},
+                            );
+                          });
+                    }
+
                   }
                 },
                 builder: (context, state) {

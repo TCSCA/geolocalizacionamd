@@ -3,6 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
 
 import '../../../../../core/models/file_amd_form_model.dart';
+import '../../../../../errors/error_app_exception.dart';
+import '../../../../../errors/error_general_exception.dart';
+import '../../../../constants/app_constants.dart';
 
 part 'amd_form_event.dart';
 part 'amd_form_state.dart';
@@ -21,7 +24,13 @@ class AmdFormBloc extends Bloc<AmdFormEvent, AmdFormState> {
         urlFormRenew = await DoctorCareController().renewAmdForm(event.idMedicalOrder);
 
         emit(AmdRenewFormSuccessState(urlFormRenew: urlFormRenew));
-      } catch(err) {
+      } on ErrorAppException catch (exapp) {
+        emit(AmdRenewFormErrorState(messageError: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(AmdRenewFormErrorState(messageError: exgen.message));
+      } catch (error) {
+        emit(const AmdRenewFormErrorState(
+            messageError: AppConstants.codeGeneralErrorMessage));
       }
 
     });
@@ -32,7 +41,13 @@ class AmdFormBloc extends Bloc<AmdFormEvent, AmdFormState> {
        fileAmdFormModel =  await DoctorCareController().viewFormAMD(event.idMedicalOrder);
 
         emit(AmdViewFormArchiveSuccessState(fileAmdFormModel: fileAmdFormModel!));
-      }catch(err) {
+      } on ErrorAppException catch (exapp) {
+        emit(AmdViewFormArchiveErrorState(messageError: exapp.message));
+      } on ErrorGeneralException catch (exgen) {
+        emit(AmdViewFormArchiveErrorState(messageError: exgen.message));
+      } catch (error) {
+        emit(const AmdViewFormArchiveErrorState(
+            messageError: AppConstants.codeGeneralErrorMessage));
       }
     });
   }
