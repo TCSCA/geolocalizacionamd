@@ -27,7 +27,7 @@ class AmdFormBloc extends Bloc<AmdFormEvent, AmdFormState> {
     });
 
     on<AmdViewFormEvent>((event, emit) async {
-
+      emit(AmdFormLoading());
       try {
        fileAmdFormModel =  await DoctorCareController().viewFormAMD(event.idMedicalOrder);
 

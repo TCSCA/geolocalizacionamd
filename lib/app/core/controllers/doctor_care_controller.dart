@@ -385,7 +385,7 @@ class DoctorCareController {
 
      fileAmdFormModel = FileAmdFormModel(
          fileName: fileAmdFormMap.data!.fileName,
-         file: Uint8List.fromList(fileAmdFormMap.data!.file));
+         file: fileAmdFormMap.data!.file);
 
     } on AmdOrderAdminFinalizedException {
       rethrow;

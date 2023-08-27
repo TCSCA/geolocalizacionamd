@@ -1,8 +1,7 @@
-import 'dart:typed_data';
 
 class FileAmdFormModel {
   String fileName;
-  Uint8List file;
+  List<int> file;
 
   FileAmdFormModel({
     required this.fileName,
