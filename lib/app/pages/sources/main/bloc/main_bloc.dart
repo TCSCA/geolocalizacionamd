@@ -23,7 +23,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   liblocation.Location location = liblocation.Location();
   final DoctorCareController doctorCareController;
   MainBloc({required this.doctorCareController})
-      : super(const MainInitial(doctorAvailable: false)) {
+      : super(const MainInitial()) {
 
 
 
@@ -206,7 +206,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           }
         }
       } on EmptyDataException {
-        emit(const HomeServiceEmptyState());
+        final String statusConnected =
+            await doctorCareController.verifyConnected();
+        statusConnected == 'Doctor disponible para atencion'
+            ? doctorAvailableSwitch = true
+            : doctorAvailableSwitch = false;
+        emit(HomeServiceEmptyState(doctorAvailable: doctorAvailableSwitch));
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceAssignedErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
@@ -471,14 +476,24 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       }
     });
 
-    on<CheckDoctorConnectedEvent>((event, emit) async {
-      emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+    /* on<CheckDoctorConnectedEvent>((event, emit) async {
+      try {
+        //emit(const MainShowLoadingState(message: 'Procesando solicitud'));
       final String statusConnected =
           await doctorCareController.verifyConnected();
       statusConnected == 'Doctor disponible para atencion'
           ? doctorAvailableSwitch = true
           : doctorAvailableSwitch = false;
-      emit(MainInitial(doctorAvailable: doctorAvailableSwitch));
-    });
+        //emit(DoctorConnectedState(doctorAvailable: doctorAvailableSwitch));
+        // ignore: unused_catch_clause
+      } on ErrorAppException catch (exapp) {
+        doctorAvailableSwitch = false;
+        // ignore: unused_catch_clause
+      } on ErrorGeneralException catch (exgen) {
+        doctorAvailableSwitch = false;
+      } catch (unknowerror) {
+        doctorAvailableSwitch = false;
+      }
+    }); */
   }
 }

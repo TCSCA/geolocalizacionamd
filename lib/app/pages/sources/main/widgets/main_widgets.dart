@@ -143,15 +143,15 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<MainBloc>(context).add(const CheckDoctorConnectedEvent());
+    //BlocProvider.of<MainBloc>(context).add(const CheckDoctorConnectedEvent());
     bool doctorAvailableSwitch =
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch;
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
-        if (state is MainInitial) {
-          LoadingBuilder(context).hideOpenDialog();
-          doctorAvailableSwitch = state.doctorAvailable;
-        }
+        // if (state is DoctorConnectedState) {
+        //   LoadingBuilder(context).hideOpenDialog();
+        //   doctorAvailableSwitch = state.doctorAvailable;
+        // }
         if (state is DoctorServiceState) {
           //desactivarservicio
           LoadingBuilder(context).hideOpenDialog();
@@ -285,6 +285,9 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
         }
         if (state is NotHomeServiceAssignedState) {
           context.go(GeoAmdRoutes.amdLocation);
+        }
+        if (state is HomeServiceEmptyState) {
+          doctorAvailableSwitch = state.doctorAvailable;
         }
       },
       builder: (context, state) {

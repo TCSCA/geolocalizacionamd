@@ -308,10 +308,19 @@ class DoctorCareController {
   }
 
   Future<String> verifyConnected() async {
-    final tokenUser =
+    String statusDoctorConnected = 'No Disponible';
+    try {
+      final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-    final statusDoctorConnected =
+      statusDoctorConnected =
         await consultDataService.verifyConnectedDoctorAmd(tokenUser);
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
 
     return statusDoctorConnected;
   }

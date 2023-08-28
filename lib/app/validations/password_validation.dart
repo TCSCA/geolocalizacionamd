@@ -3,7 +3,7 @@ class PasswordValidation {
     final RegExp regExp = RegExp(
         r"^(?=.*[0-9])(?=.*[.,_#-])(?=.*[A-Z])(?=.*[a-z])[a-zA-Z0-9.,#_-]{6,}$");
     if (!regExp.hasMatch(event) && event != '') {
-      return 'El campo nueva contraseña debe cumplir las \nespecificaciones: \nAl menos una letra en mayúscula.\n'
+      return 'El campo nueva contraseña debe cumplir las especificaciones: \nAl menos una letra en mayúscula.\n'
           'Al menos una letra en minúscula.\nAl menos un valor numérico.\n'
           'Al menos un caracter especial.\nCaracteres: _- . , #\n'
           'Mínimo: 6 caracteres.\nMáximo: 12 caracteres.';
