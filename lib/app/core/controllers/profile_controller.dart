@@ -23,15 +23,25 @@ class ProfileController {
   late ProfileMap profileMap;
 
   Future<ProfileModel> doGeProfileController() async {
+    String mpps = '', mc = '';
     final tokenUser =
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
 
     try {
       profileMap = await consultDataService.getProfile(tokenUser);
 
-      final mppsAndmc = profileMap.data?.medicalLicense?.split('|');
-      final String mpps = mppsAndmc?[0] ?? '';
-      final String mc = mppsAndmc?.length == 2 ? mppsAndmc![1] : '';
+      if (profileMap.data!.medicalLicense != null &&
+          profileMap.data!.medicalLicense!.isNotEmpty) {
+        var index = profileMap.data!.medicalLicense!.trim().indexOf('|');
+        if (index >= 0) {
+          final mppsAndmc = profileMap.data?.medicalLicense?.trim().split('|');
+          mpps = mppsAndmc?[0] ?? '';
+          mc = mppsAndmc?.length == 2 ? mppsAndmc![1] : '';
+        } else {
+          mpps = profileMap.data!.medicalLicense!;
+        }
+      }
+
       final int realMonth = profileMap.data!.birthday!.month! + 1;
 
       final day = profileMap.data!.birthday!.dayOfMonth! < 10
@@ -89,7 +99,7 @@ class ProfileController {
       genderMap = await consultDataService.getAllGender();
 
       genderList = genderMap.genderList;
-       genderList.sort((a, b) => a.descriptionEs.compareTo(b.descriptionEs));
+      genderList.sort((a, b) => a.descriptionEs.compareTo(b.descriptionEs));
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
