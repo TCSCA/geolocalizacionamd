@@ -43,6 +43,7 @@ class AmdHistoryController {
 
           homeServiceModel = HomeServiceModel(
             optionhistory.idHomeService,
+            optionhistory.idMedicalOrder,
             optionhistory.orderNumber,
             DateTime.parse(
                 '${optionhistory.registerDate.dateTime.date.year}-$month-$day'),
@@ -58,7 +59,8 @@ class AmdHistoryController {
                   ? ''
                   : optionhistory.linkAmd),
             optionhistory.idStatusHomeService,
-            optionhistory.statusHomeService
+            optionhistory.statusHomeService,
+            optionhistory.statusLinkAmd
           );
 
           homeServiceModelList.add(homeServiceModel);

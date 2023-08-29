@@ -1,5 +1,6 @@
 class HomeServiceModel {
   int idHomeService;
+  int idMedicalOerder;
   String orderNumber;
   DateTime registerDate;
   String fullNamePatient;
@@ -13,9 +14,11 @@ class HomeServiceModel {
   String linkAmd;
   int idStatusHomeService;
   String statusHomeService;
+  String statusLinkAmd;
 
   HomeServiceModel(
       this.idHomeService,
+      this.idMedicalOerder,
       this.orderNumber,
       this.registerDate,
       this.fullNamePatient,
@@ -28,5 +31,6 @@ class HomeServiceModel {
       this.typeService,
       this.linkAmd,
       this.idStatusHomeService,
-      this.statusHomeService);
+      this.statusHomeService,
+      this.statusLinkAmd);
 }

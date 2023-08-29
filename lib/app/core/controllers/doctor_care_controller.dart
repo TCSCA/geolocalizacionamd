@@ -1,3 +1,7 @@
+import 'dart:typed_data';
+
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
+import 'package:geolocalizacionamd/app/core/models/file_amd_form_model.dart';
 import 'package:geolocalizacionamd/app/errors/error_amd_admin_finalized.dart';
 
 import '/app/api/constants/api_constants.dart';
@@ -116,6 +120,7 @@ class DoctorCareController {
           await saveDataService.onConfirmHomeService(tokenUser, idHomeService);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -128,7 +133,8 @@ class DoctorCareController {
           responseService.typeService,
           responseService.linkAmd,
           responseService.idStatusHomeService,
-          responseService.statusHomeService);
+          responseService.statusHomeService,
+          responseService.statusLinkAmd);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -187,6 +193,7 @@ class DoctorCareController {
           await consultDataService.getActiveAmdOrder(tokenUser);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -199,7 +206,8 @@ class DoctorCareController {
           responseService.typeService,
           responseService.linkAmd,
           responseService.idStatusHomeService,
-          responseService.statusHomeService);
+          responseService.statusHomeService,
+          responseService.statusLinkAmd);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
@@ -348,5 +356,48 @@ class DoctorCareController {
   Future<void> changeIdAmdConfirmed(final String idAmdconfirmed) async {
     await secureStorageController.writeSecureData(
         ApiConstants.idAmdconfirmedLabel, idAmdconfirmed);
+  }
+
+  Future<String> renewAmdForm(int idMedicalOrder) async {
+    final tokenUser =
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    String urlRenew = '';
+    try {
+     urlRenew = await saveDataService.renewAmdFormService(
+          idMedicalOrder, tokenUser);
+    } on ErrorAppException {
+      rethrow;
+    }  catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return urlRenew;
+  }
+
+  Future<FileAmdFormModel> viewFormAMD(int idMedicalOrder) async {
+    final tokenUser =
+    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    String urlRenew = '';
+
+    FileAmdFormMap fileAmdFormMap;
+    FileAmdFormModel fileAmdFormModel;
+
+
+    try {
+     fileAmdFormMap = await saveDataService.viewAmdFormService(
+          idMedicalOrder, tokenUser);
+     //imageArray.cast<int>())
+
+     fileAmdFormModel = FileAmdFormModel(
+         fileName: fileAmdFormMap.data!.fileName,
+         file: fileAmdFormMap.data!.file);
+
+    } on ErrorAppException {
+      rethrow;
+    }  catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return fileAmdFormModel;
   }
 }

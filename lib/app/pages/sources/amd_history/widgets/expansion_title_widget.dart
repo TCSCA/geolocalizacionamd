@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../shared/dialog/custom_dialog_box.dart';
+import '../../../../shared/loading/loading_builder.dart';
+import '../../../constants/app_constants.dart';
+import '../../../messages/app_messages.dart';
 import '/app/pages/styles/app_styles.dart';
+import 'bloc/amd_form_bloc.dart';
+import 'dart:io' as io;
 
 class ExpansionTitleWidget extends StatelessWidget {
-final  String? orderNumber;
-final   int? dateOrderDay;
-final   int? dateOrderMonth;
-final   int? dateOrderYear;
-final   String? fullNamePatient;
-final   String? identificationDocument;
-final   String? phoneNumberPatient;
-final   String? address;
-final   String? applicantDoctor;
-final   String? phoneNumberDoctor;
-final   String? typeService;
-final   String? linkAmd;
-final   String? statusHomeService;
+  final String? orderNumber;
+  final int? idMedicalOrder;
+  final int? dateOrderDay;
+  final int? dateOrderMonth;
+  final int? dateOrderYear;
+  final String? fullNamePatient;
+  final String? identificationDocument;
+  final String? phoneNumberPatient;
+  final String? address;
+  final String? applicantDoctor;
+  final String? phoneNumberDoctor;
+  final String? typeService;
+  final String? linkAmd;
+  final String? statusHomeService;
+  final String? statusLinkAmd;
 
-const  ExpansionTitleWidget(
+  const ExpansionTitleWidget(
       {super.key,
       this.orderNumber,
+      this.idMedicalOrder,
       this.dateOrderDay,
       this.dateOrderMonth,
       this.dateOrderYear,
@@ -31,22 +43,45 @@ const  ExpansionTitleWidget(
       this.phoneNumberDoctor,
       this.typeService,
       this.linkAmd,
-      this.statusHomeService});
+      this.statusHomeService,
+      this.statusLinkAmd});
 
-final  double interlineado = 7.0;
-final   double tamanioLetra = 15.0;
-final   double tamanioTitulo = 16.0;
+  final double interlineado = 7.0;
+  final double tamanioLetra = 15.0;
+  final double tamanioTitulo = 16.0;
 
   @override
   Widget build(BuildContext context) {
-
     final String day;
     final String month;
 
     day = dateOrderDay! < 10 ? '0$dateOrderDay' : dateOrderDay.toString();
-    month = dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
+    month =
+        dateOrderMonth! < 10 ? '0$dateOrderMonth' : dateOrderMonth.toString();
 
-    return Column(
+    return /*BlocConsumer<AmdFormBloc, AmdFormState>(
+      listener: (context, state) async {
+        if (state is AmdRenewFormSuccessState) {
+          launchUrl(
+            Uri.parse(state.urlFormRenew),
+            mode: LaunchMode.externalApplication,
+          );
+        }
+        if (state is AmdViewFormArchiveSuccessState) {
+          final io.Directory root = await getTemporaryDirectory();
+          final io.File filePath;
+
+          filePath = io.File('${root.path}/${state.fileAmdFormModel.fileName}');
+
+          await filePath.writeAsBytes(state.fileAmdFormModel.file);
+          final result = await OpenFile.open(filePath.path);
+
+          print(state.fileAmdFormModel);
+        }
+      },
+      builder: (context, state) {
+        return*/
+        Column(
       children: <Widget>[
         ExpansionTile(
           iconColor: AppStyles.colorBluePrimary,
@@ -207,17 +242,115 @@ final   double tamanioTitulo = 16.0;
                           fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
                 ],
               ),
-              Row(
-                children: [
-                  const SizedBox(width: 20.0),
-                  InkWell(
-                    onTap: () => launchUrl(
-                      Uri.parse(linkAmd!),
+              BlocConsumer<AmdFormBloc, AmdFormState>(
+                listener: (context, state) async {
+                  if(state is AmdFormLoading) {
+                    LoadingBuilder(context).showLoadingIndicator('Procesando su solicitud');
+                  }
+                  if (state is AmdRenewFormSuccessState) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    launchUrl(
+                      Uri.parse(state.urlFormRenew),
                       mode: LaunchMode.externalApplication,
-                    ),
-                    child: const Text('Ver formulario'),
-                  ),
-                ],
+                    );
+                  }
+                  if (state is AmdViewFormArchiveSuccessState) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    final io.Directory root = await getTemporaryDirectory();
+                    final io.File filePath;
+
+                    filePath = io.File(
+                        '${root.path}/${state.fileAmdFormModel.fileName}');
+
+                    await filePath.writeAsBytes(state.fileAmdFormModel.file);
+                    final result = await OpenFile.open(filePath.path);
+                  }
+
+                  if( state is AmdRenewFormErrorState) {
+                    if(context.mounted) {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                              title: AppMessages().getMessageTitle(
+                                  context, AppConstants.statusError),
+                              descriptions: AppMessages()
+                                  .getMessage(context, state.messageError),
+                              isConfirmation: false,
+                              dialogAction: () {},
+                              type: AppConstants.statusError,
+                              isdialogCancel: false,
+                              dialogCancel: () {},
+                            );
+                          });
+                    }
+                  }
+
+                  if(state is AmdViewFormArchiveErrorState) {
+                    if(context.mounted) {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return CustomDialogBox(
+                              title: AppMessages().getMessageTitle(
+                                  context, AppConstants.statusError),
+                              descriptions: AppMessages()
+                                  .getMessage(context, state.messageError),
+                              isConfirmation: false,
+                              dialogAction: () {},
+                              type: AppConstants.statusError,
+                              isdialogCancel: false,
+                              dialogCancel: () {},
+                            );
+                          });
+                    }
+
+                  }
+                },
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      if (statusLinkAmd == 'Generado' ||
+                          statusLinkAmd == 'Expirado')
+                        Row(
+                          children: [
+                            const SizedBox(width: 20.0),
+                            InkWell(
+                              onTap: () {
+                                if (statusLinkAmd == 'Generado') {
+                                  launchUrl(
+                                    Uri.parse(linkAmd!),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                } else {
+                                  BlocProvider.of<AmdFormBloc>(context).add(
+                                      AmdRenewFormEvent(
+                                          idMedicalOrder: idMedicalOrder!));
+                                }
+                              },
+                              child: const Text('Ver formulario'),
+                            ),
+                          ],
+                        ),
+                      if (statusLinkAmd == 'Consumido')
+                        Row(
+                          children: [
+                            const SizedBox(width: 20.0),
+                            InkWell(
+                              onTap: () {
+                                BlocProvider.of<AmdFormBloc>(context).add(
+                                    AmdViewFormEvent(
+                                        idMedicalOrder: idMedicalOrder!));
+                              },
+                              child: const Text('Ver PDF'),
+                            ),
+                          ],
+                        ),
+                    ],
+                  );
+                },
               ),
               SizedBox(height: interlineado),
             ]
@@ -225,5 +358,7 @@ final   double tamanioTitulo = 16.0;
         ),
       ],
     );
+    /*},
+    );*/
   }
 }

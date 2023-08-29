@@ -1,3 +1,5 @@
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
+
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/core/models/connect_doctor_model.dart';
 import '/app/core/models/reject_amd_model.dart';
@@ -35,4 +37,8 @@ abstract class SaveDataService {
       String? photoProfile,
       String? digitalSignature,
       String tokenUser);
+
+  Future<String> renewAmdFormService(int idMedicalOrder, String tokenUser);
+  Future<FileAmdFormMap> viewAmdFormService(int idMedicalOrder, String tokenUser);
 }
+
