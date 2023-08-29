@@ -43,8 +43,8 @@ class NotificationApi {
   static scheduleNotification() async {
     timezone.initializeTimeZones();
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      'channel id',
-      'channel name',
+      'default_notifications_channels',
+      'default_notifications_channels',
       channelDescription: 'channel description',
       importance: Importance.max, // set the importance of the notification
       priority: Priority.high, // set prority
