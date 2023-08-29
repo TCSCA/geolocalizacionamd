@@ -160,7 +160,7 @@ class ListViewProfileWidget extends StatelessWidget {
               _ProfileDataWidget(
                   title: context.appLocalization.labelDateOfBirth,
                   subtitle:
-                      '${state.profileModel.dayBirthday}-${state.profileModel.monthBirthday}-${state.profileModel.yearBirthday}'),
+                      '${state.profileModel.dayBirthday}/${state.profileModel.monthBirthday}/${state.profileModel.yearBirthday}'),
               const Divider(),
               _ProfileDataWidget(
                   title: context.appLocalization.labelPhone,
