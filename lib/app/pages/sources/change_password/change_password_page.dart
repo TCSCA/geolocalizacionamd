@@ -262,7 +262,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                             fontSize: 16.0,
                             fontFamily: 'TextsParagraphs'),
                         obscureText: !visibilityPassword,
-                        obscuringCharacter: '*',
+                        //obscuringCharacter: '*',
                         controller: widget.passwordCtrl,
                         decoration: InputDecoration(
                             errorMaxLines: 12,
@@ -313,7 +313,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                 visibilityPassword
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Colors.white,
+                                color: const Color(0xffD84835),
                               ),
                               onPressed: () {
                                 visibilityPassword = !visibilityPassword;
@@ -333,7 +333,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                           return PasswordValidation().confirmPasswordValidator(
                               value!, widget.passwordCtrl.text);
                         },
-                        obscuringCharacter: '*',
+                        //obscuringCharacter: '*',
                         style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16.0,
@@ -384,7 +384,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                                 visibilityPasswordConfirm
                                     ? Icons.visibility
                                     : Icons.visibility_off,
-                                color: Colors.white,
+                                color: const Color(0xffD84835),
                               ),
                               onPressed: () {
                                 visibilityPasswordConfirm =

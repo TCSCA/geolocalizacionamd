@@ -240,9 +240,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                   Text('Formulario AMD: ',
                       style: TextStyle(
                           fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              BlocConsumer<AmdFormBloc, AmdFormState>(
+                  BlocConsumer<AmdFormBloc, AmdFormState>(
                 listener: (context, state) async {
                   if(state is AmdFormLoading) {
                     LoadingBuilder(context).showLoadingIndicator('Procesando su solicitud');
@@ -315,8 +313,10 @@ class ExpansionTitleWidget extends StatelessWidget {
                       if (statusLinkAmd == 'Generado' ||
                           statusLinkAmd == 'Expirado')
                         Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(width: 20.0),
+                                const SizedBox(width: 5.0),
                             InkWell(
                               onTap: () {
                                 if (statusLinkAmd == 'Generado') {
@@ -330,29 +330,61 @@ class ExpansionTitleWidget extends StatelessWidget {
                                           idMedicalOrder: idMedicalOrder!));
                                 }
                               },
-                              child: const Text('Ver formulario'),
+                                  child: Text('Ver formulario',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary)),
                             ),
                           ],
                         ),
                       if (statusLinkAmd == 'Consumido')
                         Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(width: 20.0),
+                                const SizedBox(width: 5.0),
                             InkWell(
                               onTap: () {
                                 BlocProvider.of<AmdFormBloc>(context).add(
                                     AmdViewFormEvent(
                                         idMedicalOrder: idMedicalOrder!));
                               },
-                              child: const Text('Ver PDF'),
+                                  child: Text('Ver PDF',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              decorationColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary)),
                             ),
                           ],
                         ),
                     ],
                   );
                 },
+                  )
+                ],
               ),
-              SizedBox(height: interlineado),
+              const SizedBox(height: 20.0),
             ]
           ],
         ),
