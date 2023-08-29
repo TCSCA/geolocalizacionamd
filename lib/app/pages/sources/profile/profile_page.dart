@@ -28,7 +28,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
+   // BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
 
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
@@ -98,7 +98,7 @@ class ListViewProfileWidget extends StatelessWidget {
                     AppMessages().getMessage(context, context.appLocalization.sessionExpired),
                     isConfirmation: true,
                     dialogAction: () {
-                      BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
+                      BlocProvider.of<LoginBloc>(context).add(const ProcessLogoutEvent());
                     },
                     type: AppConstants.statusError,
                     isdialogCancel: false,
@@ -260,9 +260,10 @@ class ListViewProfileWidget extends StatelessWidget {
             ],
           );
         } else if (state is ProfileInitial) {
-
+          BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
           return Container();
         } else {
+
           return Container();
         }
       },

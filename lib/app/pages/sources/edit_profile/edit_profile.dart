@@ -196,9 +196,9 @@ class _EditProfileState extends State<EditProfile> {
         if (state is ProfileSuccessState) {
           LoadingBuilder(context).hideOpenDialog();
         } else if (state is ProfileUpdateSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
           BlocProvider.of<ImageProfileBloc>(context)
               .add(const ConsultPhotoEvent());
-          LoadingBuilder(context).hideOpenDialog();
           await showDialog(
               context: context,
               barrierDismissible: false,
@@ -313,6 +313,7 @@ class _EditProfileState extends State<EditProfile> {
             }
 
             if (state is ChangeLocationDoctorCityState) {
+              LoadingBuilder(context).hideOpenDialog();
               selectedCity = state.selectedCity;
             }
           },
