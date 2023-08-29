@@ -46,6 +46,7 @@ class ApiConstants {
       '$urlApi/getAllReasonRejectionAmd';
   static final String verifyConnectedDoctorAmd =
       '$urlApi/verifyConnectedDoctorAmd';
+  static final String urlApiForgotPassword = '$urlApi/forgotPassword';
   static const String generalErrorCodeApi = 'MSG-001';
   static const String statusLabelApi = 'status';
   static const String statusSuccessApi = 'SUCCESS';

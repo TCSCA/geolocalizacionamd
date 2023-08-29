@@ -11,28 +11,27 @@ import '../constants/api_constants.dart';
 class RenewPasswordServiceImp implements RenewPasswordService {
   @override
   Future<RenewPasswordMap> doRenewPassword(String username) async {
-    const headerLogger = 'ListsService.getMenu';
     Map<String, dynamic> decodeResp;
     http.Response responseApi;
     late RenewPasswordMap renewPasswordData;
 
-    final Uri urlApiLogin = Uri.parse(ApiConstants.urlApiLogin);
+    final Uri urlApiForgotPassword =
+        Uri.parse(ApiConstants.urlApiForgotPassword);
 
     final String bodyRenewPassword = jsonEncode({'username': username});
 
     final Map<String, String> headerRenewPassword = {
-      'platform': 'APP',
-      'Content-Type': 'application/json',
-      'apiKeyGpsSHA': 'ShA.GpS.123.'
+      ApiConstants.headerPlataforma: ApiConstants.plataformaApp,
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerApiKey: ApiConstants.headerValorApiKey
     };
 
     try {
       responseApi = await http.post(
-          Uri.parse('https://desa.your24sevendoc.com/homeService/api/forgotPassword'),
+          urlApiForgotPassword,
           headers:  headerRenewPassword,
           body: bodyRenewPassword
       );
-
 
       decodeResp = json.decode(responseApi.body);
       if(decodeResp[ApiConstants.statusLabelApi] ==
