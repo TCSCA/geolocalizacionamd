@@ -55,9 +55,9 @@ class AmdHistoryController {
             optionhistory.applicantDoctor,
             optionhistory.phoneNumberDoctor,
             optionhistory.typeService,
-              (optionhistory.idStatusHomeService == 3
+              /*(optionhistory.idStatusHomeService == 3
                   ? ''
-                  : optionhistory.linkAmd),
+                  : optionhistory.linkAmd),*/
             optionhistory.idStatusHomeService,
             optionhistory.statusHomeService,
             optionhistory.statusLinkAmd

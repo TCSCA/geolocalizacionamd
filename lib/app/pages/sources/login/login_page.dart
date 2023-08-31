@@ -99,11 +99,11 @@ class _LoginPageState extends State<LoginPage> {
                   }
 
                   if (checkUserSave) {
-                    await prefs.setString('userSave', userController.text);
 
-                    await prefs.setBool('checkUserSave', checkUserSave);
 
                     if (!isUsedFingerprint) {
+                      await prefs.setString('userSave', userController.text);
+                      await prefs.setBool('checkUserSave', checkUserSave);
                       await prefs.setString(
                           'password', passwordController.text);
                     }

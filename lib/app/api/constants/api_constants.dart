@@ -42,7 +42,7 @@ class ApiConstants {
   static final String urlApiEditProfileService =
       '$urlApi/editProfile';
   static final String urlApiChangePassword = '$urlApi/changePassword';
-  static final String urlApiRenewUrlOrderToken = '$urlApi/renewUrlOrderToken';
+  static final String urlApiRenewUrlOrderToken = '$urlApi/getUrlOrderToken';
   static final String urlApiGetResultAmdOrder = '$urlApi/getResultAmdOrder';
   static final String urlApiGetAllReasonRejection =
       '$urlApi/getAllReasonRejectionAmd';

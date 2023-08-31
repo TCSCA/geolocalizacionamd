@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/controllers/image_profile_controller.dart';
 import '../../../shared/image_build/bloc/image_profile_bloc.dart';
+import '../../../shared/method/back_button_action.dart';
 import '../../styles/app_styles.dart';
 import '../login/bloc/login_bloc.dart';
 import '../profile/bloc/profile_bloc.dart';
@@ -38,17 +39,20 @@ class ChangedPasswordPage extends StatelessWidget {
     final GlobalKey<FormFieldState> passwordConfirmKey =
         GlobalKey<FormFieldState>();
 
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => ChangePasswordBloc(
-            changePasswordController: ChangePasswordController()),
-        child: _ChangePasswordView(
-            formKey: formKey,
-            passwordKey: passwordKey,
-            passwordCtrl: passwordCtrl,
-            passwordConfirmKey: passwordConfirmKey,
-            passwordConfirmCtrl: passwordConfirmCtrl,
-            username: username),
+    return WillPopScope(
+      onWillPop: () async => backButtonActions(),
+      child: Scaffold(
+        body: BlocProvider(
+          create: (context) => ChangePasswordBloc(
+              changePasswordController: ChangePasswordController()),
+          child: _ChangePasswordView(
+              formKey: formKey,
+              passwordKey: passwordKey,
+              passwordCtrl: passwordCtrl,
+              passwordConfirmKey: passwordConfirmKey,
+              passwordConfirmCtrl: passwordConfirmCtrl,
+              username: username),
+        ),
       ),
     );
   }

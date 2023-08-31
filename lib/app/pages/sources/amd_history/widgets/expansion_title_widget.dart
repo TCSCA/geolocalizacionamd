@@ -233,7 +233,7 @@ class ExpansionTitleWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: interlineado),
-            if (linkAmd!.isNotEmpty) ...[
+          //  if (linkAmd!.isNotEmpty) ...[
               Row(
                 children: [
                   const SizedBox(width: 20.0),
@@ -310,8 +310,8 @@ class ExpansionTitleWidget extends StatelessWidget {
                 builder: (context, state) {
                   return Column(
                     children: [
-                      if (statusLinkAmd == 'Generado' ||
-                          statusLinkAmd == 'Expirado')
+                      /*if (statusLinkAmd == 'Generado' ||
+                          statusLinkAmd == 'Expirado')*/
                         Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,10 +320,13 @@ class ExpansionTitleWidget extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 if (statusLinkAmd == 'Generado') {
-                                  launchUrl(
+                                  BlocProvider.of<AmdFormBloc>(context).add(
+                                      AmdRenewFormEvent(
+                                          idMedicalOrder: idMedicalOrder!));
+                                  /*launchUrl(
                                     Uri.parse(linkAmd!),
                                     mode: LaunchMode.externalApplication,
-                                  );
+                                  );*/
                                 } else {
                                   BlocProvider.of<AmdFormBloc>(context).add(
                                       AmdRenewFormEvent(
@@ -385,7 +388,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20.0),
-            ]
+          //  ]
           ],
         ),
       ],

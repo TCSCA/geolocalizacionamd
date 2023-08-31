@@ -704,7 +704,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30))),
                         onPressed: () {
-                          _launchURL(url: homeServiceConfirmed.linkAmd);
+                         // _launchURL(url: homeServiceConfirmed.linkAmd);
                           context.go(GeoAmdRoutes.home);
                         },
                         child: Ink(

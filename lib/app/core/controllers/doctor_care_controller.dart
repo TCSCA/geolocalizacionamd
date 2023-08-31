@@ -131,7 +131,7 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd,
+          //responseService.linkAmd,
           responseService.idStatusHomeService,
           responseService.statusHomeService,
           responseService.statusLinkAmd);
@@ -204,7 +204,7 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd,
+         // responseService.linkAmd,
           responseService.idStatusHomeService,
           responseService.statusHomeService,
           responseService.statusLinkAmd);

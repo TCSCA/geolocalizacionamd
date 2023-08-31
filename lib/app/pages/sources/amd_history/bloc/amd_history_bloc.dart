@@ -23,8 +23,8 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
       try {
        homeServiceModel = await amdHistoryController.getHistoryAmdOrderListCtrl();
 
-       List<HomeServiceModel> homeServiceModelF = homeServiceModel.where((i) => i.idStatusHomeService == 4).toList();
-       List<HomeServiceModel> homeServiceModelP = homeServiceModel.where((i) => i.idStatusHomeService == 3).toList();
+       List<HomeServiceModel> homeServiceModelF = homeServiceModel.where((i) => i.statusLinkAmd == 'Finalizado').toList();
+       List<HomeServiceModel> homeServiceModelP = homeServiceModel.where((i) => i.statusLinkAmd == 'Rechazada').toList();
 
 
         emit(AmdHistorySuccessDataState(homeServiceF: homeServiceModelF, homeServiceP: homeServiceModelP));
