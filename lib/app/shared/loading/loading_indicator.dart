@@ -11,7 +11,7 @@ class LoadingIndicator extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const GetLoadingIndicator(),
-        GetText(displayedText: menssage),
+      //  GetText(displayedText: menssage),
       ],
     );
   }
