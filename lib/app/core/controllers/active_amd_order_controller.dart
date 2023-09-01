@@ -35,7 +35,8 @@ class ActiveAmdOrderCOntroller {
           //responseService.linkAmd,
           responseService.idStatusHomeService,
           responseService.statusHomeService,
-          responseService.statusLinkAmd);
+          responseService.statusLinkAmd,
+      responseService.statusOrder);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {

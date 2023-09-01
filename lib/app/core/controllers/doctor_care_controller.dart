@@ -134,7 +134,8 @@ class DoctorCareController {
           //responseService.linkAmd,
           responseService.idStatusHomeService,
           responseService.statusHomeService,
-          responseService.statusLinkAmd);
+          responseService.statusLinkAmd,
+          responseService.statusOrder);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -204,10 +205,11 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-         // responseService.linkAmd,
+          // responseService.linkAmd,
           responseService.idStatusHomeService,
           responseService.statusHomeService,
-          responseService.statusLinkAmd);
+          responseService.statusLinkAmd,
+          responseService.statusOrder);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
@@ -319,9 +321,9 @@ class DoctorCareController {
     String statusDoctorConnected = 'No Disponible';
     try {
       final tokenUser =
-        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       statusDoctorConnected =
-        await consultDataService.verifyConnectedDoctorAmd(tokenUser);
+          await consultDataService.verifyConnectedDoctorAmd(tokenUser);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -363,11 +365,11 @@ class DoctorCareController {
         await secureStorageController.readSecureData(ApiConstants.tokenLabel);
     String urlRenew = '';
     try {
-     urlRenew = await saveDataService.renewAmdFormService(
-          idMedicalOrder, tokenUser);
+      urlRenew =
+          await saveDataService.renewAmdFormService(idMedicalOrder, tokenUser);
     } on ErrorAppException {
       rethrow;
-    }  catch (unknowerror) {
+    } catch (unknowerror) {
       throw ErrorGeneralException();
     }
 
@@ -376,25 +378,23 @@ class DoctorCareController {
 
   Future<FileAmdFormModel> viewFormAMD(int idMedicalOrder) async {
     final tokenUser =
-    await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
     String urlRenew = '';
 
     FileAmdFormMap fileAmdFormMap;
     FileAmdFormModel fileAmdFormModel;
 
-
     try {
-     fileAmdFormMap = await saveDataService.viewAmdFormService(
-          idMedicalOrder, tokenUser);
-     //imageArray.cast<int>())
+      fileAmdFormMap =
+          await saveDataService.viewAmdFormService(idMedicalOrder, tokenUser);
+      //imageArray.cast<int>())
 
-     fileAmdFormModel = FileAmdFormModel(
-         fileName: fileAmdFormMap.data!.fileName,
-         file: fileAmdFormMap.data!.file);
-
+      fileAmdFormModel = FileAmdFormModel(
+          fileName: fileAmdFormMap.data!.fileName,
+          file: fileAmdFormMap.data!.file);
     } on ErrorAppException {
       rethrow;
-    }  catch (unknowerror) {
+    } catch (unknowerror) {
       throw ErrorGeneralException();
     }
 

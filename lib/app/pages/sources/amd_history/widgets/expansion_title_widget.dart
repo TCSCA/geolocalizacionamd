@@ -26,7 +26,7 @@ class ExpansionTitleWidget extends StatelessWidget {
   final String? typeService;
   final String? linkAmd;
   final String? statusHomeService;
-  final String? statusLinkAmd;
+  final String? statusOrder;
 
   const ExpansionTitleWidget(
       {super.key,
@@ -44,7 +44,7 @@ class ExpansionTitleWidget extends StatelessWidget {
       this.typeService,
       this.linkAmd,
       this.statusHomeService,
-      this.statusLinkAmd});
+      this.statusOrder});
 
   final double interlineado = 7.0;
   final double tamanioLetra = 15.0;
@@ -312,6 +312,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                     children: [
                       /*if (statusLinkAmd == 'Generado' ||
                           statusLinkAmd == 'Expirado')*/
+                      if (statusOrder == 'Pendiente')
                         Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +320,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                                 const SizedBox(width: 5.0),
                             InkWell(
                               onTap: () {
-                                if (statusLinkAmd == 'Generado') {
+                               // if (statusOrder == 'Pendiente') {
                                   BlocProvider.of<AmdFormBloc>(context).add(
                                       AmdRenewFormEvent(
                                           idMedicalOrder: idMedicalOrder!));
@@ -327,11 +328,11 @@ class ExpansionTitleWidget extends StatelessWidget {
                                     Uri.parse(linkAmd!),
                                     mode: LaunchMode.externalApplication,
                                   );*/
-                                } else {
+                                /*} else {
                                   BlocProvider.of<AmdFormBloc>(context).add(
                                       AmdRenewFormEvent(
                                           idMedicalOrder: idMedicalOrder!));
-                                }
+                                }*/
                               },
                                   child: Text('Ver formulario',
                                       style: Theme.of(context)
@@ -351,7 +352,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-                      if (statusLinkAmd == 'Consumido')
+                      if (statusOrder == 'Procesada')
                         Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,

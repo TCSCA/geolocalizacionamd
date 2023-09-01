@@ -15,6 +15,7 @@ class HomeServiceModel {
   int idStatusHomeService;
   String statusHomeService;
   String statusLinkAmd;
+  String statusOrder;
 
   HomeServiceModel(
       this.idHomeService,
@@ -32,6 +33,7 @@ class HomeServiceModel {
       //this.linkAmd,
       this.idStatusHomeService,
       this.statusHomeService,
-      this.statusLinkAmd
+      this.statusLinkAmd,
+      this.statusOrder
       );
 }

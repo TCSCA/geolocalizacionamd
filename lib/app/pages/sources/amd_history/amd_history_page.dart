@@ -165,7 +165,7 @@ class ListViewHistoryAmd extends StatelessWidget {
                 typeService: homeService?[index].typeService,
                 //linkAmd: homeService?[index].linkAmd,
                 statusHomeService: homeService?[index].statusHomeService,
-                statusLinkAmd: homeService?[index].statusLinkAmd
+                statusOrder: homeService?[index].statusOrder
             );
           },
         ),
