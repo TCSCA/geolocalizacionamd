@@ -114,7 +114,7 @@ class ExpansionTitleWidget extends StatelessWidget {
                       fontSize: tamanioTitulo, fontWeight: FontWeight.bold)),
               Flexible(
                 child: Text(
-                  '$day-$month-$dateOrderYear',
+                  '$day/$month/$dateOrderYear',
                   style: TextStyle(fontSize: tamanioTitulo),
                 ),
               )
