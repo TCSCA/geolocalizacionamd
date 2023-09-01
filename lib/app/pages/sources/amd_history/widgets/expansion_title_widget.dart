@@ -233,107 +233,107 @@ class ExpansionTitleWidget extends StatelessWidget {
               ],
             ),
             SizedBox(height: interlineado),
-          //  if (linkAmd!.isNotEmpty) ...[
-              Row(
-                children: [
-                  const SizedBox(width: 20.0),
-                  Text('Formulario AMD: ',
-                      style: TextStyle(
-                          fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
-                  BlocConsumer<AmdFormBloc, AmdFormState>(
-                listener: (context, state) async {
-                  if(state is AmdFormLoading) {
-                    LoadingBuilder(context).showLoadingIndicator('Procesando su solicitud');
-                  }
-                  if (state is AmdRenewFormSuccessState) {
-                    LoadingBuilder(context).hideOpenDialog();
-                    launchUrl(
-                      Uri.parse(state.urlFormRenew),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  }
-                  if (state is AmdViewFormArchiveSuccessState) {
-                    LoadingBuilder(context).hideOpenDialog();
-                    final io.Directory root = await getTemporaryDirectory();
-                    final io.File filePath;
-
-                    filePath = io.File(
-                        '${root.path}/${state.fileAmdFormModel.fileName}');
-
-                    await filePath.writeAsBytes(state.fileAmdFormModel.file);
-                    final result = await OpenFile.open(filePath.path);
-                  }
-
-                  if( state is AmdRenewFormErrorState) {
-                    if(context.mounted) {
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return CustomDialogBox(
-                              title: AppMessages().getMessageTitle(
-                                  context, AppConstants.statusError),
-                              descriptions: AppMessages()
-                                  .getMessage(context, state.messageError),
-                              isConfirmation: false,
-                              dialogAction: () {},
-                              type: AppConstants.statusError,
-                              isdialogCancel: false,
-                              dialogCancel: () {},
-                            );
-                          });
+              if (statusHomeService == 'Finalizado') ...[
+            Row(
+              children: [
+                const SizedBox(width: 20.0),
+                Text('Formulario AMD: ',
+                    style: TextStyle(
+                        fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
+                BlocConsumer<AmdFormBloc, AmdFormState>(
+                  listener: (context, state) async {
+                    if (state is AmdFormLoading) {
+                      LoadingBuilder(context)
+                          .showLoadingIndicator('Procesando su solicitud');
                     }
-                  }
+                    if (state is AmdRenewFormSuccessState) {
+                      LoadingBuilder(context).hideOpenDialog();
+                      launchUrl(
+                        Uri.parse(state.urlFormRenew),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                    if (state is AmdViewFormArchiveSuccessState) {
+                      LoadingBuilder(context).hideOpenDialog();
+                      final io.Directory root = await getTemporaryDirectory();
+                      final io.File filePath;
 
-                  if(state is AmdViewFormArchiveErrorState) {
-                    if(context.mounted) {
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return CustomDialogBox(
-                              title: AppMessages().getMessageTitle(
-                                  context, AppConstants.statusError),
-                              descriptions: AppMessages()
-                                  .getMessage(context, state.messageError),
-                              isConfirmation: false,
-                              dialogAction: () {},
-                              type: AppConstants.statusError,
-                              isdialogCancel: false,
-                              dialogCancel: () {},
-                            );
-                          });
+                      filePath = io.File(
+                          '${root.path}/${state.fileAmdFormModel.fileName}');
+
+                      await filePath.writeAsBytes(state.fileAmdFormModel.file);
+                      final result = await OpenFile.open(filePath.path);
                     }
 
-                  }
-                },
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      /*if (statusLinkAmd == 'Generado' ||
+                    if (state is AmdRenewFormErrorState) {
+                      if (context.mounted) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusError),
+                                descriptions: AppMessages()
+                                    .getMessage(context, state.messageError),
+                                isConfirmation: false,
+                                dialogAction: () {},
+                                type: AppConstants.statusError,
+                                isdialogCancel: false,
+                                dialogCancel: () {},
+                              );
+                            });
+                      }
+                    }
+
+                    if (state is AmdViewFormArchiveErrorState) {
+                      if (context.mounted) {
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusError),
+                                descriptions: AppMessages()
+                                    .getMessage(context, state.messageError),
+                                isConfirmation: false,
+                                dialogAction: () {},
+                                type: AppConstants.statusError,
+                                isdialogCancel: false,
+                                dialogCancel: () {},
+                              );
+                            });
+                      }
+                    }
+                  },
+                  builder: (context, state) {
+                    return Column(
+                      children: [
+                        /*if (statusLinkAmd == 'Generado' ||
                           statusLinkAmd == 'Expirado')*/
-                      if (statusOrder == 'Pendiente')
-                        Row(
+                          if (statusOrder == 'Pendiente')
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                              children: [
                                 const SizedBox(width: 5.0),
-                            InkWell(
-                              onTap: () {
-                               // if (statusOrder == 'Pendiente') {
-                                  BlocProvider.of<AmdFormBloc>(context).add(
-                                      AmdRenewFormEvent(
-                                          idMedicalOrder: idMedicalOrder!));
-                                  /*launchUrl(
+                                InkWell(
+                                  onTap: () {
+                                    // if (statusOrder == 'Pendiente') {
+                                    BlocProvider.of<AmdFormBloc>(context).add(
+                                        AmdRenewFormEvent(
+                                            idMedicalOrder: idMedicalOrder!));
+                                    /*launchUrl(
                                     Uri.parse(linkAmd!),
                                     mode: LaunchMode.externalApplication,
                                   );*/
-                                /*} else {
+                                    /*} else {
                                   BlocProvider.of<AmdFormBloc>(context).add(
                                       AmdRenewFormEvent(
                                           idMedicalOrder: idMedicalOrder!));
                                 }*/
-                              },
+                                  },
                                   child: Text('Ver formulario',
                                       style: Theme.of(context)
                                           .textTheme
@@ -349,47 +349,47 @@ class ExpansionTitleWidget extends StatelessWidget {
                                               decorationColor: Theme.of(context)
                                                   .colorScheme
                                                   .secondary)),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      if (statusOrder == 'Procesada')
-                        Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                                const SizedBox(width: 5.0),
-                            InkWell(
-                              onTap: () {
-                                BlocProvider.of<AmdFormBloc>(context).add(
-                                    AmdViewFormEvent(
-                                        idMedicalOrder: idMedicalOrder!));
-                              },
-                                  child: Text('Ver PDF',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(
-                                              fontSize: 15.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              decorationColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary)),
-                            ),
-                          ],
-                        ),
-                    ],
-                  );
-                },
-                  )
-                ],
-              ),
-              const SizedBox(height: 20.0),
-          //  ]
+                        if (statusOrder == 'Procesada')
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(width: 5.0),
+                              InkWell(
+                                onTap: () {
+                                  BlocProvider.of<AmdFormBloc>(context).add(
+                                      AmdViewFormEvent(
+                                          idMedicalOrder: idMedicalOrder!));
+                                },
+                                child: Text('Ver PDF',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            decorationColor: Theme.of(context)
+                                                .colorScheme
+                                                .secondary)),
+                              ),
+                            ],
+                          ),
+                      ],
+                    );
+                  },
+                )
+              ],
+            ),
+            const SizedBox(height: 20.0),
+              ]
           ],
         ),
       ],

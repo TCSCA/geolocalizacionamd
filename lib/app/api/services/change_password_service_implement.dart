@@ -9,9 +9,9 @@ import '../../errors/error_app_exception.dart';
 import '../../errors/error_general_exception.dart';
 
 class ChangePasswordServiceImp implements ChangePasswordService {
-
   @override
-  Future<ChangePasswordMap> doChangePassword(String username, String newPassword) async {
+  Future<ChangePasswordMap> doChangePassword(
+      String username, String newPassword) async {
     Map<String, dynamic> decodeResp;
     http.Response responseApi;
 
@@ -21,7 +21,7 @@ class ChangePasswordServiceImp implements ChangePasswordService {
     final Uri urlChangePassword = Uri.parse(ApiConstants.urlApiChangePassword);
 
     final String bodyChangePassword =
-    jsonEncode({'username': username, 'newPassword': newPassword});
+        jsonEncode({'username': username, 'newPassword': newPassword});
 
     final Map<String, String> headerChangePassword = {
       'platform': 'APP',
@@ -30,7 +30,7 @@ class ChangePasswordServiceImp implements ChangePasswordService {
     };
 
     try {
-      responseApi = await http.post(Uri.parse('https://desa.your24sevendoc.com/homeService/api/changePassword'),
+      responseApi = await http.post(urlChangePassword,
           headers: headerChangePassword, body: bodyChangePassword);
 
       decodeResp = jsonDecode(responseApi.body);
