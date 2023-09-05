@@ -927,7 +927,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
-        maxLength: 15,
+        maxLength: 10,
         keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: cmppsCtrl,
@@ -955,7 +955,7 @@ class _EditProfileState extends State<EditProfile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
       child: TextFormField(
-        maxLength: 15,
+        maxLength: 10,
         keyboardType: TextInputType.number,
         autovalidateMode: AutovalidateMode.always,
         controller: cmCtrl,

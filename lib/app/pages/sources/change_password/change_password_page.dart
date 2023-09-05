@@ -12,11 +12,11 @@ import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
 
 import 'package:geolocalizacionamd/app/validations/password_validation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/controllers/image_profile_controller.dart';
 import '../../../shared/image_build/bloc/image_profile_bloc.dart';
 import '../../../shared/method/back_button_action.dart';
-import '../../styles/app_styles.dart';
 import '../login/bloc/login_bloc.dart';
 import '../profile/bloc/profile_bloc.dart';
 import 'change_password_bloc.dart';
@@ -84,9 +84,11 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
   bool visibilityPassword = false;
 
   bool visibilityPasswordConfirm = false;
+  late SharedPreferences prefs;
 
   @override
   Widget build(BuildContext context) {
+    _validateUserSave();
     return MultiBlocListener(
       listeners: [
         BlocListener<ChangePasswordBloc, ChangePasswordState>(
@@ -96,6 +98,8 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
             LoadingBuilder(context).showLoadingIndicator(
                 context.appLocalization.changePasswordAction);
           } else if (state is ChangePasswordSuccessState) {
+            await prefs.setString(
+                'password', widget.passwordCtrl.text);
             LoadingBuilder(context).hideOpenDialog();
             await showDialog(
                 context: context,
@@ -573,5 +577,10 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
         print('Form is invalid');
       }
     }
+  }
+
+  _validateUserSave() async {
+    prefs = await SharedPreferences.getInstance();
+
   }
 }

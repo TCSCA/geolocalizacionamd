@@ -346,98 +346,102 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
                 const SizedBox(
                   height: 8.0,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (doctorAvailableSwitch) ...[
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            elevation: 5.0,
-                            side: const BorderSide(
-                                width: 2, color: Color(0xffFFFFFF)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30))),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return CustomDialogBox(
-                                    title: context.appLocalization.titleWarning,
-                                    descriptions:
-                                        '¿Estás seguro de desactivar su servicio?',
-                                    isConfirmation: true,
-                                    dialogAction: () =>
-                                        BlocProvider.of<MainBloc>(context)
-                                            .add(DisconectDoctorAmdEvent()),
-                                    type: AppConstants.statusWarning,
-                                    isdialogCancel: false,
-                                    dialogCancel: () {});
-                              });
-                        },
-                        child: Ink(
-                          decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 25),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.person_pin_circle,
-                                    size: 24.0, color: Colors.white),
-                                //const SizedBox(width: 5.0),
-                                Text(
-                                  "Disponible",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                )
-                              ],
+                Container(
+                  height: 80,
+                  alignment: Alignment.center,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (doctorAvailableSwitch) ...[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              elevation: 5.0,
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xffFFFFFF)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                      title: context.appLocalization.titleWarning,
+                                      descriptions:
+                                          '¿Estás seguro de desactivar su servicio?',
+                                      isConfirmation: true,
+                                      dialogAction: () =>
+                                          BlocProvider.of<MainBloc>(context)
+                                              .add(DisconectDoctorAmdEvent()),
+                                      type: AppConstants.statusWarning,
+                                      isdialogCancel: false,
+                                      dialogCancel: () {});
+                                });
+                          },
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 25),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.person_pin_circle,
+                                      size: 24.0, color: Colors.white),
+                                  //const SizedBox(width: 5.0),
+                                  Text(
+                                    "Disponible",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ] else ...[
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            elevation: 5.0,
-                            side: const BorderSide(
-                                width: 2, color: Color(0xffFFFFFF)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30))),
-                        onPressed: () => BlocProvider.of<MainBloc>(context)
-                            .add(const ValidateDoctorAmdAssignedEvent()),
-                        child: Ink(
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 25),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.power_settings_new,
-                                    size: 24.0, color: Colors.white),
-                                const SizedBox(width: 5.0),
-                                Text(
-                                  "No disponible",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                )
-                              ],
+                        )
+                      ] else ...[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              elevation: 5.0,
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xffFFFFFF)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          onPressed: () => BlocProvider.of<MainBloc>(context)
+                              .add(const ValidateDoctorAmdAssignedEvent()),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 25),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.power_settings_new,
+                                      size: 24.0, color: Colors.white),
+                                  const SizedBox(width: 5.0),
+                                  Text(
+                                    "No disponible",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ]
-                  ],
+                        )
+                      ]
+                    ],
+                  ),
                 )
               ],
             ),

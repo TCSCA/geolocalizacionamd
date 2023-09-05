@@ -237,9 +237,16 @@ class ExpansionTitleWidget extends StatelessWidget {
               Row(
                 children: [
                   const SizedBox(width: 20.0),
-                  Text('Formulario AMD: ',
+                  Text(
+                      statusOrder == 'Rechazada'
+                          ? 'Orden rechazada por el administrador'
+                          : 'Formulario AMD: ',
                       style: TextStyle(
-                          fontSize: tamanioLetra, fontWeight: FontWeight.bold)),
+                          color: statusOrder == 'Rechazada'
+                              ? Colors.red
+                              : Colors.black,
+                          fontSize: tamanioLetra,
+                          fontWeight: FontWeight.bold)),
                   BlocConsumer<AmdFormBloc, AmdFormState>(
                     listener: (context, state) async {
                       if (state is AmdFormLoading) {
