@@ -51,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
 
   ///Vareiables  para veirificar usuario guardado
   String userSave = '';
+  String previousUserSave = '';
   bool checkUserSave = false;
 
   String denyFingerprint = '';
@@ -101,12 +102,16 @@ class _LoginPageState extends State<LoginPage> {
                   }
 
                   if (checkUserSave) {
+                    await prefs.setString(
+                        'previousUserSave', prefs.getString('userSave') ?? '');
                     if (!isUsedFingerprint) {
+                      if (userController.text != previousUserSave) {
+                        await prefs.remove('userBiometricPermission');
+                      }
                       await prefs.setString('userSave', userController.text);
                       await prefs.setBool('checkUserSave', checkUserSave);
                       await prefs.setString(
                           'password', passwordController.text);
-
                       /*if (userBiometricPermission == '') {
                         await showDialog(
                             context: context,
@@ -589,27 +594,6 @@ class _LoginPageState extends State<LoginPage> {
   Future _getAvailableBiometric() async {
     List<BiometricType> availableBiometric = [];
 
-    /* bool? autoStart = await isAutoStartAvailable;
-    if(autoStart != null && autoStart) {
-      await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CustomDialogBox(
-              title: AppMessages().getMessageTitle(
-                  context, AppConstants.statusSuccess),
-              descriptions: AppMessages().getMessage(context,
-                  'para poder hacer uso de todos nuestro servicios, debera'),
-              isConfirmation: true,
-              dialogAction: () {},
-              type: AppConstants.statusSuccess,
-              isdialogCancel: false,
-              dialogCancel: () {},
-            );
-          });
-      await getAutoStartPermission();
-    }*/
-
     try {
       availableBiometric = await auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
@@ -647,21 +631,19 @@ class _LoginPageState extends State<LoginPage> {
           barrierDismissible: false,
           builder: (BuildContext context) {
             return CustomDialogBox(
-              title: AppMessages().getMessageTitle(
-                  context, AppConstants.statusSuccess),
-              descriptions: AppMessages().getMessage(
-                  context, context.appLocalization.appMsg013),
+              title: AppMessages()
+                  .getMessageTitle(context, AppConstants.statusSuccess),
+              descriptions: AppMessages()
+                  .getMessage(context, context.appLocalization.appMsg013),
               isConfirmation: true,
               dialogAction: () async {
-                await prefs.setString(
-                    'userBiometricPermission', 'Y');
+                await prefs.setString('userBiometricPermission', 'Y');
                 _useBiometric();
               },
               type: AppConstants.statusSuccess,
               isdialogCancel: true,
               dialogCancel: () async {
-                await prefs.setString(
-                    'userBiometricPermission', 'N');
+                await prefs.setString('userBiometricPermission', 'N');
               },
             );
           });
@@ -714,7 +696,7 @@ class _LoginPageState extends State<LoginPage> {
               goToSettingsButton: '',
               goToSettingsDescription: '',
               biometricNotRecognized:
-              context.appLocalization.invalidFingerprint,
+                  context.appLocalization.invalidFingerprint,
               biometricSuccess: '',
               biometricHint: '',
               biometricRequiredTitle: '',
@@ -742,56 +724,56 @@ class _LoginPageState extends State<LoginPage> {
       /// _authorized = "Error - ${e.code}";
       e.code == 'LockedOut'
           ? showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CustomDialogBox(
-              title: AppMessages()
-                  .getMessageTitle(context, AppConstants.statusError),
-              descriptions: AppMessages().getMessage(context,
-                  context.appLocalization.limitBiometricAttempts),
-              isConfirmation: false,
-              dialogAction: () {},
-              type: AppConstants.statusError,
-              isdialogCancel: false,
-              dialogCancel: () {},
-            );
-          })
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions: AppMessages().getMessage(
+                      context, context.appLocalization.limitBiometricAttempts),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              })
           : e.code == auth_error.notAvailable
-          ? showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CustomDialogBox(
-              title: AppMessages()
-                  .getMessageTitle(context, AppConstants.statusError),
-              descriptions: AppMessages().getMessage(context,
-                  context.appLocalization.biometricNotSupported),
-              isConfirmation: false,
-              dialogAction: () {},
-              type: AppConstants.statusError,
-              isdialogCancel: false,
-              dialogCancel: () {},
-            );
-          })
-          : e.code == 'NoHardware' || e.code == 'NotEnrolled'
-          ? showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CustomDialogBox(
-              title: AppMessages().getMessageTitle(
-                  context, AppConstants.statusError),
-              descriptions: AppMessages().getMessage(context,
-                  context.appLocalization.biometricNotSupported),
-              isConfirmation: false,
-              dialogAction: () {},
-              type: AppConstants.statusError,
-              isdialogCancel: false,
-              dialogCancel: () {},
-            );
-          })
-          : null;
+              ? showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions: AppMessages().getMessage(context,
+                          context.appLocalization.biometricNotSupported),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  })
+              : e.code == 'NoHardware' || e.code == 'NotEnrolled'
+                  ? showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return CustomDialogBox(
+                          title: AppMessages().getMessageTitle(
+                              context, AppConstants.statusError),
+                          descriptions: AppMessages().getMessage(context,
+                              context.appLocalization.biometricNotSupported),
+                          isConfirmation: false,
+                          dialogAction: () {},
+                          type: AppConstants.statusError,
+                          isdialogCancel: false,
+                          dialogCancel: () {},
+                        );
+                      })
+                  : null;
     }
   }
 
@@ -799,6 +781,7 @@ class _LoginPageState extends State<LoginPage> {
     prefs = await SharedPreferences.getInstance();
     denyFingerprint = prefs.getString('denyFingerprint') ?? '';
     userSave = prefs.getString('userSave') ?? '';
+    previousUserSave = prefs.getString('previousUserSave') ?? '';
 
     userBiometricPermission = prefs.getString('userBiometricPermission') ?? '';
     checkUserSave = prefs.getBool('checkUserSave') ?? false;
