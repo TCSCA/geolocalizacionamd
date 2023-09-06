@@ -487,7 +487,8 @@ class _LoginPageState extends State<LoginPage> {
                                         context, AppConstants.statusWarning),
                                     descriptions: AppMessages().getMessage(
                                         context,
-                                        'Usted ha iniciado el proceso para recuperar su contraseña. ¿Desea continuar?'),
+                                        context.appLocalization
+                                            .messageForgotPassword),
                                     isConfirmation: true,
                                     dialogAction: () => context.go(
                                         GeoAmdRoutes.renewPassword,
