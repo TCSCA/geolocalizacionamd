@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                       await prefs.setString(
                           'password', passwordController.text);
 
-                      if (userBiometricPermission == '') {
+                      /*if (userBiometricPermission == '') {
                         await showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                               );
                             });
-                      }
+                      }*/
                     }
                   }
                   if (context.mounted) {
@@ -391,12 +391,12 @@ class _LoginPageState extends State<LoginPage> {
                                       passwordController.clear();
                                     }
 
-                                    // await prefs.remove('userSave');
+                                    await prefs.remove('userSave');
                                     await prefs.remove('checkUserSave');
                                     await prefs.remove('denyFingerprint');
                                     await prefs
                                         .remove('userBiometricPermission');
-                                    // await prefs.remove('password');
+                                    await prefs.remove('password');
                                     userSave = '';
                                     denyFingerprint = '';
                                     userBiometricPermission = '';
