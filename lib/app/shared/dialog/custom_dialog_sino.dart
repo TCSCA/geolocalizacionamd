@@ -65,10 +65,8 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
             children: <Widget>[
               Text(
                 widget.title,
-                style: TextStyle(
-                    fontSize: AppStyles.textSizeTitle,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontFamily: AppStyles.fontTitlesHighlight,
                     color: _getStatusColor(widget.type)),
               ),
               const SizedBox(
@@ -76,10 +74,10 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
               ),
               Text(
                 widget.descriptions,
-                style: const TextStyle(
-                    fontSize: AppStyles.textSizeParagraph,
-                    color: AppStyles.colorBlack,
-                    fontFamily: AppStyles.fontTextsParagraphs),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -89,33 +87,6 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TextButton(
-                      style: ButtonStyle(
-                          padding: MaterialStateProperty.all<EdgeInsets>(
-                              const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20)),
-                          backgroundColor: MaterialStateProperty.all(
-                              AppStyles.colorBluePrimary),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                                side: BorderSide(
-                                    style: BorderStyle.solid,
-                                    color:
-                                        AppStyles.colorBeige.withOpacity(0.4))),
-                          )),
-                      onPressed: () {
-                        context.pop();
-                        widget.dialogAction.call();
-                      },
-                      child: Text(
-                        context.appLocalization.nameButtonYes,
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelLarge
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      )),
                   TextButton(
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all<EdgeInsets>(
@@ -138,6 +109,33 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
                       },
                       child: Text(
                         context.appLocalization.nameButtonNo,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      )),
+                  TextButton(
+                      style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(
+                              const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20)),
+                          backgroundColor: MaterialStateProperty.all(
+                              AppStyles.colorBluePrimary),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                                side: BorderSide(
+                                    style: BorderStyle.solid,
+                                    color:
+                                        AppStyles.colorBeige.withOpacity(0.4))),
+                          )),
+                      onPressed: () {
+                        context.pop();
+                        widget.dialogAction.call();
+                      },
+                      child: Text(
+                        context.appLocalization.nameButtonYes,
                         style: Theme.of(context)
                             .textTheme
                             .labelLarge

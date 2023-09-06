@@ -508,7 +508,7 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                         ?.copyWith(
                         color: Colors.black, fontWeight: FontWeight.bold)),
                 Text(
-                  DateFormat("dd-MM-yyyy hh:mm a")
+                  DateFormat(AppConstants.dateTimeFormat)
                       .format(homeServiceConfirmed.registerDate),
                   style: Theme
                       .of(context)
