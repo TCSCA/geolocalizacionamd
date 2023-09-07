@@ -103,5 +103,5 @@
     "successUpdateData": "Su información ha sido actualizada de manera exitosa",
     "appMsg012": "Actualmente, tiene una atención confirmada. Es necesario que finalice la misma para continuar recibiendo nuevas atenciones.",
     "sessionExpired": "Sesión expirada, el sistema se cerrará",
-    "phoneValidationZero": "No esta permitido el número 0 al inicio"
+    "phoneValidationZero": "No está permitido el número 0 al inicio"
 }
