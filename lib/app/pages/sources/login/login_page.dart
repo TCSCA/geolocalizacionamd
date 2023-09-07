@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocalizacionamd/app/core/controllers/image_profile_controller.dart';
-import 'package:geolocalizacionamd/app/pages/sources/profile/bloc/profile_bloc.dart';
-import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
+import '/app/core/controllers/image_profile_controller.dart';
+import '/app/pages/sources/profile/bloc/profile_bloc.dart';
+import '/app/shared/dialog/custom_dialog_sino.dart';
+import '/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -631,18 +632,16 @@ class _LoginPageState extends State<LoginPage> {
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) {
-            return CustomDialogBox(
+            return CustomDialogSino(
               title: AppMessages()
-                  .getMessageTitle(context, AppConstants.statusSuccess),
+                  .getMessageTitle(context, AppConstants.statusWarning),
               descriptions: AppMessages()
                   .getMessage(context, context.appLocalization.appMsg013),
-              isConfirmation: true,
               dialogAction: () async {
                 await prefs.setString('userBiometricPermission', 'Y');
                 _useBiometric();
               },
-              type: AppConstants.statusSuccess,
-              isdialogCancel: true,
+              type: AppConstants.statusWarning,
               dialogCancel: () async {
                 await prefs.setString('userBiometricPermission', 'N');
               },
