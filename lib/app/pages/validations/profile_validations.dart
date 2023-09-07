@@ -39,7 +39,7 @@ class ProfileValidations {
 
   numberValidator(BuildContext context, String event) {
     if (event != '' && event.substring(1).startsWith('0')) {
-      return 'No esta permitido el numero 0 al inicio';
+      return context.appLocalization.phoneValidationZero;
     } else if (event.length < 13 && event != '') {
       return context.appLocalization.invalidLengthField;
     } else if (event == '') {
@@ -50,7 +50,7 @@ class ProfileValidations {
 
   otherNumberValidator(BuildContext context, String event) {
     if (event != '' && event.substring(1).startsWith('0')) {
-      return 'No esta permitido el numero 0 al inicio';
+      return context.appLocalization.phoneValidationZero;
     } else if (event.length < 13 && event != '') {
       return context.appLocalization.invalidLengthField;
     }

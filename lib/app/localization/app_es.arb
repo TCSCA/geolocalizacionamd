@@ -102,5 +102,6 @@
     "alertCancel": "Al pulsar Aceptar, perderá los datos ingresados y deberá iniciar el proceso nuevamente. Cancelar para volver a la pantalla anterior",
     "successUpdateData": "Su información ha sido actualizada de manera exitosa",
     "appMsg012": "Actualmente, tiene una atención confirmada. Es necesario que finalice la misma para continuar recibiendo nuevas atenciones.",
-    "sessionExpired": "Sesión expirada, el sistema se cerrará"
+    "sessionExpired": "Sesión expirada, el sistema se cerrará",
+    "phoneValidationZero": "No esta permitido el número 0 al inicio"
 }
