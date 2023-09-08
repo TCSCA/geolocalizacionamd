@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:geolocalizacionamd/app/core/controllers/amd_history_controller.dart';
 import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
@@ -12,6 +11,7 @@ import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../messages/app_messages.dart';
+import '../login/bloc/login_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import 'widgets/amd_history_widgets.dart';
 
@@ -41,8 +41,8 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
               ],
               child: BlocProvider(
                 create: (context) =>
-                AmdHistoryBloc(amdHistoryController: AmdHistoryController())
-                  ..add(GetAmdHistoryEvent()),
+                    AmdHistoryBloc(amdHistoryController: AmdHistoryController())
+                      ..add(GetAmdHistoryEvent()),
                 child: const TabBarViewWidget(),
               ),
             ),
@@ -61,30 +61,53 @@ class TabBarViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is AmdHistoryLoadingState) {
           LoadingBuilder(context).showLoadingIndicator('Cargando historial');
         } else if (state is AmdHistorySuccessDataState) {
           LoadingBuilder(context).hideOpenDialog();
         }
         if (state is AmdHistoryErrorState) {
-          LoadingBuilder(context).hideOpenDialog();
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return CustomDialogBox(
-                  title: AppMessages()
-                      .getMessageTitle(context, AppConstants.statusError),
-                  descriptions:
-                  AppMessages().getMessage(context, state.messageError),
-                  isConfirmation: false,
-                  dialogAction: () {},
-                  type: AppConstants.statusError,
-                  isdialogCancel: false,
-                  dialogCancel: () {},
-                );
-              });
+          if (state.messageError == "session expired") {
+            await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions: AppMessages().getMessage(
+                        context, context.appLocalization.sessionExpired),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+            if (context.mounted) {
+              BlocProvider.of<LoginBloc>(context)
+                  .add(const ProcessLogoutEvent());
+            }
+          } else {
+            LoadingBuilder(context).hideOpenDialog();
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                        AppMessages().getMessage(context, state.messageError),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
         }
       },
       builder: (context, state) {
@@ -130,8 +153,7 @@ class ListViewHistoryAmd extends StatelessWidget {
           ),
           Text(
             context.appLocalization.appMsg137,
-            style: Theme
-                .of(context)
+            style: Theme.of(context)
                 .textTheme
                 .labelLarge
                 ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
@@ -156,8 +178,8 @@ class ListViewHistoryAmd extends StatelessWidget {
                 dateOrderMonth: homeService?[index].registerDate.month,
                 dateOrderYear: homeService?[index].registerDate.year,
                 fullNamePatient: homeService?[index].fullNamePatient,
-                identificationDocument: homeService?[index]
-                    .identificationDocument,
+                identificationDocument:
+                    homeService?[index].identificationDocument,
                 phoneNumberPatient: homeService?[index].phoneNumberPatient,
                 address: homeService?[index].address,
                 applicantDoctor: homeService?[index].applicantDoctor,
@@ -165,8 +187,7 @@ class ListViewHistoryAmd extends StatelessWidget {
                 typeService: homeService?[index].typeService,
                 //linkAmd: homeService?[index].linkAmd,
                 statusHomeService: homeService?[index].statusHomeService,
-                statusOrder: homeService?[index].statusOrder
-            );
+                statusOrder: homeService?[index].statusOrder);
           },
         ),
       );

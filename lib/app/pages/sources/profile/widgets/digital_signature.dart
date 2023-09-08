@@ -12,6 +12,7 @@ import '../../../../shared/method/back_button_action.dart';
 import '../../../constants/app_constants.dart';
 import '../../../messages/app_messages.dart';
 import '../../../styles/app_styles.dart';
+import '../../login/bloc/login_bloc.dart';
 
 class DigitalSignatureWidget extends StatelessWidget {
   Uint8List? signatureBuild = null;
@@ -23,7 +24,7 @@ class DigitalSignatureWidget extends StatelessWidget {
     BlocProvider.of<DigitalSignatureBloc>(context)
         .add(ConsultDigitalSignatureeEvent());
     return BlocConsumer<DigitalSignatureBloc, DigitalSignatureState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is LoadingDigitalSignatureState) {
           LoadingBuilder(context)
               .showLoadingIndicator('Cargando firma del doctor');
@@ -33,22 +34,47 @@ class DigitalSignatureWidget extends StatelessWidget {
         } else if (state is DigitalSignatureErrorState) {
           GoRouter.of(context).pop();
           LoadingBuilder(context).hideOpenDialog();
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return CustomDialogBox(
-                  title: AppMessages()
-                      .getMessageTitle(context, AppConstants.statusError),
-                  descriptions:
-                      AppMessages().getMessage(context, state.messageError),
-                  isConfirmation: false,
-                  dialogAction: () {},
-                  type: AppConstants.statusError,
-                  isdialogCancel: false,
-                  dialogCancel: () {},
-                );
-              });
+
+          if (state.messageError == "session expired") {
+            await showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions: AppMessages().getMessage(
+                        context, context.appLocalization.sessionExpired),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+
+            if (context.mounted) {
+              BlocProvider.of<LoginBloc>(context)
+                  .add(const ProcessLogoutEvent());
+            }
+          } else {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomDialogBox(
+                    title: AppMessages()
+                        .getMessageTitle(context, AppConstants.statusError),
+                    descriptions:
+                        AppMessages().getMessage(context, state.messageError),
+                    isConfirmation: false,
+                    dialogAction: () {},
+                    type: AppConstants.statusError,
+                    isdialogCancel: false,
+                    dialogCancel: () {},
+                  );
+                });
+          }
         }
       },
       builder: (context, state) {

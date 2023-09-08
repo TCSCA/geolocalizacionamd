@@ -64,4 +64,5 @@ class ApiConstants {
   static const String amdconfirmedAdminFinalizedCodeApi = 'MSG-232';
   static const String doctorAmdAssignedLabel = 'doctorAmdAssigned';
   static const String idAmdconfirmedLabel = 'idAmdconfirmed';
+  static const String sessionExpire = 'Full authentication is required to access this resource';
 }

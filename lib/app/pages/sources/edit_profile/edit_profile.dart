@@ -224,7 +224,7 @@ class _EditProfileState extends State<EditProfile> {
             LoadingBuilder(context).hideOpenDialog();
 
             if(state.messageError == "session expired") {
-             return showDialog(
+             await showDialog(
                   context: context,
                   barrierDismissible: false,
                   builder: (BuildContext context) {
@@ -234,15 +234,15 @@ class _EditProfileState extends State<EditProfile> {
                       descriptions:
                       AppMessages().getMessage(context, context.appLocalization.sessionExpired),
                       isConfirmation: false,
-                      dialogAction: () {
-
-                      },
+                      dialogAction: () {},
                       type: AppConstants.statusError,
                       isdialogCancel: false,
                       dialogCancel: () {},
                     );
                   });
-             BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
+             if(context.mounted) {
+               BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
+             }
             } else {
               showDialog(
                   context: context,

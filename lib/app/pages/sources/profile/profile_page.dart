@@ -28,7 +28,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-   // BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
+    // BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
 
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
@@ -75,7 +75,7 @@ class ListViewProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileBloc, ProfileState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is ProfileInitial) {
           context.read<ProfileBloc>().add(GetProfileEvent());
         } else if (state is ProfileLoadingState) {
@@ -86,26 +86,27 @@ class ListViewProfileWidget extends StatelessWidget {
         } else if (state is ProfileErrorState) {
           LoadingBuilder(context).hideOpenDialog();
 
-          if(state.messageError == "session expired") {
-             showDialog(
+          if (state.messageError == "session expired") {
+            await showDialog(
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
                   return CustomDialogBox(
                     title: AppMessages()
                         .getMessageTitle(context, AppConstants.statusError),
-                    descriptions:
-                    AppMessages().getMessage(context, context.appLocalization.sessionExpired),
-                    isConfirmation: true,
-                    dialogAction: () {
-                      BlocProvider.of<LoginBloc>(context).add(const ProcessLogoutEvent());
-                    },
+                    descriptions: AppMessages().getMessage(
+                        context, context.appLocalization.sessionExpired),
+                    isConfirmation: false,
+                    dialogAction: () {},
                     type: AppConstants.statusError,
                     isdialogCancel: false,
                     dialogCancel: () {},
                   );
                 });
-
+            if (context.mounted) {
+              BlocProvider.of<LoginBloc>(context)
+                  .add(const ProcessLogoutEvent());
+            }
           } else {
             showDialog(
                 context: context,
@@ -115,7 +116,7 @@ class ListViewProfileWidget extends StatelessWidget {
                     title: AppMessages()
                         .getMessageTitle(context, AppConstants.statusError),
                     descriptions:
-                    AppMessages().getMessage(context, state.messageError),
+                        AppMessages().getMessage(context, state.messageError),
                     isConfirmation: false,
                     dialogAction: () {},
                     type: AppConstants.statusError,
@@ -124,7 +125,6 @@ class ListViewProfileWidget extends StatelessWidget {
                   );
                 });
           }
-
         }
       },
       builder: (context, state) {
@@ -243,9 +243,9 @@ class ListViewProfileWidget extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) =>
-                                *//*BlocProvider(
+                                */ /*BlocProvider(
                                       create: (context) => DigitalSignatureBloc(),
-                                      child: *//*DigitalSignatureWidget());
+                                      child: */ /*DigitalSignatureWidget());
                             //    ));
                           }),*/
                     ],
@@ -263,7 +263,6 @@ class ListViewProfileWidget extends StatelessWidget {
           BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
           return Container();
         } else {
-
           return Container();
         }
       },

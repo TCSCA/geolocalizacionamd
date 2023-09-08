@@ -32,7 +32,6 @@ class ConsultDataServiceImp implements ConsultDataService {
           ApiConstants.statusSuccessApi) {
         responsePhotos = PhotoMap.fromJson(decodeRespApi);
       } else {
-
         throw ErrorAppException(
             message: decodeRespApi[ApiConstants.dataLabelApi]);
       }
@@ -51,7 +50,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlApiGetActiveAmdOrder =
-    Uri.parse(ApiConstants.urlApiGetActiveAmdOrder);
+        Uri.parse(ApiConstants.urlApiGetActiveAmdOrder);
     final Map<String, String> headerActiveAmdOrder = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
@@ -72,7 +71,7 @@ class ConsultDataServiceImp implements ConsultDataService {
         }
       } else {
         final String error =
-        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+            decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
         if (error.isNotEmpty) {
           throw ErrorAppException(message: error);
         } else {
@@ -112,14 +111,12 @@ class ConsultDataServiceImp implements ConsultDataService {
 
       if (decodeResApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-
         profileMap = ProfileMap.fromJson(decodeResApi);
         if (decodeResApi[ApiConstants.dataLabelApi] != null) {
-
           // responseGetProfile
         }
       } else {
-        if(decodeResApi['data'] == 'Full authentication is required to access this resource') {
+        if (decodeResApi['data'] == ApiConstants.sessionExpire) {
           throw SessionExpiredException(message: "session expired");
         }
       }
@@ -137,19 +134,19 @@ class ConsultDataServiceImp implements ConsultDataService {
   }
 
   @override
-  Future<void> validateIfOrderIsCompletedOrRejected(String tokenUser,
-      int idHomeServiceAttention) async {
+  Future<void> validateIfOrderIsCompletedOrRejected(
+      String tokenUser, int idHomeServiceAttention) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
     final Uri urlValidateIfOrderIsCompletedOrRejected =
-    Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
+        Uri.parse(ApiConstants.urlApiValidateIfOrderIsCompletedOrRejected);
     final Map<String, String> header = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
 
     final String bodyValidateIfOrderIsCompletedOrRejected =
-    jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
+        jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
 
     try {
       responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
@@ -176,7 +173,6 @@ class ConsultDataServiceImp implements ConsultDataService {
       throw ErrorGeneralException();
     }
   }
-
 
   @override
   Future<List<HomeServiceMap>> getHistoryAmdOrderList(
@@ -212,6 +208,9 @@ class ConsultDataServiceImp implements ConsultDataService {
             decodeRespApi[ApiConstants.dataLabelApi]
                 .map((data) => HomeServiceMap.fromJson(data)));
       } else {
+        if (decodeRespApi['data'] == ApiConstants.sessionExpire) {
+          throw ErrorAppException(message: "session expired");
+        }
         throw ErrorAppException(
             message: decodeRespApi[ApiConstants.dataLabelApi]);
       }
@@ -247,17 +246,17 @@ class ConsultDataServiceImp implements ConsultDataService {
           ApiConstants.statusSuccessApi) {
         genderMap = GenderMap.fromJson(decodeRespApi);
       } else {
-        if(decodeRespApi['data'] == 'Full authentication is required to access this resource') {
+        if (decodeRespApi['data'] ==
+            'Full authentication is required to access this resource') {
           throw SessionExpiredException(message: "session expired");
         }
       }
-
     } on EmptyDataException {
       rethrow;
     } on SessionExpiredException {
       rethrow;
     } on ErrorAppException {
-        rethrow;
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
@@ -275,7 +274,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     final List bytesImageEmpty = [];
     //
     final Uri urlGetPhotoProfile =
-    Uri.parse(ApiConstants.urlApiGetPhotoProfile);
+        Uri.parse(ApiConstants.urlApiGetPhotoProfile);
 
     final Map<String, String> headerPhoto = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
@@ -290,8 +289,7 @@ class ConsultDataServiceImp implements ConsultDataService {
       if (decodeRespApi["data"]["photoProfile"] != null) {
         imageArray = decodeRespApi["data"]["photoProfile"];
         imageProfile = Uint8List.fromList(imageArray.cast<int>());
-      }
-      else {
+      } else {
         imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
       }
     } on EmptyDataException {
@@ -314,7 +312,7 @@ class ConsultDataServiceImp implements ConsultDataService {
     final List bytesImageEmpty = [];
 
     final Uri urlGetDigitalSignature =
-    Uri.parse(ApiConstants.urlApiGetDigitalSignature);
+        Uri.parse(ApiConstants.urlApiGetDigitalSignature);
 
     final Map<String, String> headerSignature = {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
@@ -322,18 +320,24 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     try {
-      responseApi = await http.post(urlGetDigitalSignature, headers: headerSignature);
+      responseApi =
+          await http.post(urlGetDigitalSignature, headers: headerSignature);
 
       decodeRespApi = jsonDecode(responseApi.body);
 
-      if (decodeRespApi["data"]["digitalSignature"] != null) {
-        imageArray = decodeRespApi["data"]["digitalSignature"];
-        imageProfile = Uint8List.fromList(imageArray.cast<int>());
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        if (decodeRespApi["data"]["digitalSignature"] != null) {
+          imageArray = decodeRespApi["data"]["digitalSignature"];
+          imageProfile = Uint8List.fromList(imageArray.cast<int>());
+        } else {
+          imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
+        }
+      } else {
+        if (decodeRespApi['data'] == ApiConstants.sessionExpire) {
+          throw ErrorAppException(message: "session expired");
+        }
       }
-      else {
-        imageProfile = Uint8List.fromList(bytesImageEmpty.cast<int>());
-      }
-
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
