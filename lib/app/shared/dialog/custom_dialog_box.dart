@@ -78,6 +78,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
               ),
               Text(
                 widget.descriptions,
+                softWrap: true,
                 style: Theme.of(context)
                     .textTheme
                     .labelLarge

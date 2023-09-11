@@ -162,8 +162,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceAssignedEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        /* emit(const MainShowLoadingState(
-            message: 'Consultando Atenciones Pendientes')); */
+        emit(const ShowLoadingAmdAssignedState(
+            message: 'Consultando Atenciones Pendientes'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 

@@ -152,6 +152,9 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
         //   LoadingBuilder(context).hideOpenDialog();
         //   doctorAvailableSwitch = state.doctorAvailable;
         // }
+        if (state is ShowLoadingAmdAssignedState) {
+          LoadingBuilder(context).showLoadingIndicator(state.message);
+        }
         if (state is DoctorServiceState) {
           //desactivarservicio
           LoadingBuilder(context).hideOpenDialog();
@@ -218,6 +221,7 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
           doctorAvailableSwitch = false;
         }
         if (state is HomeServiceSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = false;
         }
         if (state is ShowAmdOrderAdminFinalizedState) {
@@ -287,6 +291,7 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
           context.go(GeoAmdRoutes.amdLocation);
         }
         if (state is HomeServiceEmptyState) {
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = state.doctorAvailable;
         }
       },
@@ -338,7 +343,7 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
                             style: Theme.of(context).textTheme.labelLarge),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 8.0,
                     ),
                   ],
@@ -473,6 +478,7 @@ class AmdInformationAssigned extends StatelessWidget {
             LoadingBuilder(context).showLoadingIndicator(state.message);
           }
           if (state is HomeServicePendingFinishState) {
+            LoadingBuilder(context).hideOpenDialog();
             //atencion pendiente por finalizar
             doctorAvailableSwitch = false;
             showDialog(
@@ -532,6 +538,7 @@ class AmdInformationAssigned extends StatelessWidget {
                 });
           }
           if (state is HomeServiceAssignedErrorState) {
+            LoadingBuilder(context).hideOpenDialog();
             showDialog(
                 context: context,
                 barrierDismissible: false,

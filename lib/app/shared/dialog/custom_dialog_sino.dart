@@ -74,6 +74,7 @@ class _CustomDialogSinoState extends State<CustomDialogSino> {
               ),
               Text(
                 widget.descriptions,
+                softWrap: true,
                 style: Theme.of(context)
                     .textTheme
                     .labelLarge

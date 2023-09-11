@@ -219,3 +219,10 @@ class AmdConfirmedAdminSuccessState extends MainState {
   @override
   List<Object> get props => [];
 }
+
+class ShowLoadingAmdAssignedState extends MainState {
+  final String message;
+  const ShowLoadingAmdAssignedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
