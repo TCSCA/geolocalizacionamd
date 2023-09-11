@@ -98,8 +98,14 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
             LoadingBuilder(context).showLoadingIndicator(
                 context.appLocalization.changePasswordAction);
           } else if (state is ChangePasswordSuccessState) {
+
+          final String  userSave = prefs.getString('userSave') ?? '';
+
+          if(userSave == widget.username) {
             await prefs.setString(
                 'password', widget.passwordCtrl.text);
+          }
+
             LoadingBuilder(context).hideOpenDialog();
             await showDialog(
                 context: context,
