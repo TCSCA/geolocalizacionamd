@@ -210,6 +210,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(HomeServiceAssignedErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceAssignedErrorState(message: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(MainInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const HomeServiceAssignedErrorState(
             message: AppConstants.codeGeneralErrorMessage));
@@ -427,7 +429,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ValidateDoctorAmdAssignedEvent>((event, emit) async {
       bool doctorAmdAssigned, doctorInAttention;
       try {
-
         var idAmdConfirmed = await doctorCareController.getAmdConfirmed();
         if (idAmdConfirmed != '0') {
           await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(
@@ -455,6 +456,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         await doctorCareController.changeIdAmdConfirmed('0');
         await doctorCareController.changeDoctorAmdPending('false');
         emit(const NotHomeServiceAssignedState());
+      } on SessionExpiredException catch (exesi) {
+        emit(MainInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
             message: AppConstants.codeGeneralErrorMessage));

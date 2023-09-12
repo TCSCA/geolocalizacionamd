@@ -89,6 +89,12 @@ class AppMessages {
     if (code.trim() == 'MSGAPP-181') {
       return context.appLocalization.appMsg181;
     }
+    if (code.trim() == 'MSGHTTP-401') {
+      return context.appLocalization.invalidSession;
+    }
+    if (code.trim() == 'MSGHTTP-403') {
+      return context.appLocalization.invalidSession;
+    }
     return code;
   }
 }

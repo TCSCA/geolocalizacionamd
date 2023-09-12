@@ -5,6 +5,7 @@ import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
 import '../../../../core/controllers/amd_history_controller.dart';
 import '../../../../errors/error_app_exception.dart';
 import '../../../../errors/error_general_exception.dart';
+import '../../../../errors/error_session_expired.dart';
 import '../../../constants/app_constants.dart';
 
 part 'amd_history_event.dart';
@@ -33,6 +34,8 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
         emit(AmdHistoryErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(AmdHistoryErrorState(messageError: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(AmdHistoryInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const AmdHistoryErrorState(
             messageError: AppConstants.codeGeneralErrorMessage));

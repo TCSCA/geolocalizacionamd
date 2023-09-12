@@ -48,3 +48,10 @@ class ProfileErrorState extends ProfileState {
   List<Object?> get props => [messageError];
 
 }
+
+class ProfileInvalidSessionState extends ProfileState {
+  final String message;
+  const ProfileInvalidSessionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

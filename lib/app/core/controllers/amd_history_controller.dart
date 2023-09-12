@@ -7,6 +7,7 @@ import '../../api/services/consult_data_service.dart';
 import '../../api/services/consult_data_service_implement.dart';
 import '../../errors/error_app_exception.dart';
 import '../../errors/error_general_exception.dart';
+import '../../errors/error_session_expired.dart';
 
 class AmdHistoryController {
   final SecureStorageController secureStorageController =
@@ -103,6 +104,8 @@ class AmdHistoryController {
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

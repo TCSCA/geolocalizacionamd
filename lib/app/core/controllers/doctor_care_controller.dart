@@ -216,6 +216,8 @@ class DoctorCareController {
       rethrow;
     } on ErrorGeneralException {
       rethrow;
+    } on SessionExpiredException {
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
@@ -302,6 +304,8 @@ class DoctorCareController {
       rethrow;
     } on ErrorGeneralException {
       rethrow;
+    } on SessionExpiredException {
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
@@ -327,6 +331,8 @@ class DoctorCareController {
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

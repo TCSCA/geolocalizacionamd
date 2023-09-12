@@ -85,17 +85,15 @@ class ListViewProfileWidget extends StatelessWidget {
           LoadingBuilder(context).hideOpenDialog();
         } else if (state is ProfileErrorState) {
           LoadingBuilder(context).hideOpenDialog();
-
-          if (state.messageError == "session expired") {
-            await showDialog(
+          showDialog(
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
                   return CustomDialogBox(
                     title: AppMessages()
                         .getMessageTitle(context, AppConstants.statusError),
-                    descriptions: AppMessages().getMessage(
-                        context, context.appLocalization.sessionExpired),
+                  descriptions:
+                      AppMessages().getMessage(context, state.messageError),
                     isConfirmation: false,
                     dialogAction: () {},
                     type: AppConstants.statusError,
@@ -103,28 +101,26 @@ class ListViewProfileWidget extends StatelessWidget {
                     dialogCancel: () {},
                   );
                 });
-            if (context.mounted) {
-              BlocProvider.of<LoginBloc>(context)
-                  .add(const ProcessLogoutEvent());
-            }
-          } else {
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusError),
-                    descriptions:
-                        AppMessages().getMessage(context, state.messageError),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusError,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                });
-          }
+        } else if (state is ProfileInvalidSessionState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.login);
+          });
         }
       },
       builder: (context, state) {

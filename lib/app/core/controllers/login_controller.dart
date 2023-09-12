@@ -63,6 +63,8 @@ class LoginController {
       rethrow;
     } on ErrorGeneralException {
       rethrow;
+    } on SessionExpiredException {
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     } finally {

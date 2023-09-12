@@ -65,6 +65,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(LoginErrorState(message: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(LogoutInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const LoginErrorState(
             message: AppConstants.codeGeneralErrorMessage));

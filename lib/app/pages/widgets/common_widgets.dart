@@ -286,6 +286,25 @@ class AppCommonWidgets {
             }).then((value) {
           context.go(GeoAmdRoutes.home);
         });
+      } else if (state is LogoutInvalidSessionState) {
+        LoadingBuilder(context).hideOpenDialog();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                title: AppMessages()
+                    .getMessageTitle(context, AppConstants.statusWarning),
+                descriptions: AppMessages().getMessage(context, state.message),
+                isConfirmation: false,
+                dialogAction: () {},
+                type: AppConstants.statusWarning,
+                isdialogCancel: false,
+                dialogCancel: () {},
+              );
+            }).then((value) {
+          context.go(GeoAmdRoutes.login);
+        });
       }
     });
   }

@@ -6,11 +6,13 @@ import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/bloc/amd_history_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/bloc/amd_form_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/expansion_title_widget.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
 import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../messages/app_messages.dart';
+import '../../routes/geoamd_route.dart';
 import '../login/bloc/login_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import 'widgets/amd_history_widgets.dart';
@@ -61,53 +63,51 @@ class TabBarViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
-      listener: (context, state) async {
+      listener: (context, state) {
         if (state is AmdHistoryLoadingState) {
           LoadingBuilder(context).showLoadingIndicator('Cargando historial');
         } else if (state is AmdHistorySuccessDataState) {
           LoadingBuilder(context).hideOpenDialog();
         }
         if (state is AmdHistoryErrorState) {
-          if (state.messageError == "session expired") {
-            await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusError),
-                    descriptions: AppMessages().getMessage(
-                        context, context.appLocalization.sessionExpired),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusError,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                });
-            if (context.mounted) {
-              BlocProvider.of<LoginBloc>(context)
-                  .add(const ProcessLogoutEvent());
-            }
-          } else {
-            LoadingBuilder(context).hideOpenDialog();
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusError),
-                    descriptions:
-                        AppMessages().getMessage(context, state.messageError),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusError,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                });
-          }
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions:
+                      AppMessages().getMessage(context, state.messageError),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
+        if (state is AmdHistoryInvalidSessionState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.login);
+          });
         }
       },
       builder: (context, state) {

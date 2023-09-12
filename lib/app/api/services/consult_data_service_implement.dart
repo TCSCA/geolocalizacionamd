@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:geolocalizacionamd/app/api/interceptors/http_error_interceptor.dart';
 import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
 import '../../errors/error_session_expired.dart';
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
@@ -57,6 +59,9 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     try {
+      final http =
+          InterceptedHttp.build(interceptors: [HttpErrorInterceptor()]);
+      
       responseApi = await http.post(urlApiGetActiveAmdOrder,
           headers: headerActiveAmdOrder);
       decodeRespApi = json.decode(responseApi.body);
@@ -82,6 +87,8 @@ class ConsultDataServiceImp implements ConsultDataService {
       rethrow;
     } on ErrorAppException {
       rethrow;
+    } on SessionExpiredException {
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
@@ -105,6 +112,9 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     try {
+      final http =
+          InterceptedHttp.build(interceptors: [HttpErrorInterceptor()]);
+
       responseApi = await http.post(urlApiGetProfile, headers: headerProfile);
 
       decodeResApi = json.decode(responseApi.body);
@@ -149,6 +159,9 @@ class ConsultDataServiceImp implements ConsultDataService {
         jsonEncode({'idHomeServiceAttention': idHomeServiceAttention});
 
     try {
+      final http =
+          InterceptedHttp.build(interceptors: [HttpErrorInterceptor()]);
+
       responseApi = await http.post(urlValidateIfOrderIsCompletedOrRejected,
           headers: header, body: bodyValidateIfOrderIsCompletedOrRejected);
       decodeRespApi = jsonDecode(responseApi.body);
@@ -168,6 +181,8 @@ class ConsultDataServiceImp implements ConsultDataService {
     } on AmdOrderAdminFinalizedException {
       rethrow;
     } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
@@ -196,6 +211,8 @@ class ConsultDataServiceImp implements ConsultDataService {
     //List<HistoryAmdMap> historyAmdMapList;
     List<HomeServiceMap> homeServiceList;
     try {
+      final http =
+          InterceptedHttp.build(interceptors: [HttpErrorInterceptor()]);
       responseApi = await http.post(urlGetHistoryAmdOrder,
           headers: header, body: bodyGetHistoryAmdOrder);
       decodeRespApi = jsonDecode(responseApi.body);
@@ -217,6 +234,8 @@ class ConsultDataServiceImp implements ConsultDataService {
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
@@ -364,6 +383,8 @@ class ConsultDataServiceImp implements ConsultDataService {
     };
 
     try {
+      final http =
+          InterceptedHttp.build(interceptors: [HttpErrorInterceptor()]);
       responseApi = await http.post(urlCheckConnected, headers: header);
       decodeRespApi = jsonDecode(responseApi.body);
 
@@ -376,6 +397,8 @@ class ConsultDataServiceImp implements ConsultDataService {
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

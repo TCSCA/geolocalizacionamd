@@ -33,3 +33,10 @@ class AmdHistoryErrorState extends AmdHistoryState {
   List<Object?> get props => [messageError];
 
 }
+
+class AmdHistoryInvalidSessionState extends AmdHistoryState {
+  final String message;
+  const AmdHistoryInvalidSessionState({required this.message});
+  @override
+  List<Object?> get props => [message];
+}

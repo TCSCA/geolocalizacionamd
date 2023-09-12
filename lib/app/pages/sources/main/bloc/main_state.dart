@@ -226,3 +226,10 @@ class ShowLoadingAmdAssignedState extends MainState {
   @override
   List<Object> get props => [message];
 }
+
+class MainInvalidSessionState extends MainState {
+  final String message;
+  const MainInvalidSessionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

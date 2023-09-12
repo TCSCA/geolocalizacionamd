@@ -35,8 +35,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(ProfileErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(ProfileErrorState(messageError: exgen.message));
-      } on SessionExpiredException catch (exgen ){
-        emit(ProfileErrorState(messageError: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(ProfileInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const ProfileErrorState(
             messageError: AppConstants.codeGeneralErrorMessage));
@@ -79,7 +79,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(ProfileErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(ProfileErrorState(messageError: exgen.message));
-      } on SessionExpiredException catch (exgen ){
+      } on SessionExpiredException catch (exgen) {
         emit(ProfileErrorState(messageError: exgen.message));
       }  catch (unknowerror) {
         emit(const ProfileErrorState(

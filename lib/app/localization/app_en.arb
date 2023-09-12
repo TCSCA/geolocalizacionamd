@@ -103,5 +103,6 @@
     "successUpdateData": "Your information has been successfully updated.",
     "appMsg012": "You must end home medical care before you sign off.",
     "sessionExpired": "Session expired, system will be closed",
-    "phoneValidationZero": "The number 0 at the beginning is not allowed"
+    "phoneValidationZero": "The number 0 at the beginning is not allowed",
+    "invalidSession": "Session ended, the system will be closed"
 }
