@@ -205,6 +205,11 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         statusConnected == 'Doctor disponible para atencion'
             ? doctorAvailableSwitch = true
             : doctorAvailableSwitch = false;
+        if (doctorAvailableSwitch) {
+          await doctorCareController.changeDoctorConnected('true');
+        } else {
+          await doctorCareController.changeDoctorConnected('false');
+        }
         emit(HomeServiceEmptyState(doctorAvailable: doctorAvailableSwitch));
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceAssignedErrorState(message: exapp.message));
