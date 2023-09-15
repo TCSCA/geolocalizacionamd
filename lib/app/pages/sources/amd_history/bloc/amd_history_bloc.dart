@@ -5,6 +5,7 @@ import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
 import '../../../../core/controllers/amd_history_controller.dart';
 import '../../../../errors/error_app_exception.dart';
 import '../../../../errors/error_general_exception.dart';
+import '../../../../errors/error_session_expired.dart';
 import '../../../constants/app_constants.dart';
 
 part 'amd_history_event.dart';
@@ -16,17 +17,15 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
  List<HomeServiceModel> homeServiceModel = [];
   AmdHistoryBloc({required this.amdHistoryController})
       : super(AmdHistoryInitial()) {
-    on<AmdHistoryEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<AmdHistoryEvent>((event, emit) {});
 
     on<GetAmdHistoryEvent>((event, emit) async {
       emit(AmdHistoryLoadingState());
       try {
        homeServiceModel = await amdHistoryController.getHistoryAmdOrderListCtrl();
 
-       List<HomeServiceModel> homeServiceModelF = homeServiceModel.where((i) => i.idStatusHomeService == 4).toList();
-       List<HomeServiceModel> homeServiceModelP = homeServiceModel.where((i) => i.idStatusHomeService == 3).toList();
+       List<HomeServiceModel> homeServiceModelF = homeServiceModel.where((i) => i.statusHomeService == 'Finalizado').toList();
+       List<HomeServiceModel> homeServiceModelP = homeServiceModel.where((i) => i.statusHomeService == 'Rechazada').toList();
 
 
         emit(AmdHistorySuccessDataState(homeServiceF: homeServiceModelF, homeServiceP: homeServiceModelP));
@@ -35,6 +34,8 @@ class AmdHistoryBloc extends Bloc<AmdHistoryEvent, AmdHistoryState> {
         emit(AmdHistoryErrorState(messageError: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(AmdHistoryErrorState(messageError: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(AmdHistoryInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const AmdHistoryErrorState(
             messageError: AppConstants.codeGeneralErrorMessage));

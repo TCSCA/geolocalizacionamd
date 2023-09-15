@@ -21,6 +21,7 @@ class ActiveAmdOrderCOntroller {
           await consultDataService.getActiveAmdOrder(tokenUser);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -31,9 +32,11 @@ class ActiveAmdOrderCOntroller {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd,
+          //responseService.linkAmd,
           responseService.idStatusHomeService,
-          responseService.statusHomeService);
+          responseService.statusHomeService,
+          responseService.statusLinkAmd,
+      responseService.statusOrder);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {

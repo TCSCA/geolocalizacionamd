@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '/app/extensions/localization_ext.dart';
-import '/app/pages/styles/app_styles.dart';
 
 class LoadingIndicator extends StatelessWidget {
   final String menssage;
@@ -8,48 +6,47 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      color: AppStyles.colorGray,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _getLoadingIndicator(),
-          _getHeading(context),
-          _getText(menssage)
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const GetLoadingIndicator(),
+      //  GetText(displayedText: menssage),
+      ],
     );
   }
+}
 
-  Padding _getLoadingIndicator() {
+class GetLoadingIndicator extends StatelessWidget {
+  const GetLoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return const Padding(
-        padding: EdgeInsets.only(bottom: 16.0),
-        child: SizedBox(
-            width: 32.0,
-            height: 32.0,
-            child: CircularProgressIndicator(
-              color: Color(0xff2B5178),
-              strokeWidth: 3.0,
-            )));
-  }
-
-  Widget _getHeading(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Text(
-        context.appLocalization.titleHeadingLoading,
-        style: AppStyles.textStyleLoading,
-        textAlign: TextAlign.center,
+      padding: EdgeInsets.only(bottom: 32.0),
+      child: SizedBox(
+        width: 32.0,
+        height: 32.0,
+        child: CircularProgressIndicator(
+          color: Color(0xff2B5178),
+          strokeWidth: 3.0,
+        ),
       ),
     );
   }
+}
 
-  Text _getText(final String displayedText) {
+class GetText extends StatelessWidget {
+  final String displayedText;
+  const GetText({super.key, required this.displayedText});
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       displayedText,
-      style: AppStyles.textStyleLoading,
+      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            color: const Color.fromARGB(255, 0, 0, 0),
+          ),
       textAlign: TextAlign.center,
     );
   }

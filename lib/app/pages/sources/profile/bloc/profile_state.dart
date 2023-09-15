@@ -19,10 +19,23 @@ class ProfileSuccessState extends ProfileState {
   List<Object> get props => [profileModel];
 }
 
+class ProfileUpdateSuccessState extends ProfileState {
+
+  @override
+  List<Object?> get props => [];
+
+}
+
 class ProfileLoadingState extends ProfileState {
   @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+
+  List<Object?> get props => [];
+
+}
+
+class ProfileUpdateLoadingState extends ProfileState {
+  @override
+  List<Object?> get props => [];
 
 }
 
@@ -34,4 +47,11 @@ class ProfileErrorState extends ProfileState {
   @override
   List<Object?> get props => [messageError];
 
+}
+
+class ProfileInvalidSessionState extends ProfileState {
+  final String message;
+  const ProfileInvalidSessionState({required this.message});
+  @override
+  List<Object> get props => [message];
 }

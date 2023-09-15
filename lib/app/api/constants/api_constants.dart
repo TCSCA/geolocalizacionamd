@@ -23,9 +23,12 @@ class ApiConstants {
   static final String urlApiDisconectDoctorAmd = '$urlApi/disconectDoctorAmd';
   static final String urlApiGetActiveAmdOrder = '$urlApi/getActiveAmdOrder';
   static final String urlApiGetProfile= '$urlApi/profile';
+  static final String urlApiGetPhotoProfile= '$urlApi/getPhotoProfile';
+  static final String urlApiGetDigitalSignature= '$urlApi/getDigitalSignature';
   static final String urlApiValidateIfOrderIsCompletedOrRejected
   = '$urlApi/validateIfOrderIsCompletedOrRejected';
   static final String urlApiGetHistoryAmdOrder = '$urlApi/getHistoryAmdOrder';
+  static final String urlApiGetAllGender = '$urlApi/getAllGender';
   static final String urlApiGetAllStatesByCountry =
       '$urlApi/getAllStatesByCountry/idCountry';
   static final String urlApiGetAllCityByState =
@@ -36,9 +39,16 @@ class ApiConstants {
       '$urlApi/rejectHomeServiceAttention';
   static final String urlApiCompleteHomeService =
       '$urlApi/completeHomeServiceAttention';
+  static final String urlApiEditProfileService =
+      '$urlApi/editProfile';
   static final String urlApiChangePassword = '$urlApi/changePassword';
+  static final String urlApiRenewUrlOrderToken = '$urlApi/getUrlOrderToken';
+  static final String urlApiGetResultAmdOrder = '$urlApi/getResultAmdOrder';
   static final String urlApiGetAllReasonRejection =
       '$urlApi/getAllReasonRejectionAmd';
+  static final String verifyConnectedDoctorAmd =
+      '$urlApi/verifyConnectedDoctorAmd';
+  static final String urlApiForgotPassword = '$urlApi/forgotPassword';
   static const String generalErrorCodeApi = 'MSG-001';
   static const String statusLabelApi = 'status';
   static const String statusSuccessApi = 'SUCCESS';
@@ -54,4 +64,5 @@ class ApiConstants {
   static const String amdconfirmedAdminFinalizedCodeApi = 'MSG-232';
   static const String doctorAmdAssignedLabel = 'doctorAmdAssigned';
   static const String idAmdconfirmedLabel = 'idAmdconfirmed';
+  static const String sessionExpire = 'Full authentication is required to access this resource';
 }

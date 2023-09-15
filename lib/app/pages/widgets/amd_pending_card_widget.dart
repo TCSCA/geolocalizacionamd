@@ -123,7 +123,7 @@ class AmdPendingCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: Color(0xffFFFFFF),
-                                fontFamily: 'TitlesHighlight',
+                                fontFamily: 'TextsParagraphs',
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -170,7 +170,7 @@ class AmdPendingCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: Color(0xffFFFFFF),
-                                fontFamily: 'TitlesHighlight',
+                                fontFamily: 'TextsParagraphs',
                                 fontWeight: FontWeight.bold),
                           ),
                         ),

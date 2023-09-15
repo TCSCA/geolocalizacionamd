@@ -66,7 +66,7 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                     ),
                     Text(
                       context.appLocalization.titleDoctorLocation,
-                      style: AppStyles.textStyleTitle,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
                 )
@@ -169,7 +169,12 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                             child: Text(
                           context.appLocalization.messageDoctorLocation,
                           textAlign: TextAlign.justify,
-                          style: AppStyles.textStyleOnlineDoctor,
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                         )),
                       ],
                     ),
@@ -190,9 +195,22 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                         color: AppStyles.colorBluePrimary)),
                                 hintText: context.appLocalization.labelSelect,
                                 labelText: context.appLocalization.labelState,
-                                labelStyle: AppStyles.textStyleSelect,
-                                errorStyle: AppStyles.textFormFieldError),
-                            style: AppStyles.textStyleOptionSelect,
+                                labelStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: Colors.black, fontSize: 22.0),
+                                errorStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: Colors.black),
                             items: stateList.map((SelectModel selectiveState) {
                               return DropdownMenuItem(
                                 value: selectiveState.id,
@@ -234,9 +252,22 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                         color: AppStyles.colorBluePrimary)),
                                 labelText: context.appLocalization.labelCity,
                                 hintText: context.appLocalization.labelSelect,
-                                labelStyle: AppStyles.textStyleSelect,
-                                errorStyle: AppStyles.textFormFieldError),
-                            style: AppStyles.textStyleOptionSelect,
+                                labelStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: Colors.black, fontSize: 22.0),
+                                errorStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge
+                                ?.copyWith(color: Colors.black),
                             items: cityList.map((SelectModel selectiveCity) {
                               return DropdownMenuItem(
                                 value: selectiveCity.id,
@@ -292,11 +323,14 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 borderRadius: BorderRadius.circular(30)),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 36),
+                                  vertical: 10, horizontal: 40),
                               child: Text(
                                 context.appLocalization.nameButtonReturn,
                                 textAlign: TextAlign.center,
-                                style: AppStyles.textStyleButton,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -357,11 +391,14 @@ class _AmdLocationPageState extends State<AmdLocationPage> {
                                 borderRadius: BorderRadius.circular(30)),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15),
+                                  vertical: 10, horizontal: 20),
                               child: Text(
                                 context.appLocalization.nameButtonConnectDoctor,
                                 textAlign: TextAlign.center,
-                                style: AppStyles.textStyleButton,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),

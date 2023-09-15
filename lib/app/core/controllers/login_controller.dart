@@ -20,17 +20,20 @@ class LoginController {
     late UserModel userResponse;
 
     try {
+      // ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+
       var responseLogin = await loginService.doLogin(user, password);
 
+      cleanDataSession();
       await secureStorageController.writeSecureData(
-          ApiConstants.tokenLabel, responseLogin.data);
+          ApiConstants.tokenLabel, responseLogin.data!);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
 
       userResponse = UserModel(
-          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
+          user, responseLogin.descriptionEs!, responseLogin.idProfile!, []);
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
@@ -60,38 +63,32 @@ class LoginController {
       rethrow;
     } on ErrorGeneralException {
       rethrow;
+    } on SessionExpiredException {
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     } finally {
-      await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorInAttentionLabel);
-      await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorConnectedLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
+      cleanDataSession();
     }
-
     return respWebSocket;
   }
 
   Future<UserModel> doResetLoginUser(String user, final String password) async {
     late UserModel userResponse;
     try {
+      cleanDataSession();
+
       var responseLogin = await loginService.resetLogin(user, password);
 
       await secureStorageController.writeSecureData(
-          ApiConstants.tokenLabel, responseLogin.data);
+          ApiConstants.tokenLabel, responseLogin.data!);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
       await secureStorageController.writeSecureData(
           ApiConstants.idDoctorAmd, responseLogin.user.toString());
-      
+
       userResponse = UserModel(
-          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
+          user, responseLogin.descriptionEs!, responseLogin.idProfile!, []);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -128,5 +125,17 @@ class LoginController {
       newBoolValue = connectedDoctor.toLowerCase() != 'false';
     }
     return newBoolValue;
+  }
+
+  Future<void> cleanDataSession() async {
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorInAttentionLabel);
+    await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorConnectedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
   }
 }

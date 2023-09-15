@@ -21,7 +21,6 @@ class AmdHistorySuccessDataState extends AmdHistoryState{
 
 class AmdHistoryLoadingState extends AmdHistoryState {
   @override
-  // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
 }
 
@@ -33,4 +32,11 @@ class AmdHistoryErrorState extends AmdHistoryState {
   @override
   List<Object?> get props => [messageError];
 
+}
+
+class AmdHistoryInvalidSessionState extends AmdHistoryState {
+  final String message;
+  const AmdHistoryInvalidSessionState({required this.message});
+  @override
+  List<Object?> get props => [message];
 }

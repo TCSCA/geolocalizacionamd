@@ -14,10 +14,9 @@ class MainShowLoadingState extends MainState {
 }
 
 class MainInitial extends MainState {
-  final bool doctorAvailable;
-  const MainInitial({required this.doctorAvailable});
+  const MainInitial();
   @override
-  List<Object> get props => [doctorAvailable];
+  List<Object> get props => [];
 }
 
 class DoctorServiceState extends MainState {
@@ -111,7 +110,10 @@ class ChangeLocationDoctorCityState extends MainState {
 }
 
 class HomeServiceEmptyState extends MainState {
-  const HomeServiceEmptyState();
+  final bool doctorAvailable;
+  const HomeServiceEmptyState({required this.doctorAvailable});
+  @override
+  List<Object> get props => [doctorAvailable];
 }
 
 class LocationShowLoadingState extends MainState {
@@ -216,4 +218,18 @@ class AmdConfirmedAdminSuccessState extends MainState {
   const AmdConfirmedAdminSuccessState();
   @override
   List<Object> get props => [];
+}
+
+class ShowLoadingAmdAssignedState extends MainState {
+  final String message;
+  const ShowLoadingAmdAssignedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class MainInvalidSessionState extends MainState {
+  final String message;
+  const MainInvalidSessionState({required this.message});
+  @override
+  List<Object> get props => [message];
 }

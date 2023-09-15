@@ -1,6 +1,7 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
 import 'package:go_router/go_router.dart';
 import '/app/extensions/localization_ext.dart';
 import '/app/pages/messages/app_messages.dart';
@@ -87,12 +88,20 @@ class MainWidgets {
                     radius: 70,
                     child: CircleAvatar(
                       backgroundColor: const Color(0xff2B5178),
-                      radius: 90,
-                      child: CircleAvatar(
-                        backgroundImage:
-                            Image.memory(Uint8List.fromList(user.photoPerfil))
+                      radius: 55,
+                      child: BlocBuilder<ImageProfileBloc, ImageProfileState>(
+                        builder: (context, state) {
+                          return  ImageWidget(
+                              onClicked: () {},
+                              isEdit: false,
+                              imagePath: state is InitialImageProfileState ? state.imageBuild : null,
+                              color: Colors.blueGrey)/*CircleAvatar(
+                            backgroundImage: Image.memory(
+                                    Uint8List.fromList(user.photoPerfil))
                                 .image,
-                        radius: 55,
+                            radius: 55,
+                          )*/;
+                        },
                       ),
                     ),
                   ),
@@ -101,14 +110,22 @@ class MainWidgets {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Bienvenido(a)',
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18)),
+                      Text('Bienvenido(a)',
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  fontSize: 18.0)),
                       Text(user.name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20))
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 20.0))
                     ],
                   )
                 ],
@@ -119,17 +136,25 @@ class MainWidgets {
       ),
     );
   }
+}
 
-  Widget serviceAvailabilityDashboard({required BuildContext context}) {
-    /* MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
-    userMainBloc.add(const ShowLocationDoctorStatesEvent('25'));
-    List<SelectModel> stateList = [];
-    String? selectedState;
-    List<SelectModel> cityList = []; */
+class ServiceAvailabilityDashboard extends StatelessWidget {
+  const ServiceAvailabilityDashboard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    //BlocProvider.of<MainBloc>(context).add(const CheckDoctorConnectedEvent());
     bool doctorAvailableSwitch =
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch;
     return BlocConsumer<MainBloc, MainState>(
       listener: (context, state) {
+        // if (state is DoctorConnectedState) {
+        //   LoadingBuilder(context).hideOpenDialog();
+        //   doctorAvailableSwitch = state.doctorAvailable;
+        // }
+        if (state is ShowLoadingAmdAssignedState) {
+          LoadingBuilder(context).showLoadingIndicator(state.message);
+        }
         if (state is DoctorServiceState) {
           //desactivarservicio
           LoadingBuilder(context).hideOpenDialog();
@@ -196,6 +221,7 @@ class MainWidgets {
           doctorAvailableSwitch = false;
         }
         if (state is HomeServiceSuccessState) {
+          LoadingBuilder(context).hideOpenDialog();
           doctorAvailableSwitch = false;
         }
         if (state is ShowAmdOrderAdminFinalizedState) {
@@ -264,6 +290,31 @@ class MainWidgets {
         if (state is NotHomeServiceAssignedState) {
           context.go(GeoAmdRoutes.amdLocation);
         }
+        if (state is HomeServiceEmptyState) {
+          LoadingBuilder(context).hideOpenDialog();
+          doctorAvailableSwitch = state.doctorAvailable;
+        }
+        if (state is MainInvalidSessionState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.login);
+          });
+        }
       },
       builder: (context, state) {
         return Container(
@@ -290,30 +341,30 @@ class MainWidgets {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Ten presente:',
-                  style: TextStyle(fontSize: 16.0, color: Colors.white),
+                  style: Theme.of(context).textTheme.labelLarge,
                 ),
                 const SizedBox(
                   height: 5.0,
                 ),
-                const Text(
+                Text(
                   'Nuestros pacientes deben recibir un trato digno y respetuoso en cualquier momento y bajo cualquier circunstancia.',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
+                  style: Theme.of(context).textTheme.labelLarge,
+                  textAlign: TextAlign.justify,
                 ),
                 const SizedBox(
                   height: 8.0,
                 ),
-                const Row(
+                Row(
                   children: [
                     Row(
                       children: [
                         Text('Disponible para atender:',
-                            style:
-                                TextStyle(fontSize: 18.0, color: Colors.white)),
+                            style: Theme.of(context).textTheme.labelLarge),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 8.0,
                     ),
                   ],
@@ -321,60 +372,102 @@ class MainWidgets {
                 const SizedBox(
                   height: 8.0,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (doctorAvailableSwitch) ...[
-                      FloatingActionButton.extended(
-                        label: const Text(
-                          'Disponible',
-                          style: TextStyle(
-                              fontFamily: 'TitlesHighlight',
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        backgroundColor: Colors.green,
-                        icon: const Icon(Icons.person_pin_circle,
-                            size: 24.0, color: Colors.white),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return CustomDialogBox(
-                                    title: context.appLocalization.titleWarning,
-                                    descriptions:
-                                        '¿Estás seguro de desactivar su servicio?',
-                                    isConfirmation: true,
-                                    dialogAction: () =>
-                                        BlocProvider.of<MainBloc>(context)
-                                            .add(DisconectDoctorAmdEvent()),
-                                    type: AppConstants.statusWarning,
-                                    isdialogCancel: false,
-                                    dialogCancel: () {});
-                              });
-                        },
-                      )
-                    ] else ...[
-                      FloatingActionButton.extended(
-                          label: const Text(
-                            'No disponible',
-                            style: TextStyle(
-                                fontFamily: 'TitlesHighlight',
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold),
+                Container(
+                  height: 80,
+                  alignment: Alignment.center,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (doctorAvailableSwitch) ...[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              elevation: 5.0,
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xffFFFFFF)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                      title: context.appLocalization.titleWarning,
+                                      descriptions:
+                                          '¿Estás seguro de desactivar su servicio?',
+                                      isConfirmation: true,
+                                      dialogAction: () =>
+                                          BlocProvider.of<MainBloc>(context)
+                                              .add(DisconectDoctorAmdEvent()),
+                                      type: AppConstants.statusWarning,
+                                      isdialogCancel: false,
+                                      dialogCancel: () {});
+                                });
+                          },
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 25),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.person_pin_circle,
+                                      size: 24.0, color: Colors.white),
+                                  //const SizedBox(width: 5.0),
+                                  Text(
+                                    "Disponible",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
                           ),
-                          backgroundColor: Colors.grey,
-                          icon: const Icon(
-                            Icons.power_settings_new,
-                            size: 24.0,
-                            color: Colors.white,
-                          ),
+                        )
+                      ] else ...[
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              elevation: 5.0,
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xffFFFFFF)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30))),
                           onPressed: () => BlocProvider.of<MainBloc>(context)
-                              .add(const ValidateDoctorAmdAssignedEvent()))
-                    ]
-                  ],
+                              .add(const ValidateDoctorAmdAssignedEvent()),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 25),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.power_settings_new,
+                                      size: 24.0, color: Colors.white),
+                                  const SizedBox(width: 5.0),
+                                  Text(
+                                    "No disponible",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ]
+                    ],
+                  ),
                 )
               ],
             ),
@@ -383,8 +476,13 @@ class MainWidgets {
       },
     );
   }
+}
 
-  Widget amdInformationAssigned({required BuildContext context}) {
+class AmdInformationAssigned extends StatelessWidget {
+  const AmdInformationAssigned({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     MainBloc userMainBloc = BlocProvider.of<MainBloc>(context);
     userMainBloc.add(const ShowHomeServiceAssignedEvent());
     final GlobalKey<FormState> reasonRejectionFormKey = GlobalKey<FormState>();
@@ -401,6 +499,7 @@ class MainWidgets {
             LoadingBuilder(context).showLoadingIndicator(state.message);
           }
           if (state is HomeServicePendingFinishState) {
+            LoadingBuilder(context).hideOpenDialog();
             //atencion pendiente por finalizar
             doctorAvailableSwitch = false;
             showDialog(
@@ -460,6 +559,7 @@ class MainWidgets {
                 });
           }
           if (state is HomeServiceAssignedErrorState) {
+            LoadingBuilder(context).hideOpenDialog();
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -513,6 +613,7 @@ class MainWidgets {
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: AppStyles.colorBluePrimary,
+                                          fontFamily: 'TextsParagraphs',
                                         ),
                                       ),
                                     ),
@@ -530,29 +631,33 @@ class MainWidgets {
                                         hint:
                                             const Text("Seleccione una opción"),
                                         key: reasonFieldKey,
-                                        decoration: const InputDecoration(
-                                          focusedBorder: UnderlineInputBorder(
+                                        decoration: InputDecoration(
+                                          focusedBorder:
+                                              const UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: AppStyles
                                                       .colorBluePrimary)),
-                                          
-                                          contentPadding: EdgeInsets.symmetric(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
                                               vertical: 18),
                                           labelText: 'Motivo:',
                                           hintText: 'Seleccione una opción',
-                                          labelStyle: TextStyle(
-                                              fontSize: 27.0,
-                                              color: Colors.black,
-                                              fontFamily: 'TitlesHighlight'),
+                                          labelStyle: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge
+                                              ?.copyWith(
+                                                  color: Colors.black,
+                                                  fontSize: 22.0),
                                         ),
-                                        style: const TextStyle(
-                                            fontSize: 18.0,
-                                            color: Colors.black,
-                                            fontFamily: 'TextsParagraphs'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(color: Colors.black),
                                         items: state.listReasonRejection
                                             .map((SelectModel selectiveReason) {
                                           return DropdownMenuItem(
@@ -625,15 +730,16 @@ class MainWidgets {
                                                 BorderRadius.circular(30)),
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 40),
-                                          child: const Text(
+                                              vertical: 10, horizontal: 20),
+                                          child: Text(
                                             'Aceptar',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 19.0,
-                                                color: Color(0xffFFFFFF),
-                                                fontFamily: 'TitlesHighlight',
-                                                fontWeight: FontWeight.bold),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelLarge
+                                                ?.copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                           ),
                                         ),
                                       ),

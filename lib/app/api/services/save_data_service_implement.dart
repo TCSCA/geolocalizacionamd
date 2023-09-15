@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
 import 'package:http/http.dart' as http;
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/core/models/connect_doctor_model.dart';
@@ -206,5 +207,163 @@ class SaveDataServiceImp implements SaveDataService {
     }
 
     return isComplete;
+  }
+
+  @override
+  Future<bool> editProfileService(
+      int idAffiliate,
+      String fullName,
+      String email,
+      String dateOfBirth,
+      int idGender,
+      String phoneNumber,
+      String? otherPhone,
+      int idCountry,
+      int idState,
+      int idCity,
+      String direction,
+      int mpps,
+      int cm,
+      String speciality,
+      String? photoProfile,
+      String? digitalSignature,
+      String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    bool editProfileStatusSuccess = false;
+
+    final Uri urlEditProfile = Uri.parse(ApiConstants.urlApiEditProfileService);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyEditProfile = jsonEncode({
+      "idAffiliate": idAffiliate,
+      "fullName": fullName,
+      "idGender": idGender,
+      "birthday": dateOfBirth,
+      "email": email,
+      "phoneNumber": phoneNumber,
+      "otherNumber": otherPhone,
+      "idCity": idCity,
+      "direction": direction,
+      "speciality": speciality,
+      "medicalLicense": "$mpps|$cm",
+      "photoProfile": photoProfile,
+      "digitalSignature": digitalSignature
+    });
+
+    try {
+      responseApi = await http.post(urlEditProfile,
+          headers: headerEditProfile, body: bodyEditProfile);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        editProfileStatusSuccess = true;
+      } else {
+
+        if (decodeRespApi['data'] == ApiConstants.sessionExpire) {
+          throw ErrorAppException(message: "session expired");
+        }
+
+        final String error =
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        throw ErrorAppException(
+            message:
+            (error.isNotEmpty ? error : ApiConstants.generalErrorCodeApi));
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return editProfileStatusSuccess;
+  }
+
+
+  @override
+  Future<String> renewAmdFormService(int idMedicalOrder, String tokenUser) async {
+
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    String urlRenew = '';
+
+    final Uri urlOrderToken = Uri.parse(ApiConstants.urlApiRenewUrlOrderToken);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyUrlOrderToken = jsonEncode({
+      "idMedicalOrder": idMedicalOrder
+    });
+
+
+    try {
+      responseApi = await http.post(urlOrderToken,
+          headers: headerEditProfile, body: bodyUrlOrderToken);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+       urlRenew = decodeRespApi[ApiConstants.dataLabelApi];
+      } else {
+        throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
+      }
+
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return urlRenew;
+  }
+
+  @override
+  Future<FileAmdFormMap> viewAmdFormService(int idMedicalOrder, String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    String urlRenew = '';
+    late FileAmdFormMap fileAmdFormMap;
+
+    final Uri getResultAmdOrder = Uri.parse(ApiConstants.urlApiGetResultAmdOrder);
+
+    final Map<String, String> headerGetResultAmdOrder = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyGetResultAmdOrder = jsonEncode({
+      "idMedicalOrder": idMedicalOrder
+    });
+
+    try {
+      responseApi = await http.post(getResultAmdOrder,
+          headers: headerGetResultAmdOrder, body: bodyGetResultAmdOrder);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        fileAmdFormMap = FileAmdFormMap.fromJson(decodeRespApi);
+      } else {
+        throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return fileAmdFormMap;
   }
 }

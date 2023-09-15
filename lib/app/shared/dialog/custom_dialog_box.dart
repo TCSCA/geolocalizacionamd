@@ -50,7 +50,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.only(
-              left: 10, top: 45 + 10, right: 10, bottom: 10),
+              left: 10, top: 40, right: 10, bottom: 10),
           margin: const EdgeInsets.only(top: 45),
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -68,21 +68,21 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
             children: <Widget>[
               Text(
                 widget.title,
-                style: TextStyle(
-                    fontSize: AppStyles.textSizeTitle,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: AppStyles.fontTitlesHighlight,
-                    color: _getStatusColor(widget.type)),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: _getStatusColor(widget.type)),
+                  textAlign: TextAlign.justify
               ),
               const SizedBox(
                 height: 15,
               ),
               Text(
                 widget.descriptions,
-                style: const TextStyle(
-                    fontSize: AppStyles.textSizeParagraph,
-                    color: AppStyles.colorBlack,
-                    fontFamily: AppStyles.fontTextsParagraphs),
+                softWrap: true,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -95,12 +95,15 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                   if (widget.isConfirmation) ...[
                     TextButton(
                         style: ButtonStyle(
+                            padding: MaterialStateProperty.all<EdgeInsets>(
+                                const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 18)),
                             backgroundColor: MaterialStateProperty.all(
                                 AppStyles.colorRedPrimary),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                   side: BorderSide(
                                       style: BorderStyle.solid,
                                       color: AppStyles.colorBeige
@@ -116,20 +119,22 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                         },
                         child: Text(
                           context.appLocalization.nameButtonCancel,
-                          style: const TextStyle(
-                              fontSize: AppStyles.textSizeParagraph,
-                              color: AppStyles.colorWhite,
-                              fontFamily: AppStyles.fontTitlesHighlight,
-                              fontWeight: FontWeight.bold),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         )),
                     TextButton(
                         style: ButtonStyle(
+                            padding: MaterialStateProperty.all<EdgeInsets>(
+                                const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 20)),
                             backgroundColor: MaterialStateProperty.all(
                                 AppStyles.colorBluePrimary),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(30.0),
                                   side: BorderSide(
                                       style: BorderStyle.solid,
                                       color: AppStyles.colorBeige
@@ -141,21 +146,23 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                         },
                         child: Text(
                           context.appLocalization.nameButtonAccept,
-                          style: const TextStyle(
-                              fontSize: AppStyles.textSizeParagraph,
-                              color: AppStyles.colorWhite,
-                              fontFamily: AppStyles.fontTitlesHighlight,
-                              fontWeight: FontWeight.bold),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ))
                   ] else ...[
                     TextButton(
                       style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20)),
                         backgroundColor: MaterialStateProperty.all(
                             AppStyles.colorBluePrimary),
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(30.0),
                               side: BorderSide(
                                   style: BorderStyle.solid,
                                   color:
@@ -166,12 +173,11 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                         context.pop();
                       },
                       child: Text(
-                        context.appLocalization.nameButtonAccept,
-                        style: const TextStyle(
-                            fontSize: AppStyles.textSizeParagraph,
-                            color: AppStyles.colorWhite,
-                            fontFamily: AppStyles.fontTitlesHighlight,
-                            fontWeight: FontWeight.bold),
+                        context.appLocalization.nameButtonClose,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     )
                   ]

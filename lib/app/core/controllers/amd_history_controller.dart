@@ -7,6 +7,7 @@ import '../../api/services/consult_data_service.dart';
 import '../../api/services/consult_data_service_implement.dart';
 import '../../errors/error_app_exception.dart';
 import '../../errors/error_general_exception.dart';
+import '../../errors/error_session_expired.dart';
 
 class AmdHistoryController {
   final SecureStorageController secureStorageController =
@@ -43,6 +44,7 @@ class AmdHistoryController {
 
           homeServiceModel = HomeServiceModel(
             optionhistory.idHomeService,
+            optionhistory.idMedicalOrder,
             optionhistory.orderNumber,
             DateTime.parse(
                 '${optionhistory.registerDate.dateTime.date.year}-$month-$day'),
@@ -54,11 +56,13 @@ class AmdHistoryController {
             optionhistory.applicantDoctor,
             optionhistory.phoneNumberDoctor,
             optionhistory.typeService,
-              (optionhistory.idStatusHomeService == 3
+              /*(optionhistory.idStatusHomeService == 3
                   ? ''
-                  : optionhistory.linkAmd),
+                  : optionhistory.linkAmd),*/
             optionhistory.idStatusHomeService,
-            optionhistory.statusHomeService
+            optionhistory.statusHomeService,
+            optionhistory.statusLinkAmd,
+            optionhistory.statusOrder
           );
 
           homeServiceModelList.add(homeServiceModel);
@@ -100,6 +104,8 @@ class AmdHistoryController {
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

@@ -1,7 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '/app/core/controllers/image_profile_controller.dart';
+import '/app/pages/sources/profile/bloc/profile_bloc.dart';
+import '/app/shared/dialog/custom_dialog_sino.dart';
+import '/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +21,7 @@ import '/app/shared/dialog/custom_dialog_box.dart';
 import '/app/shared/loading/loading_builder.dart';
 
 import 'package:local_auth_android/local_auth_android.dart';
-import 'package:local_auth/error_codes.dart' as authError;
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 import 'bloc/login_bloc.dart';
 
@@ -41,10 +46,13 @@ class _LoginPageState extends State<LoginPage> {
   ///Variables de huella
   bool _canCheckBiometric = false;
   List<BiometricType> _availableBiometric = [];
+  String userBiometricPermission = '';
+
   final auth = LocalAuthentication();
 
   ///Vareiables  para veirificar usuario guardado
   String userSave = '';
+  String previousUserSave = '';
   bool checkUserSave = false;
 
   String denyFingerprint = '';
@@ -85,64 +93,82 @@ class _LoginPageState extends State<LoginPage> {
                       context.appLocalization.titleLoginLoading);
                 }
                 if (state is LoginSuccessState) {
-                  if (checkUserSave) {
-                    await prefs.setString('userSave', userController.text);
-
-                    await prefs.setBool('checkUserSave', checkUserSave);
-
-                    if (!isUsedFingerprint) {
-                      await prefs.setString(
-                          'password', passwordController.text);
-                    }
-
-                    if (denyFingerprint != 'N' && denyFingerprint != 'Y') {
-                      if (_canCheckBiometric) {
-                        if (context.mounted) {
-                          await showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return CustomDialogBox(
-                                  title: AppMessages().getMessageTitle(
-                                      context, AppConstants.statusSuccess),
-                                  descriptions: AppMessages().getMessage(
-                                      context,
-                                      context.appLocalization.appMsg229),
-                                  isConfirmation: true,
-                                  dialogAction: () =>
-                                      prefs.setString('denyFingerprint', 'Y'),
-                                  type: AppConstants.statusSuccess,
-                                  isdialogCancel: true,
-                                  dialogCancel: () =>
-                                      prefs.setString('denyFingerprint', 'N'),
-                                );
-                              });
-                        }
-                      }
-                    }
+                  Uint8List? image = await ImageProfileController()
+                      .doConsultDataImageProfile();
+                  if (context.mounted) {
+                    BlocProvider.of<ImageProfileBloc>(context)
+                        .add(ImageProfileInitialEvent(imageBuild: image));
+                    BlocProvider.of<ProfileBloc>(context)
+                        .add(GetProfileInitialEvent());
                   }
 
-                  LoadingBuilder(context).hideOpenDialog();
-                  context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  if (checkUserSave) {
+                    await prefs.setString(
+                        'previousUserSave', prefs.getString('userSave') ?? '');
+                    if (!isUsedFingerprint) {
+                      if (userController.text != previousUserSave) {
+                        await prefs.remove('userBiometricPermission');
+                      }
+                      await prefs.setString('userSave', userController.text);
+                      await prefs.setBool('checkUserSave', checkUserSave);
+                      await prefs.setString(
+                          'password', passwordController.text);
+                      /*if (userBiometricPermission == '') {
+                        await showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              return CustomDialogBox(
+                                title: AppMessages().getMessageTitle(
+                                    context, AppConstants.statusSuccess),
+                                descriptions: AppMessages().getMessage(
+                                    context, context.appLocalization.appMsg013),
+                                isConfirmation: true,
+                                dialogAction: () async {
+                                  await prefs.setString(
+                                      'userBiometricPermission', 'Y');
+                                },
+                                type: AppConstants.statusSuccess,
+                                isdialogCancel: true,
+                                dialogCancel: () async {
+                                  await prefs.setString(
+                                      'userBiometricPermission', 'N');
+                                  print('NO HOLAAAAAA');
+                                },
+                              );
+                            });
+                      }*/
+                    }
+                  }
+                  if (context.mounted) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    context.go(GeoAmdRoutes.home, extra: NavigationBloc());
+                  }
                 }
                 if (state is LoginErrorState) {
                   LoadingBuilder(context).hideOpenDialog();
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return CustomDialogBox(
-                          title: AppMessages().getMessageTitle(
-                              context, AppConstants.statusError),
-                          descriptions:
-                              AppMessages().getMessage(context, state.message),
-                          isConfirmation: false,
-                          dialogAction: () {},
-                          type: AppConstants.statusError,
-                          isdialogCancel: false,
-                          dialogCancel: () {},
-                        );
-                      });
+
+                  if (state.message == "recuperar contraseña") {
+                    context.go(GeoAmdRoutes.changePassword,
+                        extra: userController.text);
+                  } else {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: AppMessages().getMessageTitle(
+                                context, AppConstants.statusError),
+                            descriptions: AppMessages()
+                                .getMessage(context, state.message),
+                            isConfirmation: false,
+                            dialogAction: () {},
+                            type: AppConstants.statusError,
+                            isdialogCancel: false,
+                            dialogCancel: () {},
+                          );
+                        });
+                  }
                 }
                 if (state is LoginActiveState) {
                   LoadingBuilder(context).hideOpenDialog();
@@ -219,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: 370,
                         height: 80,
                       )),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 10.0),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
@@ -229,17 +255,15 @@ class _LoginPageState extends State<LoginPage> {
                             maxLength: 15,
                             decoration: InputDecoration(
                                 errorMaxLines: 2,
-                                fillColor:
-                                    const Color(0xffD84835).withAlpha(50),
-                                counterStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withAlpha(50),
+                                counterStyle:
+                                    Theme.of(context).textTheme.labelSmall,
                                 hintText: 'Usuario',
-                                hintStyle: const TextStyle(
-                                    color: Color(0xffFFFFFF),
-                                    fontSize: 19.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                hintStyle:
+                                    Theme.of(context).textTheme.labelLarge,
                                 prefixIcon: const Icon(
                                   FontAwesomeIcons.userDoctor,
                                   color: Color(0xffFFFFFF),
@@ -258,14 +282,14 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(30.0)),
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 10.0),
-                                errorStyle: const TextStyle(
-                                    color: Color(0xffD84835),
-                                    fontSize: 14.0,
-                                    fontFamily: 'TextsParagraphs')),
-                            style: const TextStyle(
-                                color: Color(0xffFFFFFF),
-                                fontSize: 19.0,
-                                fontFamily: 'TitlesHighlight'),
+                                errorStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                            style: Theme.of(context).textTheme.labelLarge,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
@@ -278,7 +302,7 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             }),
                       ),
-                      const SizedBox(height: 20.0),
+                      //const SizedBox(height: 10.0),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
@@ -298,20 +322,20 @@ class _LoginPageState extends State<LoginPage> {
                                       _visiblePasswordOff
                                           ? Icons.visibility_off
                                           : Icons.visibility,
-                                      color: Colors.white,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                     )),
                                 errorMaxLines: 2,
-                                fillColor:
-                                    const Color(0xffD84835).withAlpha(50),
-                                counterStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondary
+                                    .withAlpha(50),
+                                counterStyle:
+                                    Theme.of(context).textTheme.labelSmall,
                                 hintText: 'Contraseña',
-                                hintStyle: const TextStyle(
-                                    color: Color(0xffFFFFFF),
-                                    fontSize: 19.0,
-                                    fontFamily: 'TitlesHighlight'),
+                                hintStyle:
+                                    Theme.of(context).textTheme.labelLarge,
                                 prefixIcon: const Icon(
                                   FontAwesomeIcons.lock,
                                   color: Color(0xffFFFFFF),
@@ -330,14 +354,14 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(30.0)),
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 10.0),
-                                errorStyle: const TextStyle(
-                                    color: Color(0xffD84835),
-                                    fontSize: 14.0,
-                                    fontFamily: 'TextsParagraphs')),
-                            style: const TextStyle(
-                                color: Color(0xffFFFFFF),
-                                fontSize: 19.0,
-                                fontFamily: 'TitlesHighlight'),
+                                errorStyle: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary)),
+                            style: Theme.of(context).textTheme.labelLarge,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (fieldValue) {
@@ -350,20 +374,21 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             }),
                       ),
-                      const SizedBox(height: 20.0),
+                      //const SizedBox(height: 10.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
                           children: <Widget>[
                             Checkbox(
                                 value: checkUserSave,
-                                checkColor: const Color(0xffd84835),
+                                checkColor:
+                                    Theme.of(context).colorScheme.secondary,
                                 shape: const CircleBorder(),
-                                activeColor: Colors.white,
+                                activeColor:
+                                    Theme.of(context).colorScheme.onSecondary,
                                 fillColor: MaterialStateProperty.all<Color>(
-                                    Colors.white),
+                                    Theme.of(context).colorScheme.onSecondary),
                                 onChanged: (value) async {
-                                  ///TODO: Falta guardar usuario
                                   checkUserSave = value!;
 
                                   if (checkUserSave == false) {
@@ -375,22 +400,24 @@ class _LoginPageState extends State<LoginPage> {
                                     await prefs.remove('userSave');
                                     await prefs.remove('checkUserSave');
                                     await prefs.remove('denyFingerprint');
+                                    await prefs
+                                        .remove('userBiometricPermission');
                                     await prefs.remove('password');
                                     userSave = '';
                                     denyFingerprint = '';
+                                    userBiometricPermission = '';
                                   }
 
                                   setState(() {});
                                 }),
-                            const Text(
+                            Text(
                               'Recordar Usuario',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 40.0),
+                      const SizedBox(height: 20.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -427,15 +454,14 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 40),
-                                  child: const Text(
+                                      vertical: 10, horizontal: 40),
+                                  child: Text(
                                     'Ingresar',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 19.0,
-                                        color: Color(0xffFFFFFF),
-                                        fontFamily: 'TitlesHighlight',
-                                        fontWeight: FontWeight.bold),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -443,63 +469,93 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 30.0),
-                      if (_canCheckBiometric &&
-                          (prefs.getBool('checkUserSave') ?? false) &&
-                          denyFingerprint == 'Y')
+                      const SizedBox(height: 20.0),
+                      if (_canCheckBiometric)
                         _BiometricWidget(onTap: () => _authenticate(context)),
-                      const SizedBox(height: 50.0),
-                      /*Container(
+                      const SizedBox(height: 10.0),
+                      Container(
                         alignment: Alignment.center,
-                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
                         //width: double.infinity,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RenewPasswordPage()));
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return CustomDialogBox(
+                                    title: AppMessages().getMessageTitle(
+                                        context, AppConstants.statusWarning),
+                                    descriptions: AppMessages().getMessage(
+                                        context,
+                                        context.appLocalization
+                                            .messageForgotPassword),
+                                    isConfirmation: true,
+                                    dialogAction: () => context.go(
+                                        GeoAmdRoutes.renewPassword,
+                                        extra: NavigationBloc()),
+                                    type: AppConstants.statusWarning,
+                                    isdialogCancel: false,
+                                    dialogCancel: () {},
+                                  );
+                                });
+                            /*context.go(GeoAmdRoutes.renewPassword,
+                                extra: NavigationBloc());*/
                           },
                           child: Text(
                             context.appLocalization.forgotPassword,
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.labelLarge,
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
-                      ),*/
+                      ),
                       InkWell(
                         onTap: () => launchUrl(
                           Uri.parse(
                               'https://telemedicina24ca.com/politica-de-privacidad-alojose/'),
                           mode: LaunchMode.externalApplication,
                         ),
-                        child: const Text.rich(
+                        child: Text.rich(
                           TextSpan(
                             text: 'Al pulsar ingresar, acepta los ',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: Theme.of(context).textTheme.labelLarge,
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    'Términos de\nUso y Políticas de Privacidad',
-                                style: TextStyle(
-                                    color: Color(0xffd84835),
-                                    decoration: TextDecoration.underline),
+                                    'Términos de Uso \ny Políticas de Privacidad',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                               ),
                               TextSpan(
                                 text: ' de Telemedicina24',
-                                style: TextStyle(
-                                  color: Color(0xffd84835),
-                                  decoration: TextDecoration.underline,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelLarge
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                               ),
                             ],
                           ),
                         ),
                       ),
+                      const SizedBox(height: 10.0),
                     ],
                   ),
                 ),
@@ -525,7 +581,9 @@ class _LoginPageState extends State<LoginPage> {
     try {
       canCheckBiometric = await auth.canCheckBiometrics;
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     if (!mounted) return;
@@ -538,34 +596,12 @@ class _LoginPageState extends State<LoginPage> {
   Future _getAvailableBiometric() async {
     List<BiometricType> availableBiometric = [];
 
-    /* bool? autoStart = await isAutoStartAvailable;
-
-    if(autoStart != null && autoStart) {
-
-      await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return CustomDialogBox(
-              title: AppMessages().getMessageTitle(
-                  context, AppConstants.statusSuccess),
-              descriptions: AppMessages().getMessage(context,
-                  'para poder hacer uso de todos nuestro servicios, debera'),
-              isConfirmation: true,
-              dialogAction: () {},
-              type: AppConstants.statusSuccess,
-              isdialogCancel: false,
-              dialogCancel: () {},
-            );
-          });
-
-      await getAutoStartPermission();
-    }*/
-
     try {
       availableBiometric = await auth.getAvailableBiometrics();
     } on PlatformException catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     setState(() {
@@ -575,6 +611,83 @@ class _LoginPageState extends State<LoginPage> {
 
   ///Metodo para iniciar la autenticacion biometrica
   Future<void> _authenticate(BuildContext context) async {
+    if (!checkUserSave) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CustomDialogBox(
+              title: AppMessages()
+                  .getMessageTitle(context, AppConstants.statusError),
+              descriptions: context.appLocalization.appMsg237,
+              isConfirmation: false,
+              dialogAction: () {},
+              type: AppConstants.statusError,
+              isdialogCancel: false,
+              dialogCancel: () {},
+            );
+          });
+    } else if (userBiometricPermission != 'Y' && userSave != '') {
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CustomDialogSino(
+              title: AppMessages()
+                  .getMessageTitle(context, AppConstants.statusWarning),
+              descriptions: AppMessages()
+                  .getMessage(context, context.appLocalization.appMsg013),
+              dialogAction: () async {
+                await prefs.setString('userBiometricPermission', 'Y');
+                _useBiometric();
+              },
+              type: AppConstants.statusWarning,
+              dialogCancel: () async {
+                await prefs.setString('userBiometricPermission', 'N');
+              },
+            );
+          });
+    } else if (_availableBiometric.isEmpty) {
+      return showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CustomDialogBox(
+              title: AppMessages()
+                  .getMessageTitle(context, AppConstants.statusError),
+              descriptions: AppMessages().getMessage(
+                  context, context.appLocalization.biometricNotSupported),
+              isConfirmation: false,
+              dialogAction: () {},
+              type: AppConstants.statusError,
+              isdialogCancel: false,
+              dialogCancel: () {},
+            );
+          });
+    } else if (userSave != '' && userBiometricPermission == 'Y') {
+      _useBiometric();
+    } else {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return CustomDialogBox(
+              title: AppMessages()
+                  .getMessageTitle(context, AppConstants.statusWarning),
+              descriptions: AppMessages()
+                  .getMessage(context, context.appLocalization.appMsg088),
+              isConfirmation: false,
+              dialogAction: () {},
+              type: AppConstants.statusWarning,
+              isdialogCancel: false,
+              dialogCancel: () {},
+            );
+          });
+    }
+    setState(() {});
+  }
+
+  _useBiometric() async {
     try {
       authenticated = await auth.authenticate(
           authMessages: <AuthMessages>[
@@ -603,7 +716,9 @@ class _LoginPageState extends State<LoginPage> {
         BlocProvider.of<LoginBloc>(context).add(ProcessLoginEvent(
             userSave, prefs.getString('password')!, languageCode));
       } else {
-        print('ERROR');
+        if (kDebugMode) {
+          print('ERROR');
+        }
       }
     } on PlatformException catch (e) {
       /// _authorized = "Error - ${e.code}";
@@ -624,7 +739,7 @@ class _LoginPageState extends State<LoginPage> {
                   dialogCancel: () {},
                 );
               })
-          : e.code == authError.notAvailable
+          : e.code == auth_error.notAvailable
               ? showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -658,31 +773,32 @@ class _LoginPageState extends State<LoginPage> {
                           dialogCancel: () {},
                         );
                       })
-                  : print('');
-
-      // logger.e("😢 Error loger show ${e.code}");
+                  : null;
     }
-    setState(() {});
   }
 
   _validateUserSave() async {
     prefs = await SharedPreferences.getInstance();
     denyFingerprint = prefs.getString('denyFingerprint') ?? '';
     userSave = prefs.getString('userSave') ?? '';
+    previousUserSave = prefs.getString('previousUserSave') ?? '';
+
+    userBiometricPermission = prefs.getString('userBiometricPermission') ?? '';
     checkUserSave = prefs.getBool('checkUserSave') ?? false;
 
-    userController = TextEditingController(text: userSave);
+    if (checkUserSave) {
+      userController = TextEditingController(text: userSave);
+    }
+
     setState(() {});
   }
-
-  _callShowDialog() {}
 }
 
+@immutable
 class _BiometricWidget extends StatelessWidget {
-  Function() onTap;
+  final Function() onTap;
 
-  _BiometricWidget({
-    super.key,
+  const _BiometricWidget({
     required this.onTap,
   });
 
@@ -695,10 +811,7 @@ class _BiometricWidget extends StatelessWidget {
         children: [
           Text(
             context.appLocalization.biometricAuthentication,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16.0,
-            ),
+            style: Theme.of(context).textTheme.labelLarge,
           ),
           const Icon(Icons.fingerprint, color: Color(0xffd84835), size: 35)
         ],

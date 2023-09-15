@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:geolocalizacionamd/app/core/controllers/amd_history_controller.dart';
 import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/bloc/amd_history_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/bloc/amd_form_bloc.dart';
 import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/expansion_title_widget.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/dialog/custom_dialog_box.dart';
 import '../../../shared/loading/loading_builder.dart';
 import '../../../shared/method/back_button_action.dart';
 import '../../constants/app_constants.dart';
 import '../../messages/app_messages.dart';
+import '../../routes/geoamd_route.dart';
+import '../login/bloc/login_bloc.dart';
 import '/app/pages/widgets/common_widgets.dart';
 import 'widgets/amd_history_widgets.dart';
 
@@ -85,6 +88,27 @@ class TabBarViewWidget extends StatelessWidget {
                 );
               });
         }
+        if (state is AmdHistoryInvalidSessionState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.login);
+          });
+        }
       },
       builder: (context, state) {
         if (state is AmdHistorySuccessDataState) {
@@ -96,36 +120,6 @@ class TabBarViewWidget extends StatelessWidget {
               ListViewHistoryAmd(
                 homeService: state.homeServiceP,
               ),
-              /*ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                itemCount: state.homeService.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if(state.homeService[index].idStatusHomeService == 3) {
-                    return ExpansionTitleWidget(
-                      orderNumber: state.homeService[index].orderNumber,
-                      dateOrderDay:
-                      state.homeService[index].registerDate.day,
-                      dateOrderMonth:
-                      state.homeService[index].registerDate.month,
-                      dateOrderYear:
-                      state.homeService[index].registerDate.year,
-                      fullNamePatient: state.homeService[index].fullNamePatient,
-                      identificationDocument:
-                      state.homeService[index].identificationDocument,
-                      phoneNumberPatient:
-                      state.homeService[index].phoneNumberPatient,
-                      address: state.homeService[index].address,
-                      applicantDoctor: state.homeService[index].applicantDoctor,
-                      phoneNumberDoctor:
-                      state.homeService[index].phoneNumberDoctor,
-                      typeService: state.homeService[index].typeService,
-                      linkAmd: '',
-                    );
-                  } else {
-                    return SizedBox();
-                  }
-                },
-              )*/
             ],
           );
         } else {
@@ -159,10 +153,10 @@ class ListViewHistoryAmd extends StatelessWidget {
           ),
           Text(
             context.appLocalization.appMsg137,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'TitlesHighlight',
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(
@@ -171,26 +165,31 @@ class ListViewHistoryAmd extends StatelessWidget {
         ],
       );
     } else {
-      return ListView.builder(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: homeService?.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ExpansionTitleWidget(
-            orderNumber: homeService?[index].orderNumber,
-            dateOrderDay: homeService?[index].registerDate.day,
-            dateOrderMonth: homeService?[index].registerDate.month,
-            dateOrderYear: homeService?[index].registerDate.year,
-            fullNamePatient: homeService?[index].fullNamePatient,
-            identificationDocument: homeService?[index].identificationDocument,
-            phoneNumberPatient: homeService?[index].phoneNumberPatient,
-            address: homeService?[index].address,
-            applicantDoctor: homeService?[index].applicantDoctor,
-            phoneNumberDoctor: homeService?[index].phoneNumberDoctor,
-            typeService: homeService?[index].typeService,
-            linkAmd: homeService?[index].linkAmd,
-            statusHomeService: homeService?[index].statusHomeService,
-          );
-        },
+      return BlocProvider(
+        create: (context) => AmdFormBloc(),
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8.0),
+          itemCount: homeService?.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ExpansionTitleWidget(
+                orderNumber: homeService?[index].orderNumber,
+                idMedicalOrder: homeService?[index].idMedicalOerder,
+                dateOrderDay: homeService?[index].registerDate.day,
+                dateOrderMonth: homeService?[index].registerDate.month,
+                dateOrderYear: homeService?[index].registerDate.year,
+                fullNamePatient: homeService?[index].fullNamePatient,
+                identificationDocument:
+                    homeService?[index].identificationDocument,
+                phoneNumberPatient: homeService?[index].phoneNumberPatient,
+                address: homeService?[index].address,
+                applicantDoctor: homeService?[index].applicantDoctor,
+                phoneNumberDoctor: homeService?[index].phoneNumberDoctor,
+                typeService: homeService?[index].typeService,
+                //linkAmd: homeService?[index].linkAmd,
+                statusHomeService: homeService?[index].statusHomeService,
+                statusOrder: homeService?[index].statusOrder);
+          },
+        ),
       );
     }
   }

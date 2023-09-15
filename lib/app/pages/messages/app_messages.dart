@@ -38,6 +38,9 @@ class AppMessages {
     if (code.trim() == 'MSG-225') {
       return context.appLocalization.apiMsg225;
     }
+    if (code.trim() == 'MSG-228') {
+      return context.appLocalization.apiMsg228;
+    }
     if (code.trim() == 'MSG-230') {
       return context.appLocalization.apiMsg230;
     }
@@ -82,6 +85,15 @@ class AppMessages {
     }
     if (code.trim() == 'MSGAPP-012') {
       return context.appLocalization.appMsg012;
+    }
+    if (code.trim() == 'MSGAPP-181') {
+      return context.appLocalization.appMsg181;
+    }
+    if (code.trim() == 'MSGHTTP-401') {
+      return context.appLocalization.invalidSession;
+    }
+    if (code.trim() == 'MSGHTTP-403') {
+      return context.appLocalization.invalidSession;
     }
     return code;
   }

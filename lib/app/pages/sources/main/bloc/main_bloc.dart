@@ -22,8 +22,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       HandleLocationPermissions();
   liblocation.Location location = liblocation.Location();
   final DoctorCareController doctorCareController;
-  MainBloc({required this.doctorCareController})
-      : super(const MainInitial(doctorAvailable: false)) {
+  MainBloc({required this.doctorCareController}) : super(const MainInitial()) {
     on<ShowLocationDoctorStatesEvent>((event, emit) async {
       List<SelectModel> listAllStates = [];
       try {
@@ -163,8 +162,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ShowHomeServiceAssignedEvent>((event, emit) async {
       bool doctorInAttention;
       try {
-        /* emit(const MainShowLoadingState(
-            message: 'Consultando Atenciones Pendientes')); */
+        emit(const ShowLoadingAmdAssignedState(
+            message: 'Consultando Atenciones Pendientes'));
         doctorInAttention =
             await doctorCareController.validateDoctorInAttention();
 
@@ -201,11 +200,23 @@ class MainBloc extends Bloc<MainEvent, MainState> {
           }
         }
       } on EmptyDataException {
-        emit(const HomeServiceEmptyState());
+        final String statusConnected =
+            await doctorCareController.verifyConnected();
+        statusConnected == 'Doctor disponible para atencion'
+            ? doctorAvailableSwitch = true
+            : doctorAvailableSwitch = false;
+        if (doctorAvailableSwitch) {
+          await doctorCareController.changeDoctorConnected('true');
+        } else {
+          await doctorCareController.changeDoctorConnected('false');
+        }
+        emit(HomeServiceEmptyState(doctorAvailable: doctorAvailableSwitch));
       } on ErrorAppException catch (exapp) {
         emit(HomeServiceAssignedErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceAssignedErrorState(message: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(MainInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const HomeServiceAssignedErrorState(
             message: AppConstants.codeGeneralErrorMessage));
@@ -268,6 +279,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         await doctorCareController.changeDoctorInAttention('false');
         emit(HomeServiceErrorState(message: exgen.message));
       } on AmdOrderAdminFinalizedException catch (exadmin) {
+        await doctorCareController.changeIdAmdConfirmed('0');
+        await doctorCareController.changeDoctorAmdPending('false');
         await doctorCareController.changeDoctorInAttention('false');
         try {
           await doctorCareController.doDisconectDoctorAmd();
@@ -407,6 +420,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceErrorState(message: exgen.message));
       } on AmdOrderAdminFinalizedException catch (exadmin) {
+        await doctorCareController.changeIdAmdConfirmed('0');
+        await doctorCareController.changeDoctorAmdPending('false');
         await doctorCareController.changeDoctorInAttention('false');
         doctorAvailableSwitch = false;
         emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
@@ -419,6 +434,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     on<ValidateDoctorAmdAssignedEvent>((event, emit) async {
       bool doctorAmdAssigned, doctorInAttention;
       try {
+        var idAmdConfirmed = await doctorCareController.getAmdConfirmed();
+        if (idAmdConfirmed != '0') {
+          await doctorCareController.validateIfOrderIsCompletedOrRejectedCtrl(
+              int.parse(idAmdConfirmed));
+        }
+
         doctorAmdAssigned =
             await doctorCareController.validateDoctorAmdAssigned();
         if (doctorAmdAssigned) {
@@ -436,6 +457,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
         emit(HomeServiceErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(HomeServiceErrorState(message: exgen.message));
+      } on AmdOrderAdminFinalizedException {
+        await doctorCareController.changeIdAmdConfirmed('0');
+        await doctorCareController.changeDoctorAmdPending('false');
+        emit(const NotHomeServiceAssignedState());
+      } on SessionExpiredException catch (exesi) {
+        emit(MainInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const HomeServiceErrorState(
             message: AppConstants.codeGeneralErrorMessage));
@@ -458,6 +485,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       } on AmdOrderAdminFinalizedException catch (exadmin) {
         await doctorCareController.changeIdAmdConfirmed('0');
         await doctorCareController.changeDoctorInAttention('false');
+        await doctorCareController.changeDoctorAmdPending('false');
         doctorAvailableSwitch = false;
         emit(ShowAmdOrderAdminFinalizedState(message: exadmin.message));
       } catch (unknowerror) {
@@ -465,5 +493,25 @@ class MainBloc extends Bloc<MainEvent, MainState> {
             message: AppConstants.codeGeneralErrorMessage));
       }
     });
+
+    /* on<CheckDoctorConnectedEvent>((event, emit) async {
+      try {
+        //emit(const MainShowLoadingState(message: 'Procesando solicitud'));
+      final String statusConnected =
+          await doctorCareController.verifyConnected();
+      statusConnected == 'Doctor disponible para atencion'
+          ? doctorAvailableSwitch = true
+          : doctorAvailableSwitch = false;
+        //emit(DoctorConnectedState(doctorAvailable: doctorAvailableSwitch));
+        // ignore: unused_catch_clause
+      } on ErrorAppException catch (exapp) {
+        doctorAvailableSwitch = false;
+        // ignore: unused_catch_clause
+      } on ErrorGeneralException catch (exgen) {
+        doctorAvailableSwitch = false;
+      } catch (unknowerror) {
+        doctorAvailableSwitch = false;
+      }
+    }); */
   }
 }
