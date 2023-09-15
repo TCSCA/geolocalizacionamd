@@ -20,7 +20,7 @@ class LoginController {
     late UserModel userResponse;
 
     try {
-      // ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+     // ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
 
       var responseLogin = await loginService.doLogin(user, password);
 

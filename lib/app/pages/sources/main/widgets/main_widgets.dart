@@ -494,7 +494,7 @@ class AmdInformationAssigned extends StatelessWidget {
     return SingleChildScrollView(
       //padding: const EdgeInsets.all(10.0),
       child: BlocConsumer<MainBloc, MainState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is MainShowLoadingState) {
             LoadingBuilder(context).showLoadingIndicator(state.message);
           }
@@ -560,22 +560,46 @@ class AmdInformationAssigned extends StatelessWidget {
           }
           if (state is HomeServiceAssignedErrorState) {
             LoadingBuilder(context).hideOpenDialog();
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusError),
-                    descriptions:
-                        AppMessages().getMessage(context, state.message),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusError,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                });
+
+            if (state.message == "session expired") {
+              await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions: AppMessages().getMessage(
+                      context, context.appLocalization.sessionExpired),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+              if (context.mounted) {
+                BlocProvider.of<LoginBloc>(context)
+                    .add(const ProcessLogoutEvent());
+              }
+            } else {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusError),
+                      descriptions:
+                      AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusError,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  });
+            }
           }
           if (state is ReasonRejectionSuccessState) {
             LoadingBuilder(context).hideOpenDialog();
