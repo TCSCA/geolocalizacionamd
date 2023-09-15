@@ -34,6 +34,9 @@ class AmdHistoryController {
         for (var optionhistory in homeServiceMap) {
           final String day;
           final String month;
+          final String hour;
+          final String minute;
+          final String second;
 
           day = optionhistory.registerDate.dateTime.date.day < 10
               ? '0${optionhistory.registerDate.dateTime.date.day}'
@@ -42,28 +45,39 @@ class AmdHistoryController {
               ? '0${optionhistory.registerDate.dateTime.date.month}'
               : optionhistory.registerDate.dateTime.date.month.toString();
 
+          hour = optionhistory.registerDate.dateTime.time.hour < 10 ?
+          '0${optionhistory.registerDate.dateTime.time.hour}' :
+          optionhistory.registerDate.dateTime.time.hour.toString();
+
+          minute = optionhistory.registerDate.dateTime.time.minute < 10 ?
+          '0${optionhistory.registerDate.dateTime.time.minute}' :
+          optionhistory.registerDate.dateTime.time.minute.toString();
+
+          second = optionhistory.registerDate.dateTime.time.second < 10 ?
+          '0${optionhistory.registerDate.dateTime.time.second}' :
+          optionhistory.registerDate.dateTime.time.second.toString();
+
           homeServiceModel = HomeServiceModel(
-            optionhistory.idHomeService,
-            optionhistory.idMedicalOrder,
-            optionhistory.orderNumber,
-            DateTime.parse(
-                '${optionhistory.registerDate.dateTime.date.year}-$month-$day'),
-            optionhistory.fullNamePatient,
-            optionhistory.documentType,
-            optionhistory.identificationDocument,
-            optionhistory.phoneNumberPatient,
-            optionhistory.address,
-            optionhistory.applicantDoctor,
-            optionhistory.phoneNumberDoctor,
-            optionhistory.typeService,
+              optionhistory.idHomeService,
+              optionhistory.idMedicalOrder,
+              optionhistory.orderNumber,
+              DateTime.parse(
+                  '${optionhistory.registerDate.dateTime.date.year}-$month-$day $hour:$minute:$second'),
+              optionhistory.fullNamePatient,
+              optionhistory.documentType,
+              optionhistory.identificationDocument,
+              optionhistory.phoneNumberPatient,
+              optionhistory.address,
+              optionhistory.applicantDoctor,
+              optionhistory.phoneNumberDoctor,
+              optionhistory.typeService,
               /*(optionhistory.idStatusHomeService == 3
                   ? ''
                   : optionhistory.linkAmd),*/
-            optionhistory.idStatusHomeService,
-            optionhistory.statusHomeService,
-            optionhistory.statusLinkAmd,
-            optionhistory.statusOrder
-          );
+              optionhistory.idStatusHomeService,
+              optionhistory.statusHomeService,
+              optionhistory.statusLinkAmd,
+              optionhistory.statusOrder);
 
           homeServiceModelList.add(homeServiceModel);
         }

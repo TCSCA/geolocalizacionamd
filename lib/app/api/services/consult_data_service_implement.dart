@@ -75,6 +75,11 @@ class ConsultDataServiceImp implements ConsultDataService {
           throw EmptyDataException(message: 'NODATA');
         }
       } else {
+
+        if (decodeRespApi['data'] == ApiConstants.sessionExpire) {
+          throw ErrorAppException(message: "session expired");
+        }
+
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
         if (error.isNotEmpty) {

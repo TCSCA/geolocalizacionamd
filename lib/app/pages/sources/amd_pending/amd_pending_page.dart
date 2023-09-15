@@ -396,9 +396,9 @@ class _AmdPendingPageState extends State<AmdPendingPage> {
                                   });
                             }
                           },
-                          /* buildWhen: (previous, current) =>
+                          /*buildWhen: (previous, current) =>
                             previous != current &&
-                            (current is ConfirmHomeServiceSuccessState), */
+                            (current is ConfirmHomeServiceSuccessState),*/
                           builder: (context, state) {
                             if (state is ConfirmHomeServiceSuccessState) {
                               return showDataAmd(
