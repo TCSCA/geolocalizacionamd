@@ -56,3 +56,48 @@ class CameraPermissionSuccessState extends ImageProfileState {
   @override
   List<Object?> get props => [typePermission];
 }
+
+// Camera initial state when it's not yet initialized
+class CameraInitial extends ImageProfileState {
+  final CameraController cameraController;
+
+  const CameraInitial({required this.cameraController});
+  @override
+  List<Object?> get props => [cameraController];
+}
+
+class CameraReady extends ImageProfileState {
+  final CameraController cameraController;
+
+  const CameraReady({required this.cameraController});
+
+  @override
+  List<Object?> get props => [cameraController];
+}
+
+class CameraChangeSucces extends ImageProfileState {
+  final Uint8List? image;
+  final String? path;
+
+  const CameraChangeSucces({required this.image, required this.path});
+  @override
+  List<Object?> get props => [image, path];
+}
+
+class TakePicktureSuccess extends ImageProfileState {
+  final Uint8List? image;
+
+  const TakePicktureSuccess({required this.image});
+  @override
+  List<Object?> get props => [image];
+}
+
+// Camera error state when an error occurs during camera operations
+class CameraError extends ImageProfileState {
+  final CameraErrorType error; // The type of camera error that occurred
+  const CameraError({
+    required this.error,
+  });
+  @override
+  List<Object> get props => [error];
+}

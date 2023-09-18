@@ -54,3 +54,32 @@ class ConsultDigitalSignatureEvent extends ImageProfileEvent {
   @override
   List<Object?> get props => [];
 }
+
+// Event to switch between front and back cameras
+class CameraSwitch extends ImageProfileEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+// Event to disable the camera when not in use
+class CameraDisable extends ImageProfileEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+// Event to enable the camera when in use
+class CameraEnable extends ImageProfileEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+// Event to reset the camera BLoC to its initial state
+class CameraReset extends ImageProfileEvent {
+  @override
+  List<Object?> get props => [];
+}
+
+class CameraTakePicture extends ImageProfileEvent {
+  @override
+  List<Object?> get props => [];
+}

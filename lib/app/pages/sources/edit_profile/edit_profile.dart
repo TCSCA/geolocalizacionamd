@@ -1,6 +1,8 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocalizacionamd/app/core/controllers/camera_controller.dart';
 import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
 import 'package:geolocalizacionamd/app/shared/digital_signature_bloc/digital_signature_bloc.dart';
 import 'package:geolocalizacionamd/app/shared/image_build/image_widget.dart';
@@ -140,7 +142,8 @@ class _EditProfileState extends State<EditProfile> {
     _imgByDatabase = imageProfile is InitialImageProfileState
         ? imageProfile.imageBuild
         : null;
-    pathImage = imageProfile is InitialImageProfileState ? imageProfile.imagePath : '';
+    pathImage =
+        imageProfile is InitialImageProfileState ? imageProfile.imagePath : '';
 
     specialityCtrl =
         TextEditingController(text: state.profileModel?.speciality);
@@ -219,20 +222,21 @@ class _EditProfileState extends State<EditProfile> {
             context.read<ProfileBloc>().add(GetProfileInitialEvent());
             context.go(GeoAmdRoutes.profile, extra: NavigationBloc());
           }
-        } if(state is ProfileErrorState) {
+        }
+        if (state is ProfileErrorState) {
           if (context.mounted) {
             LoadingBuilder(context).hideOpenDialog();
 
-            if(state.messageError == "session expired") {
-             await showDialog(
+            if (state.messageError == "session expired") {
+              await showDialog(
                   context: context,
                   barrierDismissible: false,
                   builder: (BuildContext context) {
                     return CustomDialogBox(
                       title: AppMessages()
                           .getMessageTitle(context, AppConstants.statusError),
-                      descriptions:
-                      AppMessages().getMessage(context, context.appLocalization.sessionExpired),
+                      descriptions: AppMessages().getMessage(
+                          context, context.appLocalization.sessionExpired),
                       isConfirmation: false,
                       dialogAction: () {},
                       type: AppConstants.statusError,
@@ -240,9 +244,7 @@ class _EditProfileState extends State<EditProfile> {
                       dialogCancel: () {},
                     );
                   });
-             if(context.mounted) {
-               BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
-             }
+              BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
             } else {
               showDialog(
                   context: context,
@@ -252,7 +254,7 @@ class _EditProfileState extends State<EditProfile> {
                       title: AppMessages()
                           .getMessageTitle(context, AppConstants.statusError),
                       descriptions:
-                      AppMessages().getMessage(context, state.messageError),
+                          AppMessages().getMessage(context, state.messageError),
                       isConfirmation: false,
                       dialogAction: () {},
                       type: AppConstants.statusError,
@@ -262,7 +264,6 @@ class _EditProfileState extends State<EditProfile> {
                   });
             }
           }
-
         }
       },
       builder: (context, state) {
@@ -332,12 +333,17 @@ class _EditProfileState extends State<EditProfile> {
                           context
                               .read<ImageProfileBloc>()
                               .add(SelectImageByGallery());
-                        } else if (state.typePermission == 'camera') {
-                          context
-                              .read<ImageProfileBloc>()
-                              .add(SelectImageByCamera());
                         }
-                      } else if(state is ImageErrorState) {
+                      } else if (state is CameraInitial) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => ShowCamera(
+                              controllerCamera: state.cameraController,
+                            ),
+                          ),
+                        );
+                      } else if (state is ImageErrorState) {
                         showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -677,9 +683,8 @@ class _EditProfileState extends State<EditProfile> {
   Widget allGenderList() {
     return BlocConsumer<GenderBloc, GenderState>(
       listener: (context, state) {
-
-        if(state is GenderDataErrorState) {
-          if(state.messageError == 'session expired') {
+        if (state is GenderDataErrorState) {
+          if (state.messageError == 'session expired') {
             showDialog(
                 context: context,
                 barrierDismissible: false,
@@ -687,11 +692,12 @@ class _EditProfileState extends State<EditProfile> {
                   return CustomDialogBox(
                     title: AppMessages()
                         .getMessageTitle(context, AppConstants.statusError),
-                    descriptions:
-                    AppMessages().getMessage(context, context.appLocalization.sessionExpired),
+                    descriptions: AppMessages().getMessage(
+                        context, context.appLocalization.sessionExpired),
                     isConfirmation: true,
                     dialogAction: () {
-                      BlocProvider.of<LoginBloc>(context).add(const ProcessLogoutEvent());
+                      BlocProvider.of<LoginBloc>(context)
+                          .add(const ProcessLogoutEvent());
                     },
                     type: AppConstants.statusError,
                     isdialogCancel: false,
@@ -1129,8 +1135,7 @@ class _EditProfileState extends State<EditProfile> {
       }
     } else if (option == 2) {
       if (context.mounted) {
-        BlocProvider.of<ImageProfileBloc>(context)
-            .add(ValidatePermissionCameraEvent());
+        BlocProvider.of<ImageProfileBloc>(context).add(CameraEnable());
       }
 
       // await _selectImageCamera(context);
@@ -1201,7 +1206,6 @@ class _EditProfileState extends State<EditProfile> {
                         : const SizedBox(),
                     const Divider(),
                     ListTile(
-
                       minVerticalPadding: 0.0,
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
@@ -1231,5 +1235,137 @@ class _EditProfileState extends State<EditProfile> {
     } else {
       return const SizedBox();
     }
+  }
+}
+
+class ShowCamera extends StatefulWidget {
+  final CameraController controllerCamera;
+  const ShowCamera({
+    super.key,
+    required this.controllerCamera,
+  });
+
+  @override
+  State<ShowCamera> createState() => _ShowCameraState();
+}
+
+class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
+  late CameraUtils cameraUtils = CameraUtils();
+  late ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+  bool isThisPageVisibe = true;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // App state changed before we got the chance to initialize.
+    if (imageProfileBloc!.cameraCtrl?.getController() == null) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      imageProfileBloc!.add(CameraDisable());
+    } else if (state == AppLifecycleState.resumed) {
+      if (isThisPageVisibe) {
+        // Enable the camera when the app is resumed and this page is visible
+        imageProfileBloc?.add(CameraEnable());
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    imageProfileBloc = BlocProvider.of<ImageProfileBloc>(context);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    imageProfileBloc?.add(CameraReset());
+    imageProfileBloc?.close();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // BlocProvider.of<ImageProfileBloc>(context).add(CameraEnable());
+    final _cameraController = imageProfileBloc?.cameraCtrl?.cameraController;
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          BlocConsumer<ImageProfileBloc, ImageProfileState>(
+              listener: (context, state) {
+            if (state is CameraTakePicture) {
+              print('Camera Preview');
+            } else if (state is CameraSwitch) {
+              print('object');
+            } else if (state is CameraDisable) {
+              print('object');
+            }
+          }, builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 160,
+                  child: AspectRatio(
+                    aspectRatio: _cameraController!.value.aspectRatio,
+                    child: _cameraController.value.isInitialized
+                        ? CameraPreview(_cameraController)
+                        : Container(),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(top: 40),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          context.read<ImageProfileBloc>().add(CameraDisable());
+                          context.pop();
+                        },
+                        hoverColor: Colors.grey,
+                        iconSize: 40,
+                        icon: const Icon(
+                          Icons.cancel_outlined,
+                          color: Colors.white,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          context
+                              .read<ImageProfileBloc>()
+                              .add(CameraTakePicture());
+                        },
+                        icon: const Icon(Icons.camera),
+                        iconSize: 40,
+                        color: Colors.white,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          context.read<ImageProfileBloc>().add(CameraSwitch());
+                        },
+                        iconSize: 40,
+                        icon: const Icon(
+                          Icons.cameraswitch,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
   }
 }

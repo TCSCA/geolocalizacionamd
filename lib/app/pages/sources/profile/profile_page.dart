@@ -29,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     // BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
+    // BlocProvider.of<ProfileBloc>(context).add(GetProfileEvent());
 
     return WillPopScope(
       onWillPop: () async => backButtonActions(),
@@ -86,21 +87,21 @@ class ListViewProfileWidget extends StatelessWidget {
         } else if (state is ProfileErrorState) {
           LoadingBuilder(context).hideOpenDialog();
           showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusError),
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
                   descriptions:
                       AppMessages().getMessage(context, state.messageError),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusError,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                });
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
         } else if (state is ProfileInvalidSessionState) {
           LoadingBuilder(context).hideOpenDialog();
           showDialog(
@@ -129,7 +130,7 @@ class ListViewProfileWidget extends StatelessWidget {
             children: [
               Center(
                 child: Stack(
-                  children: [_ImageWidget()],
+                  children: [_ImageWidgetProfile()],
                 ),
               ),
               const SizedBox(
@@ -240,7 +241,9 @@ class ListViewProfileWidget extends StatelessWidget {
                                 context: context,
                                 builder: (BuildContext context) =>
                                 */ /*BlocProvider(
+                                */ /*BlocProvider(
                                       create: (context) => DigitalSignatureBloc(),
+                                      child: */ /*DigitalSignatureWidget());
                                       child: */ /*DigitalSignatureWidget());
                             //    ));
                           }),*/
@@ -288,8 +291,8 @@ class ListViewProfileWidget extends StatelessWidget {
   }
 }
 
-class _ImageWidget extends StatelessWidget {
-  _ImageWidget();
+class _ImageWidgetProfile extends StatelessWidget {
+  _ImageWidgetProfile();
 
   Uint8List? bytesImage;
 
