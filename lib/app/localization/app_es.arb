@@ -52,7 +52,7 @@
     "nameButtonAccept": "Aceptar",
     "nameButtonClose": "Cerrar",
     "invalidData": "Dato inválido",
-    "invalidLengthField": "Longitud del dato menor a la mínima requerida.",
+    "invalidLengthField": "Longitud del dato menor a la mínima \nrequerida.",
     "messageLogout": "¿Estás seguro de que quieres cerrar sesión?",
     "messagePatientCare": "Nuestros pacientes deben recibir un trato digno y respetuoso en cualquier momento y bajo cualquier circunstancia.",
     "messageNotAvailableCare": "No disponible",
