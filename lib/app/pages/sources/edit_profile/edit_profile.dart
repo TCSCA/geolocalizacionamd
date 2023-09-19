@@ -328,6 +328,7 @@ class _EditProfileState extends State<EditProfile> {
                       if (state is ImageChangeSuccessState) {
                         _bytesImage = state.imageBuild;
                         pathImage = state.imagePath;
+
                       } else if (state is CameraPermissionSuccessState) {
                         if (state.typePermission == 'gallery') {
                           context
@@ -1301,6 +1302,9 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
               print('object');
             } else if (state is CameraDisable) {
               print('object');
+            } else if (state is ImageChangeSuccessState) {
+
+              Navigator.pop(context);
             }
           }, builder: (context, state) {
             return Column(
