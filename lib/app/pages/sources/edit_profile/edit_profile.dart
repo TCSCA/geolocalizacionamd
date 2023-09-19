@@ -482,7 +482,7 @@ class _EditProfileState extends State<EditProfile> {
                         padding:
                             EdgeInsets.only(bottom: 30.0, right: 20, left: 20),
                         child: Text(
-                          'Firma Cargada',
+                          'Cargar firma',
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
