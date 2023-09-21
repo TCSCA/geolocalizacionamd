@@ -42,7 +42,6 @@ class ConsultDataServiceImp implements ConsultDataService {
     } catch (unknowerror) {
       throw ErrorGeneralException();
     }
-
     return responsePhotos;
   }
 

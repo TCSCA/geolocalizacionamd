@@ -1254,6 +1254,7 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
   late CameraUtils cameraUtils = CameraUtils();
   late ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
   bool isThisPageVisibe = true;
+  CameraController? _cameraController;
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // App state changed before we got the chance to initialize.
@@ -1266,7 +1267,7 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
     } else if (state == AppLifecycleState.resumed) {
       if (isThisPageVisibe) {
         // Enable the camera when the app is resumed and this page is visible
-        imageProfileBloc?.add(CameraEnable());
+       // imageProfileBloc?.add(CameraEnable());
       }
     }
   }
@@ -1280,16 +1281,19 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    imageProfileBloc?.add(CameraReset());
-    imageProfileBloc?.close();
+    //imageProfileBloc?.add(CameraReset());
+    //imageProfileBloc?.close();
     WidgetsBinding.instance.removeObserver(this);
+    _cameraController!.dispose();
+    cameraUtils.disposeCamera();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
     // BlocProvider.of<ImageProfileBloc>(context).add(CameraEnable());
-    final _cameraController = imageProfileBloc?.cameraCtrl?.cameraController;
+    _cameraController = imageProfileBloc?.cameraCtrl?.cameraController;
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -1303,7 +1307,8 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
             } else if (state is CameraDisable) {
               print('object');
             } else if (state is ImageChangeSuccessState) {
-
+              _cameraController!.dispose();
+              cameraUtils.disposeCamera();
               Navigator.pop(context);
             }
           }, builder: (context, state) {
@@ -1318,8 +1323,8 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
                   height: MediaQuery.of(context).size.height - 160,
                   child: AspectRatio(
                     aspectRatio: _cameraController!.value.aspectRatio,
-                    child: _cameraController.value.isInitialized
-                        ? CameraPreview(_cameraController)
+                    child: _cameraController!.value.isInitialized
+                        ? CameraPreview(_cameraController!)
                         : Container(),
                   ),
                 ),
@@ -1347,6 +1352,7 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
                           context
                               .read<ImageProfileBloc>()
                               .add(CameraTakePicture());
+                         // context.pop();
                         },
                         icon: const Icon(Icons.camera),
                         iconSize: 40,
@@ -1355,6 +1361,7 @@ class _ShowCameraState extends State<ShowCamera> with WidgetsBindingObserver {
                       IconButton(
                         onPressed: () {
                           context.read<ImageProfileBloc>().add(CameraSwitch());
+
                         },
                         iconSize: 40,
                         icon: const Icon(

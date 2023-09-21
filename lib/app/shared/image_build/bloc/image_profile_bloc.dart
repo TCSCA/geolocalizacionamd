@@ -148,6 +148,7 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
     on<CameraReset>(_onCameraReset);
     on<CameraDisable>(_onCameraDisable);
   }
+
   // Handle CameraReset event
   void _onCameraReset(
       CameraReset event, Emitter<ImageProfileState> emit) async {
@@ -169,8 +170,8 @@ class ImageProfileBloc extends Bloc<ImageProfileEvent, ImageProfileState> {
   void _onCameraTakePicture(
       CameraTakePicture event, Emitter<ImageProfileState> emit) async {
     final pickture = await cameraCtrl!.takePictureCamera();
-    /*    await cameraCtrl!.disposeCamera();
-    cameraController = null; */
+    await cameraCtrl!.disposeCamera();
+    //cameraController = null;
     final picturePath = const Base64Encoder().convert(List.from(pickture!));
     emit(ImageChangeSuccessState(imageBuild: pickture, imagePath: picturePath));
   }
