@@ -60,7 +60,6 @@ class ChangedPasswordPage extends StatelessWidget {
 
 class _ChangePasswordView extends StatefulWidget {
   const _ChangePasswordView({
-    super.key,
     required this.formKey,
     required this.passwordKey,
     required this.passwordCtrl,

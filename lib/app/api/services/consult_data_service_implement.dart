@@ -4,7 +4,6 @@ import 'package:geolocalizacionamd/app/api/interceptors/http_error_interceptor.d
 import 'package:geolocalizacionamd/app/api/mappings/gender_mapping.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
-import '../../errors/error_session_expired.dart';
 import '/app/api/mappings/home_service_mapping.dart';
 import '/app/errors/error_empty_data.dart';
 import '/app/api/constants/api_constants.dart';

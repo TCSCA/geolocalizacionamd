@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
 import 'package:geolocalizacionamd/app/core/models/file_amd_form_model.dart';

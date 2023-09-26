@@ -155,6 +155,9 @@ class ServiceAvailabilityDashboard extends StatelessWidget {
         if (state is ShowLoadingAmdAssignedState) {
           LoadingBuilder(context).showLoadingIndicator(state.message);
         }
+        if (state is HomeServiceInAttentionState) {
+          LoadingBuilder(context).hideOpenDialog();
+        }
         if (state is DoctorServiceState) {
           //desactivarservicio
           LoadingBuilder(context).hideOpenDialog();
@@ -602,208 +605,215 @@ class AmdInformationAssigned extends StatelessWidget {
             }
           }
           if (state is ReasonRejectionSuccessState) {
-            LoadingBuilder(context).hideOpenDialog();
-            showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (BuildContext context) {
-                  return WillPopScope(
-                    onWillPop: () async => false,
-                    child: AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
+            if(context.mounted) {
+              LoadingBuilder(context).hideOpenDialog();
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async => false,
+                      child: AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
+                          side: BorderSide(
+                            color: AppStyles.colorBeige,
+                            style: BorderStyle.solid,
+                            width: 4.0,
+                          ),
                         ),
-                        side: BorderSide(
-                          color: AppStyles.colorBeige,
-                          style: BorderStyle.solid,
-                          width: 4.0,
-                        ),
-                      ),
-                      content: Stack(
-                        children: <Widget>[
-                          Form(
-                            key: reasonRejectionFormKey,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        'Seleccione el motivo de rechazo y pulse Aceptar',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppStyles.colorBluePrimary,
-                                          fontFamily: 'TextsParagraphs',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: DropdownButtonFormField(
-                                        isExpanded: true,
-                                        isDense: true,
-                                        itemHeight: null,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(8.0)),
-                                        hint:
-                                            const Text("Seleccione una opción"),
-                                        key: reasonFieldKey,
-                                        decoration: InputDecoration(
-                                          focusedBorder:
-                                              const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: AppStyles
-                                                      .colorBluePrimary)),
-                                          enabledBorder:
-                                              const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: AppStyles
-                                                      .colorBluePrimary)),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                              vertical: 18),
-                                          labelText: 'Motivo:',
-                                          hintText: 'Seleccione una opción',
-                                          labelStyle: Theme.of(context)
-                                              .textTheme
-                                              .labelLarge
-                                              ?.copyWith(
-                                                  color: Colors.black,
-                                                  fontSize: 22.0),
-                                        ),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge
-                                            ?.copyWith(color: Colors.black),
-                                        items: state.listReasonRejection
-                                            .map((SelectModel selectiveReason) {
-                                          return DropdownMenuItem(
-                                            value: selectiveReason.id,
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Text(
-                                                selectiveReason.name,
-                                                overflow: TextOverflow.visible,
-                                                softWrap: true,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        autovalidateMode:
-                                            AutovalidateMode.onUserInteraction,
-                                        validator: (fieldValue) {
-                                          if (fieldValue == null) {
-                                            return 'Campo requerido.';
-                                          }
-                                          return null;
-                                        },
-                                        onChanged: (reasonCode) {
-                                          if (reasonCode != null) {
-                                            reasonTextController.text =
-                                                reasonCode;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20.0),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          padding: EdgeInsets.zero,
-                                          elevation: 5,
-                                          side: const BorderSide(
-                                              width: 2,
-                                              color: Color(0xffFFFFFF)),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30))),
-                                      onPressed: () {
-                                        if (!reasonRejectionFormKey
-                                            .currentState!
-                                            .validate()) {
-                                          return;
-                                        } else {
-                                          context.pop();
-                                          BlocProvider.of<MainBloc>(context)
-                                              .add(DisallowAmdEvent(
-                                                  state.homeServiceAssigned
-                                                      .idHomeService,
-                                                  reasonTextController.text));
-                                        }
-                                      },
-                                      child: Ink(
-                                        decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                                colors: [
-                                                  Color(0xffF96352),
-                                                  Color(0xffD84835)
-                                                ]),
-                                            borderRadius:
-                                                BorderRadius.circular(30)),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10, horizontal: 20),
-                                          child: Text(
-                                            'Aceptar',
-                                            textAlign: TextAlign.center,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelLarge
-                                                ?.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                        content: Stack(
+                          children: <Widget>[
+                            Form(
+                              key: reasonRejectionFormKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'Seleccione el motivo de rechazo y pulse Aceptar',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppStyles.colorBluePrimary,
+                                            fontFamily: 'TextsParagraphs',
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                )
-                              ],
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: DropdownButtonFormField(
+                                          isExpanded: true,
+                                          isDense: true,
+                                          itemHeight: null,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(8.0)),
+                                          hint:
+                                          const Text("Seleccione una opción"),
+                                          key: reasonFieldKey,
+                                          decoration: InputDecoration(
+                                            focusedBorder:
+                                            const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: AppStyles
+                                                        .colorBluePrimary)),
+                                            enabledBorder:
+                                            const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: AppStyles
+                                                        .colorBluePrimary)),
+                                            contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 18),
+                                            labelText: 'Motivo:',
+                                            hintText: 'Seleccione una opción',
+                                            labelStyle: Theme.of(context)
+                                                .textTheme
+                                                .labelLarge
+                                                ?.copyWith(
+                                                color: Colors.black,
+                                                fontSize: 22.0),
+                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge
+                                              ?.copyWith(color: Colors.black),
+                                          items: state.listReasonRejection
+                                              .map((SelectModel selectiveReason) {
+                                            return DropdownMenuItem(
+                                              value: selectiveReason.id,
+                                              child: SizedBox(
+                                                width: double.infinity,
+                                                child: Text(
+                                                  selectiveReason.name,
+                                                  overflow: TextOverflow.visible,
+                                                  softWrap: true,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                          validator: (fieldValue) {
+                                            if (fieldValue == null) {
+                                              return 'Campo requerido.';
+                                            }
+                                            return null;
+                                          },
+                                          onChanged: (reasonCode) {
+                                            if (reasonCode != null) {
+                                              reasonTextController.text =
+                                                  reasonCode;
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20.0),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                            elevation: 5,
+                                            side: const BorderSide(
+                                                width: 2,
+                                                color: Color(0xffFFFFFF)),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(30))),
+                                        onPressed: () {
+                                          if (!reasonRejectionFormKey
+                                              .currentState!
+                                              .validate()) {
+                                            return;
+                                          } else {
+                                            context.pop();
+                                            BlocProvider.of<MainBloc>(context)
+                                                .add(DisallowAmdEvent(
+                                                state.homeServiceAssigned
+                                                    .idHomeService,
+                                                reasonTextController.text));
+                                          }
+                                        },
+                                        child: Ink(
+                                          decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xffF96352),
+                                                    Color(0xffD84835)
+                                                  ]),
+                                              borderRadius:
+                                              BorderRadius.circular(30)),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                            child: Text(
+                                              'Aceptar',
+                                              textAlign: TextAlign.center,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelLarge
+                                                  ?.copyWith(
+                                                  fontWeight:
+                                                  FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                });
+                    );
+                  });
+            }
           }
           if (state is ShowAmdOrderAdminFinalizedState) {
-            LoadingBuilder(context).hideOpenDialog();
-            doctorAvailableSwitch = false;
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return CustomDialogBox(
-                    title: AppMessages()
-                        .getMessageTitle(context, AppConstants.statusWarning),
-                    descriptions:
-                        AppMessages().getMessage(context, state.message),
-                    isConfirmation: false,
-                    dialogAction: () {},
-                    type: AppConstants.statusWarning,
-                    isdialogCancel: false,
-                    dialogCancel: () {},
-                  );
-                });
+            if(context.mounted) {
+              LoadingBuilder(context).hideOpenDialog();
+              doctorAvailableSwitch = false;
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox(
+                      title: AppMessages()
+                          .getMessageTitle(context, AppConstants.statusWarning),
+                      descriptions:
+                      AppMessages().getMessage(context, state.message),
+                      isConfirmation: false,
+                      dialogAction: () {},
+                      type: AppConstants.statusWarning,
+                      isdialogCancel: false,
+                      dialogCancel: () {},
+                    );
+                  });
+            }
+
           }
           if (state is AmdConfirmedAdminSuccessState) {
-            LoadingBuilder(context).hideOpenDialog();
-            //Viene del boton Ver atencion y se redicciona a pagina En Atencion
-            AppCommonWidgets.pageCurrentChanged(
-                context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+            if(context.mounted) {
+              LoadingBuilder(context).hideOpenDialog();
+              //Viene del boton Ver atencion y se redicciona a pagina En Atencion
+              AppCommonWidgets.pageCurrentChanged(
+                  context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+            }
           }
         },
         /* buildWhen: (previous, current) =>
