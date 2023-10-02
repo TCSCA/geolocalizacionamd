@@ -36,7 +36,7 @@ class ChangePasswordServiceImp implements ChangePasswordService {
       decodeResp = jsonDecode(responseApi.body);
 
       changePasswordMap = ChangePasswordMap.fromJson(decodeResp);
-    } on ErrorAppException catch (errorapp) {
+    } on ErrorAppException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();

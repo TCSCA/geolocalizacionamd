@@ -241,7 +241,7 @@ class _EditProfileState extends State<EditProfile> {
                     );
                   });
              if(context.mounted) {
-               BlocProvider.of<LoginBloc>(context).add(ProcessLogoutEvent());
+               BlocProvider.of<LoginBloc>(context).add(const ProcessLogoutEvent());
              }
             } else {
               showDialog(

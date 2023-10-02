@@ -332,7 +332,7 @@ class SaveDataServiceImp implements SaveDataService {
   Future<FileAmdFormMap> viewAmdFormService(int idMedicalOrder, String tokenUser) async {
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
-    String urlRenew = '';
+    //String urlRenew = '';
     late FileAmdFormMap fileAmdFormMap;
 
     final Uri getResultAmdOrder = Uri.parse(ApiConstants.urlApiGetResultAmdOrder);

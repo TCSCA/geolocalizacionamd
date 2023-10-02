@@ -31,7 +31,6 @@ class RenewPasswordPage extends StatelessWidget {
 
 class _RenewPasswordView extends StatelessWidget {
   _RenewPasswordView({
-    super.key,
     required TextEditingController usernameCtrl,
   }) : _usernameCtrl = usernameCtrl;
 
@@ -45,7 +44,7 @@ class _RenewPasswordView extends StatelessWidget {
       onWillPop: () async => backButtonActions(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: Container(
+        body: SizedBox(
             //  color: const Color(0xff2B5178),
             height: double.infinity,
             width: double.infinity,
@@ -142,8 +141,8 @@ class _RenewPasswordView extends StatelessWidget {
                                         fontFamily: 'TextsParagraphs'),
                                   ),
                                 ),
-                                Divider(),
-                                SizedBox(
+                                const Divider(),
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Container(
@@ -298,13 +297,13 @@ class _RenewPasswordView extends StatelessWidget {
                                         )),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 30,
                                 )
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 50,
                           )
                         ],

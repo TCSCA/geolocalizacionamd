@@ -199,30 +199,32 @@ class _LoginPageState extends State<LoginPage> {
                       });
                 }
                 if (state is ShowFirebaseKeyState) {
-                  LoadingBuilder(context).hideOpenDialog();
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return CustomDialogBox(
-                          title: 'Firebase Device Key',
-                          descriptions: state.firebaseKey,
-                          isConfirmation: true,
-                          dialogAction: () {
-                            Clipboard.setData(
-                                    ClipboardData(text: state.firebaseKey))
-                                .then((_) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Key Copiado a tu portapapeles!')));
-                            });
-                          },
-                          type: AppConstants.statusSuccess,
-                          isdialogCancel: false,
-                          dialogCancel: () {},
-                        );
-                      });
+                  if(context.mounted) {
+                    LoadingBuilder(context).hideOpenDialog();
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: 'Firebase Device Key',
+                            descriptions: state.firebaseKey,
+                            isConfirmation: true,
+                            dialogAction: () {
+                              Clipboard.setData(
+                                  ClipboardData(text: state.firebaseKey))
+                                  .then((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Key Copiado a tu portapapeles!')));
+                              });
+                            },
+                            type: AppConstants.statusSuccess,
+                            isdialogCancel: false,
+                            dialogCancel: () {},
+                          );
+                        });
+                  }
                 }
               },
               child: Form(

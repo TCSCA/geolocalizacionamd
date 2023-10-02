@@ -6,11 +6,11 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const GetLoadingIndicator(),
+         GetLoadingIndicator(),
       //  GetText(displayedText: menssage),
       ],
     );
