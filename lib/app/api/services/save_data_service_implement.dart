@@ -1,10 +1,12 @@
 import 'dart:convert';
-import 'package:geolocalizacionamd/app/api/mappings/home_service_mapping.dart';
-import 'package:geolocalizacionamd/app/core/models/connect_doctor_model.dart';
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/services/save_data_service.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
+import '/app/api/mappings/home_service_mapping.dart';
+import '/app/core/models/connect_doctor_model.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/services/save_data_service.dart';
+import '/app/errors/exceptions.dart';
+import '/app/core/models/reject_amd_model.dart';
 
 class SaveDataServiceImp implements SaveDataService {
   @override
@@ -106,7 +108,8 @@ class SaveDataServiceImp implements SaveDataService {
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-        responseActiveAmdOrder = HomeServiceMap.fromJson(decodeRespApi);
+        responseActiveAmdOrder =
+            HomeServiceMap.fromJson(decodeRespApi[ApiConstants.dataLabelApi]);
       } else {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
@@ -124,7 +127,8 @@ class SaveDataServiceImp implements SaveDataService {
   }
 
   @override
-  Future<bool> onRejectHomeService(String tokenUser, int idHomeService) async {
+  Future<bool> onRejectHomeService(
+      String tokenUser, RejectAmdModel requestReject) async {
     bool isReject = false;
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
@@ -134,8 +138,11 @@ class SaveDataServiceImp implements SaveDataService {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
-    final String bodyReject =
-        jsonEncode({'idHomeServiceAttention': idHomeService});
+    final String bodyReject = jsonEncode({
+      'idHomeServiceAttention': requestReject.idHomeServiceAttention,
+      "comment": requestReject.comment,
+      "idReasonReject": requestReject.idReasonReject
+    });
 
     try {
       responseApi = await http.post(urlApiRejectHomeService,
@@ -163,7 +170,7 @@ class SaveDataServiceImp implements SaveDataService {
 
   @override
   Future<bool> onCompleteHomeService(
-      String tokenUser, int idHomeService) async {
+      String tokenUser, RejectAmdModel requestReject) async {
     bool isComplete = false;
     http.Response responseApi;
     Map<String, dynamic> decodeRespApi;
@@ -173,8 +180,10 @@ class SaveDataServiceImp implements SaveDataService {
       ApiConstants.headerContentType: ApiConstants.headerValorContentType,
       ApiConstants.headerToken: tokenUser
     };
-    final String bodyComplete =
-        jsonEncode({'idHomeServiceAttention': idHomeService});
+    final String bodyComplete = jsonEncode({
+      'idHomeServiceAttention': requestReject.idHomeServiceAttention,
+      'idReasonReject': requestReject.idReasonReject
+    });
 
     try {
       responseApi = await http.post(urlApiCompleteHomeService,
@@ -198,5 +207,163 @@ class SaveDataServiceImp implements SaveDataService {
     }
 
     return isComplete;
+  }
+
+  @override
+  Future<bool> editProfileService(
+      int idAffiliate,
+      String fullName,
+      String email,
+      String dateOfBirth,
+      int idGender,
+      String phoneNumber,
+      String? otherPhone,
+      int idCountry,
+      int idState,
+      int idCity,
+      String direction,
+      int mpps,
+      int cm,
+      String speciality,
+      String? photoProfile,
+      String? digitalSignature,
+      String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    bool editProfileStatusSuccess = false;
+
+    final Uri urlEditProfile = Uri.parse(ApiConstants.urlApiEditProfileService);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyEditProfile = jsonEncode({
+      "idAffiliate": idAffiliate,
+      "fullName": fullName,
+      "idGender": idGender,
+      "birthday": dateOfBirth,
+      "email": email,
+      "phoneNumber": phoneNumber,
+      "otherNumber": otherPhone,
+      "idCity": idCity,
+      "direction": direction,
+      "speciality": speciality,
+      "medicalLicense": "$mpps|$cm",
+      "photoProfile": photoProfile,
+      "digitalSignature": digitalSignature
+    });
+
+    try {
+      responseApi = await http.post(urlEditProfile,
+          headers: headerEditProfile, body: bodyEditProfile);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        editProfileStatusSuccess = true;
+      } else {
+
+        if (decodeRespApi['data'] == ApiConstants.sessionExpire) {
+          throw ErrorAppException(message: "session expired");
+        }
+
+        final String error =
+        decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
+        throw ErrorAppException(
+            message:
+            (error.isNotEmpty ? error : ApiConstants.generalErrorCodeApi));
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return editProfileStatusSuccess;
+  }
+
+
+  @override
+  Future<String> renewAmdFormService(int idMedicalOrder, String tokenUser) async {
+
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    String urlRenew = '';
+
+    final Uri urlOrderToken = Uri.parse(ApiConstants.urlApiRenewUrlOrderToken);
+
+    final Map<String, String> headerEditProfile = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyUrlOrderToken = jsonEncode({
+      "idMedicalOrder": idMedicalOrder
+    });
+
+
+    try {
+      responseApi = await http.post(urlOrderToken,
+          headers: headerEditProfile, body: bodyUrlOrderToken);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+       urlRenew = decodeRespApi[ApiConstants.dataLabelApi];
+      } else {
+        throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
+      }
+
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return urlRenew;
+  }
+
+  @override
+  Future<FileAmdFormMap> viewAmdFormService(int idMedicalOrder, String tokenUser) async {
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    //String urlRenew = '';
+    late FileAmdFormMap fileAmdFormMap;
+
+    final Uri getResultAmdOrder = Uri.parse(ApiConstants.urlApiGetResultAmdOrder);
+
+    final Map<String, String> headerGetResultAmdOrder = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    final String bodyGetResultAmdOrder = jsonEncode({
+      "idMedicalOrder": idMedicalOrder
+    });
+
+    try {
+      responseApi = await http.post(getResultAmdOrder,
+          headers: headerGetResultAmdOrder, body: bodyGetResultAmdOrder);
+
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        fileAmdFormMap = FileAmdFormMap.fromJson(decodeRespApi);
+      } else {
+        throw ErrorAppException(message: ApiConstants.generalErrorCodeApi);
+      }
+
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+    return fileAmdFormMap;
   }
 }

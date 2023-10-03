@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/models/menu_model.dart';
-import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
-import 'package:geolocalizacionamd/app/pages/messages/app_messages.dart';
-import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/navigation/bloc/navigation_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/styles/app_styles.dart';
-import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
-import 'package:geolocalizacionamd/app/shared/loading/loading_builder.dart';
+import 'package:geolocalizacionamd/app/shared/image_build/bloc/image_profile_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '/app/core/models/menu_model.dart';
+import '/app/extensions/localization_ext.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/pages/messages/app_messages.dart';
+import '/app/pages/routes/geoamd_route.dart';
+import '/app/pages/sources/login/bloc/login_bloc.dart';
+import '/app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
+import '/app/pages/styles/app_styles.dart';
+import '/app/shared/dialog/custom_dialog_box.dart';
+import '/app/shared/loading/loading_builder.dart';
 
 class AppCommonWidgets {
   static PreferredSizeWidget generateAppBar(
@@ -76,7 +77,7 @@ class AppCommonWidgets {
               ),
               Text(
                 menuOpTitle,
-                style: const TextStyle(fontSize: 20.0, color: Colors.white),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ],
           )
@@ -94,13 +95,13 @@ class AppCommonWidgets {
     listaMenu.add(Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Text(
           "MENÚ DE OPCIONES",
-          style: TextStyle(
-              fontStyle: FontStyle.italic,
-              letterSpacing: 0.4,
-              fontWeight: FontWeight.w600),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontWeight: FontWeight.w600),
         )
       ],
     ));
@@ -114,13 +115,18 @@ class AppCommonWidgets {
               .add(NavigationPageEvent(page: index, pagesMenu: opcionesMenu));
         },
         leading: getIcon(opcion.icon),
-        horizontalTitleGap: 0.0,
+        horizontalTitleGap: 10.0,
         title: Text(
           opcion.descripcion,
-          style: AppStyles.textStyleMenuDynamic,
+          textAlign: TextAlign.start,
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontSize: 18.0),
         ),
         hoverColor: AppStyles.colorRedPrimary,
       );
+
       listaMenu.add(opcionMenu);
     }
 
@@ -136,17 +142,24 @@ class AppCommonWidgets {
                   title: context.appLocalization.titleWarning,
                   descriptions: context.appLocalization.messageLogout,
                   isConfirmation: true,
-                  dialogAction: () => BlocProvider.of<LoginBloc>(context)
-                      .add(const ProcessLogoutEvent()),
+                  dialogAction: () {
+
+                    BlocProvider.of<ImageProfileBloc>(context).add(CleanImageByProfile());
+                    BlocProvider.of<LoginBloc>(context)
+                        .add(const ProcessLogoutEvent());
+                  },
                   type: AppConstants.statusWarning,
                   isdialogCancel: false,
                   dialogCancel: () {});
             });
       },
       leading: getIcon('logout'),
-      horizontalTitleGap: 0.0,
+      horizontalTitleGap: 5.0,
       title: Text(context.appLocalization.titleLogout,
-          style: AppStyles.textStyleMenuDynamic),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontSize: 18.0)),
       hoverColor: AppStyles.colorRedPrimary,
     );
     listaMenu.add(opcionMenu);
@@ -172,10 +185,13 @@ class AppCommonWidgets {
             context.pop();
           },
           leading: getIcon('closeMenu'),
-          horizontalTitleGap: 0.0,
+          horizontalTitleGap: 3.0,
           title: Text(
             context.appLocalization.titleCloseMenu,
-            style: AppStyles.textStyleMenuStatic,
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: Colors.black, fontSize: 18.0),
           ),
           hoverColor: AppStyles.colorRedPrimary,
           focusColor: AppStyles.colorRedPrimary,
@@ -189,6 +205,7 @@ class AppCommonWidgets {
   static Icon getIcon(String nombreIcono) {
     return Icon(
       AppConstants.iconsMenu[nombreIcono],
+      size: 22.0,
     );
   }
 
@@ -207,6 +224,7 @@ class AppCommonWidgets {
         LoadingBuilder(context)
             .showLoadingIndicator(context.appLocalization.titleLogoutLoading);
       } else if (state is LogoutSuccessState) {
+
         BlocProvider.of<MainBloc>(context).doctorAvailableSwitch = false;
         LoadingBuilder(context).hideOpenDialog();
         context.go(GeoAmdRoutes.login);
@@ -244,7 +262,49 @@ class AppCommonWidgets {
                 isdialogCancel: false,
                 dialogCancel: () {},
               );
-            });
+            }).then((value) {
+          AppCommonWidgets.pageCurrentChanged(
+              context: context, routeParam: GeoAmdRoutes.medicalCareAccepted);
+        });
+      } else if (state is LogoutDoctorConnectedState) {
+        LoadingBuilder(context).hideOpenDialog();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            routeSettings: const RouteSettings(name: GeoAmdRoutes.home),
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                title: AppMessages()
+                    .getMessageTitle(context, AppConstants.statusWarning),
+                descriptions: AppMessages().getMessage(context, state.message),
+                isConfirmation: false,
+                dialogAction: () {},
+                type: AppConstants.statusWarning,
+                isdialogCancel: false,
+                dialogCancel: () {},
+              );
+            }).then((value) {
+          context.go(GeoAmdRoutes.home);
+        });
+      } else if (state is LogoutInvalidSessionState) {
+        LoadingBuilder(context).hideOpenDialog();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return CustomDialogBox(
+                title: AppMessages()
+                    .getMessageTitle(context, AppConstants.statusWarning),
+                descriptions: AppMessages().getMessage(context, state.message),
+                isConfirmation: false,
+                dialogAction: () {},
+                type: AppConstants.statusWarning,
+                isdialogCancel: false,
+                dialogCancel: () {},
+              );
+            }).then((value) {
+          context.go(GeoAmdRoutes.login);
+        });
       }
     });
   }

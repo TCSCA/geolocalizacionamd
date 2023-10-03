@@ -1,4 +1,4 @@
-import '../mappings/user_mapping.dart';
+import '/app/api/mappings/user_mapping.dart';
 
 abstract class LoginService {
   Future<UserMap> doLogin(String user, String password);

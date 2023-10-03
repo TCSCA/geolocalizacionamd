@@ -55,3 +55,17 @@ class LogoutDoctorInAttentionState extends LoginState {
   @override
   List<Object> get props => [message];
 }
+
+class LogoutDoctorConnectedState extends LoginState {
+  final String message;
+  const LogoutDoctorConnectedState({required this.message});
+  @override
+  List<Object> get props => [message];
+}
+
+class LogoutInvalidSessionState extends LoginState {
+  final String message;
+  const LogoutInvalidSessionState({required this.message});
+  @override
+  List<Object> get props => [message];
+}

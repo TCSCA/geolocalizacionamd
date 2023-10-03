@@ -9,4 +9,5 @@ abstract class BaseConfig {
   String get headerContentTypeValue;
   String get headerApiKey;
   String get headerApiKeyValue;
+  String get idAppMessagingFirebase;
 }

@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
-
+import 'package:geolocalizacionamd/app/core/controllers/amd_history_controller.dart';
+import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
+import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
+import 'package:geolocalizacionamd/app/pages/sources/amd_history/bloc/amd_history_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/bloc/amd_form_bloc.dart';
+import 'package:geolocalizacionamd/app/pages/sources/amd_history/widgets/expansion_title_widget.dart';
+import 'package:go_router/go_router.dart';
+import '../../../shared/dialog/custom_dialog_box.dart';
+import '../../../shared/loading/loading_builder.dart';
+import '../../../shared/method/back_button_action.dart';
+import '../../constants/app_constants.dart';
+import '../../messages/app_messages.dart';
+import '../../routes/geoamd_route.dart';
+import '/app/pages/widgets/common_widgets.dart';
 import 'widgets/amd_history_widgets.dart';
 
 class AmdHistoryPage extends StatefulWidget {
@@ -18,170 +30,166 @@ class _AmdHistoryPageState extends State<AmdHistoryPage>
     return SafeArea(
       child: DefaultTabController(
         length: 2,
-        child: Scaffold(
-          appBar: generateAppBarWithTabBar(context: context),
-          body: MultiBlocListener(
-            listeners: [
-              //NavigationBloc y LogoutBloc comunes en todas las paginas.
-              AppCommonWidgets.listenerNavigationBloc(),
-              AppCommonWidgets.listenerLogoutBloc()
-            ],
-            child: TabBarView(
-              children: [
-                ListView(
-                  padding: const EdgeInsets.all(8.0),
-                  children: [
-                    Card(
-                      margin: const EdgeInsets.all(2),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          side: const BorderSide(
-                              color: Color(0xff2B5178), width: 1.0)),
-                      color: const Color(0xFFfbfcff).withOpacity(0.5),
-                      //shadowColor: const Color(0xff2B5178).withOpacity(0.7),
-
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          //mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const SizedBox(height: 3.0),
-                            ListTile(
-                              leading: Image.asset(
-                                  'assets/images/gps_doctor_image.png'),
-                              /* trailing: TextButton(
-                                          onPressed: () => {}, child: const Text('Ver')), */
-                              title: const Text('Orden Nro. 258746'),
-                              subtitle: Column(
-                                children: [
-                                  Row(
-                                    children: const [
-                                      Text('Paciente:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('Ruperto Lugo')
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Teléfono:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('04241234567')
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Doctor Solicitante:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('Jhoander Armas')
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Fecha y Hora:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('17-05-2023 3:40PM')
-                                    ],
-                                  ),
-                                  TextButton(
-                                      onPressed: () => {},
-                                      child: const Text('Ver Detalle'))
-                                ],
-                              ),
-                            ),
-                            /* Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        TextButton(
-                                            onPressed: () => {},
-                                            child: const Text('Ver Detalle')),
-                                      ],
-                                    ) */
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                ListView(
-                  padding: const EdgeInsets.all(8.0),
-                  children: [
-                    Card(
-                      margin: const EdgeInsets.all(2),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          side: const BorderSide(
-                              color: Color(0xff2B5178), width: 1.0)),
-                      color: const Color(0xFFfbfcff).withOpacity(0.5),
-                      //shadowColor: const Color(0xff2B5178).withOpacity(0.7),
-
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              leading: Image.asset(
-                                  'assets/images/gps_doctor_image.png'),
-                              title: const Text('Rechazo Nro. 258746'),
-                              subtitle: Column(
-                                children: [
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Paciente:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('Ruperto Lugo')
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Teléfono:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('04241234567')
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Doctor Solicitante:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('Jhoander Armas')
-                                    ],
-                                  ),
-                                  const SizedBox(height: 3.0),
-                                  Row(
-                                    children: const [
-                                      Text('Fecha y Hora:',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      Text('17-05-2023 3:40PM')
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                )
+        child: WillPopScope(
+          onWillPop: () => backButtonActions(),
+          child: Scaffold(
+            appBar: generateAppBarWithTabBar(context: context),
+            body: MultiBlocListener(
+              listeners: [
+                //NavigationBloc y LogoutBloc comunes en todas las paginas.
+                AppCommonWidgets.listenerNavigationBloc(),
+                AppCommonWidgets.listenerLogoutBloc()
               ],
+              child: BlocProvider(
+                create: (context) =>
+                    AmdHistoryBloc(amdHistoryController: AmdHistoryController())
+                      ..add(GetAmdHistoryEvent()),
+                child: const TabBarViewWidget(),
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+class TabBarViewWidget extends StatelessWidget {
+  const TabBarViewWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AmdHistoryBloc, AmdHistoryState>(
+      listener: (context, state) {
+        if (state is AmdHistoryLoadingState) {
+          LoadingBuilder(context).showLoadingIndicator('Cargando historial');
+        } else if (state is AmdHistorySuccessDataState) {
+          LoadingBuilder(context).hideOpenDialog();
+        }
+        if (state is AmdHistoryErrorState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusError),
+                  descriptions:
+                      AppMessages().getMessage(context, state.messageError),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusError,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              });
+        }
+        if (state is AmdHistoryInvalidSessionState) {
+          LoadingBuilder(context).hideOpenDialog();
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return CustomDialogBox(
+                  title: AppMessages()
+                      .getMessageTitle(context, AppConstants.statusWarning),
+                  descriptions:
+                      AppMessages().getMessage(context, state.message),
+                  isConfirmation: false,
+                  dialogAction: () {},
+                  type: AppConstants.statusWarning,
+                  isdialogCancel: false,
+                  dialogCancel: () {},
+                );
+              }).then((value) {
+            context.go(GeoAmdRoutes.login);
+          });
+        }
+      },
+      builder: (context, state) {
+        if (state is AmdHistorySuccessDataState) {
+          return TabBarView(
+            children: [
+              ListViewHistoryAmd(
+                homeService: state.homeServiceF,
+              ),
+              ListViewHistoryAmd(
+                homeService: state.homeServiceP,
+              ),
+            ],
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+}
+
+class ListViewHistoryAmd extends StatelessWidget {
+  final List<HomeServiceModel>? homeService;
+
+  const ListViewHistoryAmd({
+    super.key,
+    this.homeService,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (homeService!.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/gps_doctor_image.png',
+            width: 300,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Text(
+            context.appLocalization.appMsg137,
+            style: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 80,
+          ),
+        ],
+      );
+    } else {
+      return BlocProvider(
+        create: (context) => AmdFormBloc(),
+        child: ListView.builder(
+          padding: const EdgeInsets.all(8.0),
+          itemCount: homeService?.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ExpansionTitleWidget(
+                orderNumber: homeService?[index].orderNumber,
+                idMedicalOrder: homeService?[index].idMedicalOerder,
+                dateOrderDay: homeService?[index].registerDate.day,
+                dateOrderMonth: homeService?[index].registerDate.month,
+                dateOrderYear: homeService?[index].registerDate.year,
+                fullNamePatient: homeService?[index].fullNamePatient,
+                identificationDocument:
+                    homeService?[index].identificationDocument,
+                phoneNumberPatient: homeService?[index].phoneNumberPatient,
+                address: homeService?[index].address,
+                applicantDoctor: homeService?[index].applicantDoctor,
+                phoneNumberDoctor: homeService?[index].phoneNumberDoctor,
+                typeService: homeService?[index].typeService,
+                //linkAmd: homeService?[index].linkAmd,
+                statusHomeService: homeService?[index].statusHomeService,
+                statusOrder: homeService?[index].statusOrder);
+          },
+        ),
+      );
+    }
   }
 }

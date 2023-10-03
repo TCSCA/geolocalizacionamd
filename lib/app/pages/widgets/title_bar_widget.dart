@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/pages/sources/main/bloc/main_bloc.dart';
 
 class TitleBar extends StatelessWidget {
   final String title;
@@ -14,7 +13,10 @@ class TitleBar extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge
+              ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         TextButton.icon(
             onPressed: () {
@@ -26,9 +28,12 @@ class TitleBar extends StatelessWidget {
               size: 25,
               color: Colors.black,
             ),
-            label: const Text(
+            label: Text(
               'Actualizar',
-              style: TextStyle(fontSize: 15, color: Colors.black),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium
+                  ?.copyWith(color: Colors.black),
             ))
         /* IconButton(
             onPressed: () {

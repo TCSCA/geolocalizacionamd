@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/extensions/localization_ext.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
-import 'package:geolocalizacionamd/app/pages/routes/geoamd_route.dart';
-import 'package:geolocalizacionamd/app/pages/sources/main/bloc/main_bloc.dart';
-import 'package:geolocalizacionamd/app/shared/dialog/custom_dialog_box.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/extensions/localization_ext.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/pages/sources/main/bloc/main_bloc.dart';
+import '/app/shared/dialog/custom_dialog_box.dart';
 
 class AmdPendingCard extends StatelessWidget {
   final HomeServiceModel homeService;
@@ -42,8 +39,8 @@ class AmdPendingCard extends StatelessWidget {
                 subtitle: Column(
                   children: [
                     const SizedBox(height: 3.0),
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Text('Paciente:',
                             style: TextStyle(fontWeight: FontWeight.bold))
                       ],
@@ -64,10 +61,9 @@ class AmdPendingCard extends StatelessWidget {
                         Flexible(child: Text(homeService.phoneNumberPatient))
                       ],
                     ),
-                    const SizedBox(height: 3.0),
-                    Row(
+                    const Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text('Dirección del paciente:',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
@@ -99,8 +95,8 @@ class AmdPendingCard extends StatelessWidget {
                                   isConfirmation: true,
                                   dialogAction: () =>
                                       BlocProvider.of<MainBloc>(context).add(
-                                          DisallowAmdEvent(
-                                              homeService.idHomeService)),
+                                          ShowReasonRejectionStatesEvent(
+                                              homeService)),
                                   type: AppConstants.statusWarning,
                                   isdialogCancel: false,
                                   dialogCancel: () {});
@@ -127,7 +123,7 @@ class AmdPendingCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: Color(0xffFFFFFF),
-                                fontFamily: 'TitlesHighlight',
+                                fontFamily: 'TextsParagraphs',
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -174,7 +170,7 @@ class AmdPendingCard extends StatelessWidget {
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: Color(0xffFFFFFF),
-                                fontFamily: 'TitlesHighlight',
+                                fontFamily: 'TextsParagraphs',
                                 fontWeight: FontWeight.bold),
                           ),
                         ),

@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:geolocalizacionamd/app/api/mappings/city_mapping.dart';
 import 'package:http/http.dart' as http;
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/mappings/menu_mapping.dart';
-import 'package:geolocalizacionamd/app/api/mappings/state_mapping.dart';
-import '../../errors/exceptions.dart';
+import '/app/api/mappings/city_mapping.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/menu_mapping.dart';
+import '/app/api/mappings/state_mapping.dart';
+import '/app/errors/exceptions.dart';
+import '/app/api/mappings/reason_rejection_mapping.dart';
 import 'lists_service.dart';
 
 class ListsServiceImp implements ListsService {
@@ -99,5 +100,41 @@ class ListsServiceImp implements ListsService {
     }
 
     return listCities;
+  }
+
+  @override
+  Future<List<ReasonRejectionMap>> getAllReasonRejection(
+      String tokenUser) async {
+    List<ReasonRejectionMap> listReason = [];
+    http.Response responseApi;
+    Map<String, dynamic> decodeRespApi;
+    final Uri urlApiGetAllReasonRejection =
+        Uri.parse(ApiConstants.urlApiGetAllReasonRejection);
+    final Map<String, String> headerGetAllReasonRejection = {
+      ApiConstants.headerContentType: ApiConstants.headerValorContentType,
+      ApiConstants.headerToken: tokenUser
+    };
+
+    try {
+      responseApi = await http.get(urlApiGetAllReasonRejection,
+          headers: headerGetAllReasonRejection);
+      decodeRespApi = json.decode(responseApi.body);
+
+      if (decodeRespApi[ApiConstants.statusLabelApi] ==
+          ApiConstants.statusSuccessApi) {
+        listReason = List<ReasonRejectionMap>.from(
+            decodeRespApi[ApiConstants.dataLabelApi]
+                .map((data) => ReasonRejectionMap.fromJson(data)));
+      } else {
+        throw ErrorAppException(
+            message: decodeRespApi[ApiConstants.dataLabelApi]);
+      }
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return listReason;
   }
 }

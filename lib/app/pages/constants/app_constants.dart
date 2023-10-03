@@ -3,8 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AppConstants {
   AppConstants._();
-  //static const String appName = 'Geolocalización AMD';
   static const String environmentVariableName = 'ENVIRONMENT';
+  static const String environmentDevelopment = 'DEV';
+  static const String environmentTesting = 'QA';
+  static const String environmentProduction = 'PROD';
   static const String languageCodeEn = 'en';
   static const String languageCodeEs = 'es';
   static const String profileDefaultImage = 'assets/images/profile_default.png';
@@ -23,6 +25,11 @@ class AppConstants {
   static const String statusWarning = 'warning';
   static const String statusSuccess = 'success';
 
+  static const String idCountryVzla = '25';
+  static const String idCompleteAmdSuccess = '0';
+  static const int idHomeServiceConfirmed = 2;
+  static const String dateTimeFormat = 'dd/MM/yyyy hh:mm a';
+
   static const Map<String, IconData?> iconsMenu = {
     'home': FontAwesomeIcons.house,
     'profile': FontAwesomeIcons.idCardClip,
@@ -36,6 +43,7 @@ class AppConstants {
     'closeMenu': FontAwesomeIcons.xmark,
     statusError: FontAwesomeIcons.xmark,
     statusWarning: FontAwesomeIcons.triangleExclamation,
-    statusSuccess: FontAwesomeIcons.check
+    statusSuccess: FontAwesomeIcons.check,
+    'doctorLocation': FontAwesomeIcons.locationDot
   };
 }

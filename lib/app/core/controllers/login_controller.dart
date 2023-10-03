@@ -1,23 +1,16 @@
 import 'package:flutter/foundation.dart';
-import 'package:geolocalizacionamd/app/api/mappings/home_service_mapping.dart';
-import 'package:geolocalizacionamd/app/api/mappings/register_date_mapping.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service_implement.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-
-import '../../api/constants/api_constants.dart';
-import '../../api/services/login_service.dart';
-import '../../api/services/login_service_implement.dart';
-import '../../api/services/websocket_service.dart';
-import '../../api/services/websocket_service_implement.dart';
-import '../../errors/error_active_connection.dart';
-import '../../errors/exceptions.dart';
-import '../models/user_model.dart';
+import '/app/api/services/consult_data_service.dart';
+import '/app/api/services/consult_data_service_implement.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/services/login_service.dart';
+import '/app/api/services/login_service_implement.dart';
+import '/app/errors/error_active_connection.dart';
+import '/app/errors/exceptions.dart';
+import '/app/core/models/user_model.dart';
 import 'secure_storage_controller.dart';
 
 class LoginController {
   final LoginService loginService = LoginServiceImp();
-  final WebSocketService webSocketService = WebSocketServiceImp();
   final SecureStorageController secureStorageController =
       SecureStorageController();
   final ConsultDataService consultDataService = ConsultDataServiceImp();
@@ -27,15 +20,20 @@ class LoginController {
     late UserModel userResponse;
 
     try {
+     // ImageProfileBloc? imageProfileBloc = ImageProfileBloc();
+
       var responseLogin = await loginService.doLogin(user, password);
 
+      cleanDataSession();
       await secureStorageController.writeSecureData(
-          ApiConstants.tokenLabel, responseLogin.data);
+          ApiConstants.tokenLabel, responseLogin.data!);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
+      await secureStorageController.writeSecureData(
+          ApiConstants.idDoctorAmd, responseLogin.user.toString());
 
       userResponse = UserModel(
-          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
+          user, responseLogin.descriptionEs!, responseLogin.idProfile!, []);
     } on ErrorAppException {
       rethrow;
     } on ActiveConnectionException {
@@ -65,30 +63,32 @@ class LoginController {
       rethrow;
     } on ErrorGeneralException {
       rethrow;
+    } on SessionExpiredException {
+      rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
     } finally {
-      await secureStorageController.deleteSecureData(ApiConstants.tokenLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.doctorInAttentionLabel);
-      await secureStorageController
-          .deleteSecureData(ApiConstants.idHomeServiceConfirmedLabel);
+      cleanDataSession();
     }
-
     return respWebSocket;
   }
 
   Future<UserModel> doResetLoginUser(String user, final String password) async {
     late UserModel userResponse;
     try {
+      cleanDataSession();
+
       var responseLogin = await loginService.resetLogin(user, password);
 
       await secureStorageController.writeSecureData(
-          ApiConstants.tokenLabel, responseLogin.data);
+          ApiConstants.tokenLabel, responseLogin.data!);
       await secureStorageController.writeSecureData(
           ApiConstants.doctorInAttentionLabel, 'false');
+      await secureStorageController.writeSecureData(
+          ApiConstants.idDoctorAmd, responseLogin.user.toString());
+
       userResponse = UserModel(
-          user, responseLogin.descriptionEs, responseLogin.idProfile, []);
+          user, responseLogin.descriptionEs!, responseLogin.idProfile!, []);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -115,5 +115,27 @@ class LoginController {
     }
 
     return response;
+  }
+
+  Future<bool> validateConnectedDoctor() async {
+    bool newBoolValue = false;
+    String connectedDoctor = await secureStorageController
+        .readSecureData(ApiConstants.doctorConnectedLabel);
+    if (connectedDoctor.isNotEmpty) {
+      newBoolValue = connectedDoctor.toLowerCase() != 'false';
+    }
+    return newBoolValue;
+  }
+
+  Future<void> cleanDataSession() async {
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorInAttentionLabel);
+    await secureStorageController.deleteSecureData(ApiConstants.idDoctorAmd);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorConnectedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.doctorAmdAssignedLabel);
+    await secureStorageController
+        .deleteSecureData(ApiConstants.idAmdconfirmedLabel);
   }
 }

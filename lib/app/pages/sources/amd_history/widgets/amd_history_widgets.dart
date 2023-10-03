@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geolocalizacionamd/app/core/models/menu_model.dart';
-import 'package:geolocalizacionamd/app/pages/constants/app_constants.dart';
-import 'package:geolocalizacionamd/app/pages/sources/login/bloc/login_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/sources/navigation/bloc/navigation_bloc.dart';
-import 'package:geolocalizacionamd/app/pages/widgets/common_widgets.dart';
+import '/app/core/models/menu_model.dart';
+import '/app/pages/constants/app_constants.dart';
+import '/app/pages/sources/login/bloc/login_bloc.dart';
+import '/app/pages/sources/navigation/bloc/navigation_bloc.dart';
+import '/app/pages/widgets/common_widgets.dart';
 
 class AmdHistoryWidgets {
   PreferredSizeWidget generateAppBarWithTabBar(
@@ -76,29 +76,29 @@ class AmdHistoryWidgets {
           )
         ],
       ),
-      bottom: TabBar(
-          labelColor: const Color(0xffD84835),
+      bottom: const TabBar(
+          labelColor: Color(0xffD84835),
           unselectedLabelColor: Colors.white,
-          indicatorColor: const Color(0xffD84835),
+          indicatorColor: Color(0xffD84835),
           indicatorWeight: 5,
           /* indicator: BoxDecoration(
                     borderRadius: BorderRadius.circular(30), // Creates border
                     color: Colors.greenAccent), */
           tabs: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(FontAwesomeIcons.houseMedicalCircleCheck, size: 30.0),
                   SizedBox(
                     width: 17.0,
                   ),
                   Text(
                     "Finalizadas",
-                    style: TextStyle(fontSize: 17.0),
+                    style: TextStyle(fontSize: 16.0),
                   )
                 ],
               ),
@@ -107,14 +107,14 @@ class AmdHistoryWidgets {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(FontAwesomeIcons.houseMedicalCircleXmark, size: 30.0),
                 SizedBox(
                   width: 17.0,
                 ),
                 Text(
                   "Rechazadas",
-                  style: TextStyle(fontSize: 17.0),
+                  style: TextStyle(fontSize: 16.0),
                 )
               ],
             ),

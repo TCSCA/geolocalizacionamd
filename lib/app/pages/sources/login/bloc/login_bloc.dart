@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:geolocalizacionamd/app/core/controllers/doctor_care_controller.dart';
+import '/app/core/controllers/doctor_care_controller.dart';
 import '/app/core/controllers/menu_controller.dart';
 import '/app/core/controllers/login_controller.dart';
 import '/app/core/models/menu_model.dart';
@@ -9,14 +9,15 @@ import '/app/core/models/user_model.dart';
 import '/app/pages/constants/app_constants.dart';
 import '/app/errors/error_active_connection.dart';
 import '/app/errors/exceptions.dart';
-
 part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   List<MenuModel> listMenu = [];
+  UserModel user = UserModel('', '', 0, []);
   final LoginController loginController;
   final MenuAppController menuController;
+  final DoctorCareController doctorCareController = DoctorCareController();
   LoginBloc({required this.loginController, required this.menuController})
       : super(LoginInitial()) {
     on<ProcessLoginEvent>((event, emit) async {
@@ -24,11 +25,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         emit(const LoginShowLoadingState());
         var userLogin =
-            await loginController.doLoginUser(event.user, event.password);
+            await loginController.doLoginUser(
+            event.user.trim(), event.password.trim());
         final ByteData bytes =
             await rootBundle.load(AppConstants.profileDefaultImage);
         userLogin.photoPerfil = bytes.buffer.asUint8List();
         listMenu = await menuController.getListMenu(event.languageCode);
+        user = userLogin;
         emit(LoginSuccessState(user: userLogin, listMenu: listMenu));
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));
@@ -43,25 +46,27 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<ProcessLogoutEvent>((event, emit) async {
-      final DoctorCareController doctorCareController = DoctorCareController();
-
       try {
         emit(const LoginShowLoadingState());
-        /* var doctorInAttention =
-            await doctorCareController.validateDoctorInAttention();
-        if (doctorInAttention) {
-          emit(const LogoutDoctorInAttentionState(message: 'MSGAPP-009'));
-        } else { */
-        try {
-          await doctorCareController.doDisconectDoctorAmd();
-        } catch (error) {/*No importa si falla*/}
-        await loginController.doLogoutUser();
-        emit(const LogoutSuccessState());
-        //}
+        var connectedDoctor = await loginController.validateConnectedDoctor();
+        if (connectedDoctor) {
+          emit(const LogoutDoctorConnectedState(message: 'MSG-234'));
+        } else {
+          var doctorInAttention =
+              await doctorCareController.validateDoctorInAttention();
+          if (doctorInAttention) {
+            emit(const LogoutDoctorInAttentionState(message: 'MSGAPP-009'));
+          } else {
+            await loginController.doLogoutUser();
+            emit(const LogoutSuccessState());
+          }
+        }
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));
       } on ErrorGeneralException catch (exgen) {
         emit(LoginErrorState(message: exgen.message));
+      } on SessionExpiredException catch (exesi) {
+        emit(LogoutInvalidSessionState(message: exesi.message));
       } catch (unknowerror) {
         emit(const LoginErrorState(
             message: AppConstants.codeGeneralErrorMessage));
@@ -73,11 +78,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         emit(const LoginShowLoadingState());
         var userLogin =
-            await loginController.doResetLoginUser(event.user, event.password);
+            await loginController.doResetLoginUser(
+            event.user.trim(), event.password.trim());
         final ByteData bytes =
             await rootBundle.load(AppConstants.profileDefaultImage);
         userLogin.photoPerfil = bytes.buffer.asUint8List();
         listMenu = await menuController.getListMenu(event.languageCode);
+        user = userLogin;
         emit(LoginSuccessState(user: userLogin, listMenu: listMenu));
       } on ErrorAppException catch (exapp) {
         emit(LoginErrorState(message: exapp.message));

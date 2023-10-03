@@ -1,4 +1,4 @@
-import 'package:geolocalizacionamd/app/api/mappings/register_date_mapping.dart';
+import '/app/api/mappings/register_date_mapping.dart';
 
 class AppFormatData {
   static DateTime parseFecha(RegisterDate registerDate) {

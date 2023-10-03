@@ -1,11 +1,11 @@
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/mappings/register_date_mapping.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service_implement.dart';
-import 'package:geolocalizacionamd/app/core/controllers/secure_storage_controller.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/errors/error_empty_data.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/register_date_mapping.dart';
+import '/app/api/services/consult_data_service.dart';
+import '/app/api/services/consult_data_service_implement.dart';
+import '/app/core/controllers/secure_storage_controller.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/errors/error_empty_data.dart';
+import '/app/errors/exceptions.dart';
 
 class ActiveAmdOrderCOntroller {
   final ConsultDataService consultDataService = ConsultDataServiceImp();
@@ -21,6 +21,7 @@ class ActiveAmdOrderCOntroller {
           await consultDataService.getActiveAmdOrder(tokenUser);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -31,7 +32,11 @@ class ActiveAmdOrderCOntroller {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd);
+          //responseService.linkAmd,
+          responseService.idStatusHomeService,
+          responseService.statusHomeService,
+          responseService.statusLinkAmd,
+      responseService.statusOrder);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {

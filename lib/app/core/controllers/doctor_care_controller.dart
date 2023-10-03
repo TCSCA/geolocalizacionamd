@@ -1,18 +1,23 @@
-import 'package:geolocalizacionamd/app/api/constants/api_constants.dart';
-import 'package:geolocalizacionamd/app/api/mappings/register_date_mapping.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service.dart';
-import 'package:geolocalizacionamd/app/api/services/consult_data_service_implement.dart';
-import 'package:geolocalizacionamd/app/api/services/lists_service.dart';
-import 'package:geolocalizacionamd/app/api/services/lists_service_implement.dart';
-import 'package:geolocalizacionamd/app/api/services/save_data_service.dart';
-import 'package:geolocalizacionamd/app/api/services/save_data_service_implement.dart';
-import 'package:geolocalizacionamd/app/core/models/connect_doctor_model.dart';
-import 'package:geolocalizacionamd/app/core/models/home_service_model.dart';
-import 'package:geolocalizacionamd/app/core/models/select_model.dart';
-import 'package:geolocalizacionamd/app/errors/error_empty_data.dart';
-import 'package:geolocalizacionamd/app/errors/exceptions.dart';
 
+import 'package:geolocalizacionamd/app/api/mappings/file_amd_form_mapping.dart';
+import 'package:geolocalizacionamd/app/core/models/file_amd_form_model.dart';
+import 'package:geolocalizacionamd/app/errors/error_amd_admin_finalized.dart';
+
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/register_date_mapping.dart';
+import '/app/api/services/consult_data_service.dart';
+import '/app/api/services/consult_data_service_implement.dart';
+import '/app/api/services/lists_service.dart';
+import '/app/api/services/lists_service_implement.dart';
+import '/app/api/services/save_data_service.dart';
+import '/app/api/services/save_data_service_implement.dart';
+import '/app/core/models/connect_doctor_model.dart';
+import '/app/core/models/home_service_model.dart';
+import '/app/core/models/select_model.dart';
+import '/app/errors/error_empty_data.dart';
+import '/app/errors/exceptions.dart';
 import 'secure_storage_controller.dart';
+import '/app/core/models/reject_amd_model.dart';
 
 class DoctorCareController {
   final SaveDataService saveDataService = SaveDataServiceImp();
@@ -112,11 +117,9 @@ class DoctorCareController {
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       var responseService =
           await saveDataService.onConfirmHomeService(tokenUser, idHomeService);
-      await secureStorageController.writeSecureData(
-          ApiConstants.idHomeServiceConfirmedLabel,
-          responseService.idHomeService.toString());
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -127,7 +130,11 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd);
+          //responseService.linkAmd,
+          responseService.idStatusHomeService,
+          responseService.statusHomeService,
+          responseService.statusLinkAmd,
+          responseService.statusOrder);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -139,48 +146,14 @@ class DoctorCareController {
     return responseHomeService;
   }
 
-  Future<HomeServiceModel> getConfirmedHomeService() async {
-    late HomeServiceModel responseHomeService;
-
-    try {
-      var tokenUser =
-          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
-      var idHomeService = await secureStorageController
-          .readSecureData(ApiConstants.idHomeServiceConfirmedLabel);
-      var responseService = await saveDataService.onConfirmHomeService(
-          tokenUser, int.parse(idHomeService));
-      responseHomeService = HomeServiceModel(
-          responseService.idHomeService,
-          responseService.orderNumber,
-          parseFecha(responseService.registerDate),
-          responseService.fullNamePatient,
-          responseService.documentType,
-          responseService.identificationDocument,
-          responseService.phoneNumberPatient,
-          responseService.address,
-          responseService.applicantDoctor,
-          responseService.phoneNumberDoctor,
-          responseService.typeService,
-          responseService.linkAmd);
-    } on ErrorAppException {
-      rethrow;
-    } on ErrorGeneralException {
-      rethrow;
-    } catch (unknowerror) {
-      throw ErrorGeneralException();
-    }
-
-    return responseHomeService;
-  }
-
-  Future<bool> doRejectHomeService(final int idHomeService) async {
+  Future<bool> doRejectHomeService(final RejectAmdModel requestReject) async {
     bool respApiReject;
 
     try {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiReject =
-          await saveDataService.onRejectHomeService(tokenUser, idHomeService);
+          await saveDataService.onRejectHomeService(tokenUser, requestReject);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -192,14 +165,14 @@ class DoctorCareController {
     return respApiReject;
   }
 
-  Future<bool> doCompleteHomeService(final int idHomeService) async {
+  Future<bool> doCompleteHomeService(final RejectAmdModel requestReject) async {
     bool respApiComplete;
 
     try {
       var tokenUser =
           await secureStorageController.readSecureData(ApiConstants.tokenLabel);
       respApiComplete =
-          await saveDataService.onCompleteHomeService(tokenUser, idHomeService);
+          await saveDataService.onCompleteHomeService(tokenUser, requestReject);
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
@@ -220,6 +193,7 @@ class DoctorCareController {
           await consultDataService.getActiveAmdOrder(tokenUser);
       responseHomeService = HomeServiceModel(
           responseService.idHomeService,
+          responseService.idMedicalOrder,
           responseService.orderNumber,
           parseFecha(responseService.registerDate),
           responseService.fullNamePatient,
@@ -230,12 +204,18 @@ class DoctorCareController {
           responseService.applicantDoctor,
           responseService.phoneNumberDoctor,
           responseService.typeService,
-          responseService.linkAmd);
+          // responseService.linkAmd,
+          responseService.idStatusHomeService,
+          responseService.statusHomeService,
+          responseService.statusLinkAmd,
+          responseService.statusOrder);
     } on EmptyDataException {
       rethrow;
     } on ErrorAppException {
       rethrow;
     } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
@@ -282,5 +262,147 @@ class DoctorCareController {
         ((registerDate.dateTime.time.second) < 10 ? '0$seconds' : seconds);
 
     return DateTime.parse('$years-$months-$days $hours:$minutes:$seconds');
+  }
+
+  Future<List<SelectModel>> getListgetReasonRejection() async {
+    List<SelectModel> listReason = [];
+    late SelectModel opReason;
+
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+
+      var opcionesReason = await listsService.getAllReasonRejection(tokenUser);
+      for (var opcion in opcionesReason) {
+        opReason = SelectModel(
+            opcion.idReasonRejection.toString(), opcion.reasonForRejection);
+        listReason.add(opReason);
+      }
+      listReason.sort((a, b) => a.name.compareTo(b.name));
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return listReason;
+  }
+
+  Future<void> validateIfOrderIsCompletedOrRejectedCtrl(
+      int idHomeService) async {
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      await consultDataService.validateIfOrderIsCompletedOrRejected(
+          tokenUser, idHomeService);
+    } on AmdOrderAdminFinalizedException {
+      rethrow;
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+  }
+
+  Future<void> changeDoctorConnected(final String isConnected) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.doctorConnectedLabel, isConnected);
+  }
+
+  Future<void> changeDoctorAmdPending(final String isAmdAssigned) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.doctorAmdAssignedLabel, isAmdAssigned);
+  }
+
+  Future<String> verifyConnected() async {
+    String statusDoctorConnected = 'No Disponible';
+    try {
+      final tokenUser =
+          await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+      statusDoctorConnected =
+          await consultDataService.verifyConnectedDoctorAmd(tokenUser);
+    } on ErrorAppException {
+      rethrow;
+    } on ErrorGeneralException {
+      rethrow;
+    } on SessionExpiredException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return statusDoctorConnected;
+  }
+
+  Future<bool> validateDoctorAmdAssigned() async {
+    bool newBoolValue = false;
+    String isAmdAssigned = await secureStorageController
+        .readSecureData(ApiConstants.doctorAmdAssignedLabel);
+    if (isAmdAssigned.isNotEmpty) {
+      newBoolValue = isAmdAssigned.toLowerCase() != "false";
+    }
+    return newBoolValue;
+  }
+
+  Future<String> getAmdConfirmed() async {
+    String amdConfirmed = '';
+    amdConfirmed = await secureStorageController
+        .readSecureData(ApiConstants.idAmdconfirmedLabel);
+    if (amdConfirmed.isEmpty) {
+      amdConfirmed = '0';
+    }
+    return amdConfirmed;
+  }
+
+  Future<void> changeIdAmdConfirmed(final String idAmdconfirmed) async {
+    await secureStorageController.writeSecureData(
+        ApiConstants.idAmdconfirmedLabel, idAmdconfirmed);
+  }
+
+  Future<String> renewAmdForm(int idMedicalOrder) async {
+    final tokenUser =
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    String urlRenew = '';
+    try {
+      urlRenew =
+          await saveDataService.renewAmdFormService(idMedicalOrder, tokenUser);
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return urlRenew;
+  }
+
+  Future<FileAmdFormModel> viewFormAMD(int idMedicalOrder) async {
+    final tokenUser =
+        await secureStorageController.readSecureData(ApiConstants.tokenLabel);
+    String urlRenew = '';
+
+    FileAmdFormMap fileAmdFormMap;
+    FileAmdFormModel fileAmdFormModel;
+
+    try {
+      fileAmdFormMap =
+          await saveDataService.viewAmdFormService(idMedicalOrder, tokenUser);
+      //imageArray.cast<int>())
+
+      fileAmdFormModel = FileAmdFormModel(
+          fileName: fileAmdFormMap.data!.fileName,
+          file: fileAmdFormMap.data!.file);
+    } on ErrorAppException {
+      rethrow;
+    } catch (unknowerror) {
+      throw ErrorGeneralException();
+    }
+
+    return fileAmdFormModel;
   }
 }

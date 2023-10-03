@@ -16,6 +16,10 @@ class HomeServiceMap {
   String phoneNumberDoctor;
   String typeService;
   String linkAmd;
+  int idStatusHomeService;
+  String statusHomeService;
+  String statusLinkAmd;
+  String statusOrder;
 
   HomeServiceMap(
       {required this.idHomeService,
@@ -32,23 +36,30 @@ class HomeServiceMap {
       required this.applicantDoctor,
       required this.phoneNumberDoctor,
       required this.typeService,
-      required this.linkAmd});
+      required this.linkAmd,
+      required this.idStatusHomeService,
+      required this.statusHomeService,
+      required this.statusLinkAmd,
+      required this.statusOrder});
 
   factory HomeServiceMap.fromJson(Map<String, dynamic> json) => HomeServiceMap(
-        idHomeService: json["data"]["idHomeService"],
-        idMedicalOrder: json["data"]["idMedicalOrder"],
-        orderNumber: json["data"]["orderNumber"],
-        registerDate: RegisterDate.fromJson(json["data"]["registerDate"]),
-        fullNamePatient: json["data"]["fullNamePatient"],
-        documentType: json["data"]["documentType"],
-        identificationDocument: json["data"]["identificationDocument"],
-        phoneNumberPatient: json["data"]["phoneNumberPatient"],
-        address: json["data"]["address"],
-        latitude: json["data"]["latitude"],
-        longitude: json["data"]["longitude"],
-        applicantDoctor: json["data"]["applicantDoctor"],
-        phoneNumberDoctor: json["data"]["phoneNumberDoctor"],
-        typeService: json["data"]["typeService"],
-        linkAmd: json["data"]["linkAmd"] ?? '',
-      );
+      idHomeService: json["idHomeService"],
+      idMedicalOrder: json["idMedicalOrder"],
+      orderNumber: json["orderNumber"],
+      registerDate: RegisterDate.fromJson(json["registerDate"]),
+      fullNamePatient: json["fullNamePatient"],
+      documentType: json["documentType"],
+      identificationDocument: json["identificationDocument"],
+      phoneNumberPatient: json["phoneNumberPatient"],
+      address: json["address"],
+      latitude: json["latitude"],
+      longitude: json["longitude"],
+      applicantDoctor: json["applicantDoctor"],
+      phoneNumberDoctor: json["phoneNumberDoctor"],
+      typeService: json["typeService"],
+      linkAmd: json["linkAmd"] ?? '',
+      idStatusHomeService: json["idStatusHomeService"] ?? 0,
+      statusHomeService: json["statusHomeService"] ?? '',
+      statusLinkAmd: json['statusLinkAmd'] ?? '',
+      statusOrder: json['statusOrder'] ?? '');
 }

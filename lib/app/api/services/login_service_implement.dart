@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:geolocalizacionamd/app/api/interceptors/http_error_interceptor.dart';
 import 'package:http/http.dart' as http;
-import '../../errors/error_active_connection.dart';
-import '../../errors/exceptions.dart';
-import '../constants/api_constants.dart';
-import '../mappings/user_mapping.dart';
+import 'package:http_interceptor/http/intercepted_http.dart';
+import '/app/errors/error_active_connection.dart';
+import '/app/errors/exceptions.dart';
+import '/app/api/constants/api_constants.dart';
+import '/app/api/mappings/user_mapping.dart';
 import 'login_service.dart';
 
 class LoginServiceImp implements LoginService {
@@ -28,7 +30,11 @@ class LoginServiceImp implements LoginService {
 
       if (decodeRespApi[ApiConstants.statusLabelApi] ==
           ApiConstants.statusSuccessApi) {
-        responseUser = UserMap.fromJson(decodeRespApi);
+        if (decodeRespApi['data'] == 'recuperar contraseña') {
+          throw ErrorAppException(message: decodeRespApi['data']);
+        } else {
+          responseUser = UserMap.fromJson(decodeRespApi);
+        }
       } else {
         final String error =
             decodeRespApi[ApiConstants.dataLabelApi][ApiConstants.codeLabelApi];
@@ -97,6 +103,8 @@ class LoginServiceImp implements LoginService {
     };
 
     try {
+      final http =
+          InterceptedHttp.build(interceptors: [HttpErrorInterceptor()]);
       responseApi = await http.post(urlApiLogout, headers: headerLogout);
       decodeRespApi = json.decode(responseApi.body);
 
@@ -109,6 +117,8 @@ class LoginServiceImp implements LoginService {
         throw ErrorAppException(message: error);
       }
     } on ErrorAppException {
+      rethrow;
+    } on SessionExpiredException {
       rethrow;
     } catch (unknowerror) {
       throw ErrorGeneralException();
